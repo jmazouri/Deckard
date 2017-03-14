@@ -1,0 +1,6 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["webworker", "es5", "scripthost", "es2015.promise"]
+    }
+}

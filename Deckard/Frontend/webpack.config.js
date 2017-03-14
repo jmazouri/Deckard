@@ -26,16 +26,16 @@ module.exports = {
           // other vue-loader options go here
         }
       },
-      /*
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-      */
       {
         test: /\.ts$/,
-        loader: 'vue-ts-loader'
+        loader: 'vue-ts-loader',
+        options: {
+            //I'm not sure how to fix this - this error appears with our worker,
+            //assumingly because it's part of our DOM-oriented compilation and typescript
+            //gets confused because the tsconfig I'm using for the workers doesn't include the DOM
+            //since it overrides our webworker functions. Bluh.
+            "ignoreDiagnostics": [2346] 
+        }
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -59,7 +59,7 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#source-map'
+  devtool: 'source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {

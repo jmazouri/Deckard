@@ -1,78 +1,107 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1></h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <input type="number" v-model="currentCardId">
+    <div class="fullArt">
+        <span class="cardTitle">{{currentCard.name}}</span>
+        <span class="cmc">{{currentCard.cmc}}</span>
+    </div>
   </div>
 </template>
 
+<style lang="scss">
+#app
+{
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    margin-top: 60px;
+}
+
+.fullArt
+{
+    background-image: url(http://i.imgur.com/4CMXVNi.jpg);
+    width: 400px;
+    height: 560px;
+
+    & > *
+    {
+        position: relative;
+    }
+
+    .cardTitle
+    {
+        font-weight: bold;
+        font-size: 18px;
+        
+        top: 37px;
+        left: 38px;
+    }
+
+    .cmc
+    {
+        background-color: rgb(195, 187, 183);
+        font-weight: bold;
+        padding: 2px 6px 2px 6px;
+        border-radius: 32px;
+
+        left: 212px;
+        top: 36px;
+    }
+}
+</style>
+
 <script>
-import {Vue, Component} from 'av-ts'
+import {Vue, Component, Lifecycle, Watch} from 'av-ts'
+
+import {Card} from './deckard/models/Card'
+import {BackgroundProcessStatus} from './deckard/models/BackgroundProcessStatus'
+import {MessageKind, DataImporterMessage} from './deckard/models/DataImporterMessage'
+import {CardDatabase} from './deckard/storage/CardDatabase'
+
+let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
+
+let jsonSetList = require("file-loader!./assets/SetList.json");
+let jsonAllCards = require("file-loader!./assets/AllSets.json");
 
 @Component
 export default class App extends Vue
 {
-  // initial data
-  msg = 123
+    loadStatus = new BackgroundProcessStatus();
+    importer = ImportWorker();
 
-  // lifecycle hook
-  mounted()
-  {
-      this.greet()
-  }
+    currentCardId = 0;
+    currentCard:Card = new Card();
 
-  // computed
-  get computedMsg()
-  {
-      return 'computed ' + this.msg
-  }
+    @Watch('currentCardId')
+    handler(newVal, oldVal)
+    {
+        let thisVue:App = this;
 
-  // method
-  greet()
-  {
-      alert('greeting: ' + this.msg)
-  }
+        CardDatabase.getCard(parseInt(newVal))
+            .then(function(value)
+            {
+                thisVue.currentCard = value;
+            })
+    }
+
+    // lifecycle hook
+    @Lifecycle mounted()
+    {
+        this.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadSets", <string>jsonSetList)));
+
+        let thisImporter = this.importer;
+        this.importer.addEventListener("message", function(event)
+        {
+            if (event.data.kind == "LoadSets")
+            {
+                thisImporter.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));
+            }
+
+            console.log(event);
+        });
+
+        this.currentCardId = 5;
+    }
 }
 </script>
-
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
-</style>
