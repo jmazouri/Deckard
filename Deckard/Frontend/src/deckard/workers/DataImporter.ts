@@ -35,6 +35,13 @@ class DataImporter
         {
             if (setsAndCards.hasOwnProperty(set))
             {
+                let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
+                
+                if (legalSets.indexOf(set) <= -1)
+                {
+                    continue;
+                }
+
                 setsAndCards[set].cards.forEach(card =>
                 {
                     let newCard:Card = <Card>card;
@@ -45,9 +52,6 @@ class DataImporter
                     } 
                 });
             }
-
-            //TODO: REMOVE
-            break; 
         }
 
         return loadedCards;
