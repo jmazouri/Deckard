@@ -5,11 +5,14 @@
         </div>
 
         <div class="mainContent">
-            <input type="number" v-model="currentCardId">
             <FullCard :currentCard="currentCard"></FullCard>
         </div>
 
         <div class="sideBar">
+            Set: 
+            <select v-model="currentSet">
+                <option v-for="set in allSets" v-bind:value="set.code">{{set.name}}</option>
+            </select>
             <ul>
                 <li v-for="card in setCards">
                     <a href="#" v-on:click="currentCardId = card.multiverseid">{{card.name}}</a>
@@ -35,6 +38,8 @@ html, body
 
 .headerStatus
 {
+    box-sizing: border-box;
+
     color: black;
 
     width: 100%;
@@ -52,17 +57,16 @@ html, body
 }
 
 
+.mainContent
+{
+    float: left;
+    width: 45%;
+}
 
 .sideBar
 {
     float: left;
-    width: 50%;
-}
-
-.mainContent
-{
-    float: left;
-    width: 50%;
+    width: 40%;
 }
 </style>
 
@@ -94,55 +98,22 @@ export default class App extends Vue
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
+    currentSet: string = "";
+    allSets: Set[] = [];
+
     currentCardId = 0;
     currentCard:Card = new Card();
 
     setCards: Card[] = [];
 
-    get currentCardText()
-    {
-        var symbolIcons = 
-        {
-            "{E}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/7/7c/E.svg",
-            "{T}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/b/be/T.svg"
-        }
-
-        const ruleRegex = /\(.+\)/g;
-        const manaCountRegex = /{\d}/g;
-
-        let cardHtml:string = this.currentCard.text;
-
-        if (cardHtml == undefined) { return ""; }
-
-        cardHtml = cardHtml.replace(ruleRegex, function(match)
-        {
-            return `<span class='rulesText'>${match}</span>`;
-        });
-
-        cardHtml = cardHtml.replace(manaCountRegex, function (match)
-        {
-            return `<span class="symbol">${match.substr(1, match.length - 2)}</span>`;
-        });
-
-        for (var symbol in symbolIcons)
-        {
-            if (symbolIcons.hasOwnProperty(symbol))
-            {
-                cardHtml = cardHtml.replace(new RegExp(symbol, 'g'), function(match)
-                {
-                    return `<img class='textIcon' src="${symbolIcons[symbol]}">`;
-                });
-            }
-        }
-
-        return cardHtml;
-    }
-
     @Watch('currentCardId')
-    handler(newVal, oldVal)
+    cardHandler(newVal, oldVal)
     {
         let thisVue:App = this;
 
+        thisVue.currentCard = thisVue.setCards.filter(thing => thing.multiverseid == thisVue.currentCardId)[0];
+
+        /*
         CardDatabase.getCard(parseInt(newVal))
             .then(function(value)
             {
@@ -151,6 +122,20 @@ export default class App extends Vue
                     thisVue.currentCard = value;
                 }
             })
+        */
+    }
+
+    @Watch('currentSet')
+    setHandler(newVal, oldVal)
+    {
+        let thisVue:App = this;
+
+        CardDatabase.getCardsInSet(thisVue.currentSet)
+            .then(function(cards)
+            {
+                thisVue.setCards = cards;
+                thisVue.currentCard = thisVue.setCards[0];
+            });
     }
 
     // lifecycle hook
@@ -178,18 +163,10 @@ export default class App extends Vue
                 CardDatabase.getAllSets()
                     .then(function(value)
                     {
-                        for (var set in value)
-                        {
-                            if (value.hasOwnProperty(set))
-                            {
-                                CardDatabase.getCardsInSet(set)
-                                    .then(function(cards)
-                                    {
-                                        thisVue.setCards = thisVue.setCards.concat(cards);
-                                    });    
-                            }
-                        }
+                        thisVue.allSets = value;
                     });
+
+                thisVue.currentSet = "AER";
             }
 
             if (event.data.kind == "Error")

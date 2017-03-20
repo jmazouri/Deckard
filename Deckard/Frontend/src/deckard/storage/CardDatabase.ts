@@ -112,17 +112,18 @@ export class CardDatabase
         req.onsuccess = function (e: any)
         {
             let theDb: IDBDatabase = e.target.result;
+            let trans: IDBTransaction = theDb.transaction("sets", "readwrite");
+            let table: IDBObjectStore = trans.objectStore("sets");
 
             sets.forEach(element =>
             {
-                let trans: IDBTransaction = theDb.transaction("sets", "readwrite");
-                let table: IDBObjectStore = trans.objectStore("sets");
-
-                table.add(element);
+                table.put(element);
             });
 
             theDb.close();
         }
+
+        req.onerror = function (e:any) { debugger; }
     }
 
     public static saveCards(cards: Card[])
@@ -139,11 +140,13 @@ export class CardDatabase
             
             cards.forEach(element =>
             {
-                table.add(element);
+                table.put(element);
             });
 
             theDb.close();
         }
+
+        req.onerror = function (e:any) { debugger; }
     }
 
     public static setTableInit(e: any)

@@ -13,8 +13,14 @@
             <span class="flavor">{{currentCard.flavor}}</span>
         </div>
 
-        <div class="pt" v-if="currentCard.power != undefined">
-            <span class="power">{{currentCard.power}}</span>/<span class="toughness">{{currentCard.toughness}}</span>
+        <div class="pt">
+            <template v-if="currentCard.power != undefined">
+                <span class="power">{{currentCard.power}}</span>/<span class="toughness">{{currentCard.toughness}}</span>
+            </template>
+
+            <template v-if="currentCard.loyalty != undefined">
+                <span class="loyalty">{{currentCard.loyalty}}</span>
+            </template>
         </div>
     </div>
 </template>
@@ -139,14 +145,14 @@
         height: 140px;
         width: 98%;
 
-        font-size: 0.95em;
-
         .text
         {
             justify-content: flex-start;
             align-items: flex-start;
 
             flex-grow: 1;
+
+            white-space: pre-line;
 
             .rulesText
             {
@@ -252,7 +258,6 @@ export default class FullCard extends Vue
         }
 
         var cardHtml = this.currentCard.text;
-        cardHtml = this.manaToHtml(cardHtml);
 
         var symbolIcons = 
         {
@@ -265,11 +270,7 @@ export default class FullCard extends Vue
         [
             { 
                 regex: /\(.+\)/g, 
-                format: function(match) { return `<span class='rulesText'>${match}</span>` } 
-            },
-            { 
-                regex: /•/g, 
-                format: function(match) { return `<br>${match}` } 
+                format: function(match) { return ` <span class='rulesText'>${match}</span>` } 
             },
             { 
                 regex: /\+.\/\+./g, 
@@ -292,6 +293,8 @@ export default class FullCard extends Vue
                 });
             }
         }
+
+        cardHtml = this.manaToHtml(cardHtml);
 
         return cardHtml;
     }

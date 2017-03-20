@@ -8,7 +8,7 @@ import {CardDatabase} from '../storage/CardDatabase'
 
 let theWorker = this;
 
-let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
+//let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
 
 class DataImporter
 {
@@ -21,13 +21,10 @@ class DataImporter
 
         allSets.forEach(element =>
         {
-            if (legalSets.indexOf(element.code) <= -1)
-            {
-                return;
-            }
-
             loadedSets.push(<Set>element);
         });
+
+        this.sendStatusMessage(`Finished loading sets from JSON.`, loadedSets.length, loadedSets.length);
 
         return loadedSets;
     }
@@ -55,12 +52,7 @@ class DataImporter
         {
             if (setsAndCards.hasOwnProperty(set))
             {
-                if (legalSets.indexOf(set) <= -1)
-                {
-                    continue;
-                }
-
-                this.sendStatusMessage(`Loading set ${set}`, setIndex, legalSets.length);
+                //this.sendStatusMessage(`Loading set ${set}`, setIndex, Object.keys(setsAndCards).length);
 
                 setsAndCards[set].cards.forEach(card =>
                 {
@@ -77,7 +69,7 @@ class DataImporter
             }
         }
 
-        this.sendStatusMessage(`Finished loading cards from DB.`, loadedCards.length, loadedCards.length);
+        this.sendStatusMessage(`Finished loading cards from JSON.`, loadedCards.length, loadedCards.length);
 
         return loadedCards;
     }
@@ -120,16 +112,23 @@ onmessage = async args =>
     if (message.kind == "LoadSets")
     {
         let loadedSets:Set[] = await DataImporter.loadSetsFromJson(message.data);
-        <any>postMessage(new DataImporterMessage("LoadSets", loadedSets.length + " sets loaded."));
-
         CardDatabase.saveSets(loadedSets);
+
+        <any>postMessage(new DataImporterMessage("LoadSets", loadedSets.length + " sets saved to database."));
     }
     else if (message.kind == "LoadCards")
     {
-        let loadedCards:Card[] = await DataImporter.loadCardsFromJson(message.data);
-        <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards loaded."));
+        try
+        {
+            let loadedCards:Card[] = await DataImporter.loadCardsFromJson(message.data);
+            CardDatabase.saveCards(loadedCards);
 
-        CardDatabase.saveCards(loadedCards);
+            <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
+        }
+        catch (err)
+        {
+            debugger;
+        }
     }
     else
     {
