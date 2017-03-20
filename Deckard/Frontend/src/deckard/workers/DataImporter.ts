@@ -1,11 +1,14 @@
 import {Set} from '../models/Set'
 import {Card} from '../models/Card'
 
-import BackgroundProcessStatus from '../models/BackgroundProcessStatus'
-import {MessageKind, DataImporterMessage} from '../models/DataImporterMessage'
+import {MessageKind} from '../models/BaseWorkerMessage'
+import {BackgroundProcessStatus} from '../models/BackgroundProcessStatus'
+import {DataImporterMessage} from '../models/DataImporterMessage'
 import {CardDatabase} from '../storage/CardDatabase'
 
 let theWorker = this;
+
+let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
 
 class DataImporter
 {
@@ -18,10 +21,25 @@ class DataImporter
 
         allSets.forEach(element =>
         {
+            if (legalSets.indexOf(element.code) <= -1)
+            {
+                return;
+            }
+
             loadedSets.push(<Set>element);
         });
 
         return loadedSets;
+    }
+
+    private static sendStatusMessage(message: string, current: number, max: number)
+    {
+        let msg: BackgroundProcessStatus = new BackgroundProcessStatus();
+        msg.currentMessage = message;
+        msg.currentProgress = current;
+        msg.maxProgress = max;
+        
+        <any>postMessage(msg);
     }
     
     public static async loadCardsFromJson(jsonUrl: string) : Promise<Card[]>
@@ -31,16 +49,18 @@ class DataImporter
         let setsAndCards = JSON.parse(jsonData);
         let loadedCards:Card[] = new Array<Card>();
 
+        let setIndex:number = 1;
+
         for (var set in setsAndCards)
         {
             if (setsAndCards.hasOwnProperty(set))
             {
-                let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
-                
                 if (legalSets.indexOf(set) <= -1)
                 {
                     continue;
                 }
+
+                this.sendStatusMessage(`Loading set ${set}`, setIndex, legalSets.length);
 
                 setsAndCards[set].cards.forEach(card =>
                 {
@@ -48,11 +68,16 @@ class DataImporter
 
                     if (newCard.multiverseid != undefined)
                     {
+                        newCard.set = set;
                         loadedCards.push(<Card>card);
                     } 
                 });
+
+                setIndex++;
             }
         }
+
+        this.sendStatusMessage(`Finished loading cards from DB.`, loadedCards.length, loadedCards.length);
 
         return loadedCards;
     }

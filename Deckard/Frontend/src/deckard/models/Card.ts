@@ -4,9 +4,7 @@ export class Card
 
     name: string;
 
-    supertypes: string[];
     types: string[];
-    subtypes: string[];
 
     set: string;
 

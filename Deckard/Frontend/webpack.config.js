@@ -34,11 +34,11 @@ module.exports = {
             //assumingly because it's part of our DOM-oriented compilation and typescript
             //gets confused because the tsconfig I'm using for the workers doesn't include the DOM
             //since it overrides our webworker functions. Bluh.
-            "ignoreDiagnostics": [2346] 
+            "ignoreDiagnostics": [2346, 2307] 
         }
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif|svg|ttf)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
