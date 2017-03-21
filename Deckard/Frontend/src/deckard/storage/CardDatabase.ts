@@ -1,13 +1,15 @@
 import {Set} from '../models/Set'
 import {Card} from '../models/Card'
 
+import * as _ from 'lodash';
+
 export class CardDatabase
 {
     public static async getCardsInSet(set: string): Promise<Card[]>
     {
         return new Promise<Card[]>((resolve, reject) =>
         {
-            var req: IDBOpenDBRequest = self.indexedDB.open("cards");
+            var req: IDBOpenDBRequest = self.indexedDB.open("deckardCardData");
             req.onsuccess = function (e: any)
             {
                 let theDb: IDBDatabase = e.target.result;
@@ -44,7 +46,7 @@ export class CardDatabase
     {
         return new Promise<Set[]>((resolve, reject) =>
         {
-            var req: IDBOpenDBRequest = self.indexedDB.open("sets");
+            var req: IDBOpenDBRequest = self.indexedDB.open("deckardCardData");
             req.onsuccess = function (e: any)
             {
                 let theDb: IDBDatabase = e.target.result;
@@ -58,7 +60,15 @@ export class CardDatabase
 
                     if (cursor)
                     {
-                        ret[cursor.primaryKey] = <Set>cursor.value;
+                        let newSet:Set = new Set();
+
+                        newSet.code = cursor.value.code;
+                        newSet.magicCardsInfoCode = cursor.value.magicCardsInfoCode;
+                        newSet.name = cursor.value.name;
+                        newSet.releaseDate = cursor.value.releaseDate;
+
+                        ret[cursor.primaryKey] = newSet;
+
                         cursor.continue();
                     }
                     else
@@ -81,7 +91,7 @@ export class CardDatabase
     {
         return new Promise<Card>((resolve, reject) =>
         {
-            var req: IDBOpenDBRequest = self.indexedDB.open("cards");
+            var req: IDBOpenDBRequest = self.indexedDB.open("deckardCardData");
             req.onsuccess = function (e: any)
             {
                 let theDb: IDBDatabase = e.target.result;
@@ -105,69 +115,54 @@ export class CardDatabase
 
     public static saveSets(sets: Set[])
     {
-        var req: IDBOpenDBRequest = self.indexedDB.open("sets");
+        var req: IDBOpenDBRequest = self.indexedDB.open("deckardCardData");
 
-        req.onupgradeneeded = this.setTableInit;
+        req.onupgradeneeded = this.tableInit;
 
         req.onsuccess = function (e: any)
         {
             let theDb: IDBDatabase = e.target.result;
-            let trans: IDBTransaction = theDb.transaction("sets", "readwrite");
-            let table: IDBObjectStore = trans.objectStore("sets");
+            let setTrans: IDBTransaction = theDb.transaction("sets", "readwrite");
+            let setTable: IDBObjectStore = setTrans.objectStore("sets");
 
             sets.forEach(element =>
             {
-                table.put(element);
+                let cleanSet:Set = _.clone(element);
+                cleanSet.cards = [];
+
+                setTable.put(cleanSet);
             });
 
-            theDb.close();
-        }
-
-        req.onerror = function (e:any) { debugger; }
-    }
-
-    public static saveCards(cards: Card[])
-    {
-        var req: IDBOpenDBRequest = self.indexedDB.open("cards");
-
-        req.onupgradeneeded = this.cardTableInit;
-
-        req.onsuccess = function (e: any)
-        {
-            let theDb: IDBDatabase = e.target.result;
-            let trans: IDBTransaction = theDb.transaction("cards", "readwrite");
-            let table: IDBObjectStore = trans.objectStore("cards");
-            
-            cards.forEach(element =>
+            setTrans.oncomplete = function (e:any)
             {
-                table.put(element);
-            });
+                let cardTrans: IDBTransaction = theDb.transaction("cards", "readwrite");
+                let cardTable: IDBObjectStore = cardTrans.objectStore("cards");
+                
+                sets.forEach(element =>
+                {
+                    element.cards.forEach(card =>
+                    {
+                        if (card.multiverseid == undefined) { return; }
+                        card.set = element.code;
+                        cardTable.put(card);
+                    });
+                });
 
-            theDb.close();
+                cardTrans.oncomplete = function (e:any) { theDb.close(); }
+            }
         }
 
         req.onerror = function (e:any) { debugger; }
     }
 
-    public static setTableInit(e: any)
+    public static tableInit(e: any)
     {
         let theDb:IDBDatabase = e.target.result;
         var parms: IDBObjectStoreParameters;
 
-        let tblLocal: IDBObjectStore = theDb.createObjectStore("sets", { keyPath: "code" });
-        //tblLocal.createIndex("setCode", "code");
+        let setTable: IDBObjectStore = theDb.createObjectStore("sets", { keyPath: "code" });
 
-        theDb.close();
-    }
-
-    public static cardTableInit(e: any)
-    {
-        let theDb:IDBDatabase = e.target.result;
-        var parms: IDBObjectStoreParameters;
-
-        let tblLocal: IDBObjectStore = theDb.createObjectStore("cards", { keyPath: "multiverseid" });
-        tblLocal.createIndex("cardSet", "set");
-
-        theDb.close();
+        let cardTable: IDBObjectStore = theDb.createObjectStore("cards", { keyPath: "multiverseid" });
+        cardTable.createIndex("cardSet", "set");
     }
 }

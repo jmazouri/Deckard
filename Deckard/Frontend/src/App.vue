@@ -5,17 +5,18 @@
         </div>
 
         <div class="mainContent">
-            <FullCard :currentCard="currentCard"></FullCard>
+            <FullCard :currentCard="currentCard" v-if="currentCard.mciNumber == undefined"></FullCard>
+            <img v-else v-bind:src="'http://magiccards.info/scans/en/' + currentSet.magicCardsInfoCode + '/' + currentCard.mciNumber + '.jpg'"></img>
         </div>
 
         <div class="sideBar">
             Set: 
             <select v-model="currentSet">
-                <option v-for="set in allSets" v-bind:value="set.code">{{set.name}}</option>
+                <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
             </select>
             <ul>
                 <li v-for="card in setCards">
-                    <a href="#" v-on:click="currentCardId = card.multiverseid">{{card.name}}</a>
+                    <a href="#" v-on:click="currentCard = card">{{card.name}}</a>
                 </li>
             </ul>
         </div>
@@ -71,6 +72,7 @@ html, body
 </style>
 
 <script>
+import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Watch} from 'av-ts'
 
 import FullCard from './components/FullCard.vue'
@@ -85,7 +87,6 @@ import {CardDatabase} from './deckard/storage/CardDatabase'
 
 let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
 
-let jsonSetList = require("file-loader!./assets/SetList.json");
 let jsonAllCards = require("file-loader!./assets/AllSets.json");
 
 @Component({
@@ -98,39 +99,23 @@ export default class App extends Vue
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
-    currentSet: string = "";
+    currentSet: Set = new Set();
     allSets: Set[] = [];
 
-    currentCardId = 0;
     currentCard:Card = new Card();
-
     setCards: Card[] = [];
-
-    @Watch('currentCardId')
-    cardHandler(newVal, oldVal)
-    {
-        let thisVue:App = this;
-
-        thisVue.currentCard = thisVue.setCards.filter(thing => thing.multiverseid == thisVue.currentCardId)[0];
-
-        /*
-        CardDatabase.getCard(parseInt(newVal))
-            .then(function(value)
-            {
-                if (value != undefined)
-                {
-                    thisVue.currentCard = value;
-                }
-            })
-        */
-    }
 
     @Watch('currentSet')
     setHandler(newVal, oldVal)
     {
         let thisVue:App = this;
 
-        CardDatabase.getCardsInSet(thisVue.currentSet)
+        if (thisVue.currentSet == undefined)
+        {
+            return;
+        }
+
+        CardDatabase.getCardsInSet(thisVue.currentSet.code)
             .then(function(cards)
             {
                 thisVue.setCards = cards;
@@ -141,9 +126,10 @@ export default class App extends Vue
     // lifecycle hook
     @Lifecycle mounted()
     {
-        this.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadSets", <string>jsonSetList)));
-
         let thisVue = this;
+
+        thisVue.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));
+
         this.importer.addEventListener("message", function(event)
         {
             if (event.data.kind == "ProcessStatus")
@@ -152,19 +138,16 @@ export default class App extends Vue
                 console.info(`${event.data.currentMessage}: [${event.data.currentProgress}/${event.data.maxProgress}]`);
             }
 
-            if (event.data.kind == "LoadSets")
-            {
-                thisVue.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));
-                console.info(`${event.data.kind}: ${event.data.data}`);
-            }
-
             if (event.data.kind == "LoadCards")
             {
+                
                 CardDatabase.getAllSets()
                     .then(function(value)
                     {
                         thisVue.allSets = value;
+                        thisVue.currentSet = thisVue.allSets["AER"];
                     });
+                
             }
 
             if (event.data.kind == "Error")

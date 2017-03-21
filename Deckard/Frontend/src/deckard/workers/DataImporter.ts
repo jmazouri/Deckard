@@ -12,23 +12,6 @@ let theWorker = this;
 
 class DataImporter
 {
-    public static async loadSetsFromJson(jsonUrl: string): Promise<Set[]>
-    {
-        var jsonData = await this.loadFromUrl(jsonUrl);
-
-        let allSets = JSON.parse(jsonData);
-        let loadedSets:Set[] = new Array<Set>();
-
-        allSets.forEach(element =>
-        {
-            loadedSets.push(<Set>element);
-        });
-
-        this.sendStatusMessage(`Finished loading sets from JSON.`, loadedSets.length, loadedSets.length);
-
-        return loadedSets;
-    }
-
     private static sendStatusMessage(message: string, current: number, max: number)
     {
         let msg: BackgroundProcessStatus = new BackgroundProcessStatus();
@@ -39,12 +22,12 @@ class DataImporter
         <any>postMessage(msg);
     }
     
-    public static async loadCardsFromJson(jsonUrl: string) : Promise<Card[]>
+    public static async loadCardsFromJson(jsonUrl: string) : Promise<Set[]>
     {
         var jsonData = await this.loadFromUrl(jsonUrl);
 
         let setsAndCards = JSON.parse(jsonData);
-        let loadedCards:Card[] = new Array<Card>();
+        let loadedSets:Set[] = new Array<Set>();
 
         let setIndex:number = 1;
 
@@ -52,26 +35,14 @@ class DataImporter
         {
             if (setsAndCards.hasOwnProperty(set))
             {
-                //this.sendStatusMessage(`Loading set ${set}`, setIndex, Object.keys(setsAndCards).length);
-
-                setsAndCards[set].cards.forEach(card =>
-                {
-                    let newCard:Card = <Card>card;
-
-                    if (newCard.multiverseid != undefined)
-                    {
-                        newCard.set = set;
-                        loadedCards.push(<Card>card);
-                    } 
-                });
-
+                loadedSets.push(<Set>setsAndCards[set]);
                 setIndex++;
             }
         }
 
-        this.sendStatusMessage(`Finished loading cards from JSON.`, loadedCards.length, loadedCards.length);
+        this.sendStatusMessage(`Finished loading sets & cards from JSON.`, loadedSets.length, loadedSets.length);
 
-        return loadedCards;
+        return loadedSets;
     }
 
     private static async loadFromUrl(jsonUrl: string): Promise<string>
@@ -109,32 +80,16 @@ onmessage = async args =>
 {
     let message:DataImporterMessage = JSON.parse(args.data);
 
-    if (message.kind == "LoadSets")
+    if (message.kind == "LoadCards")
     {
-        let existingSets: Set[] = await CardDatabase.getAllSets();
-        
-        if (existingSets.length == 0)
-        {
-            let loadedSets:Set[] = await DataImporter.loadSetsFromJson(message.data);
-            CardDatabase.saveSets(loadedSets);
-
-            <any>postMessage(new DataImporterMessage("LoadSets", loadedSets.length + " sets saved to database."));
-        }
-        else
-        {
-            <any>postMessage(new DataImporterMessage("LoadSets", existingSets.length + " sets skipped, already in database."));
-        }
-    }
-    else if (message.kind == "LoadCards")
-    {
-        let existingCards: Card[] = await CardDatabase.getCardsInSet("LEA");
+        let existingCards: Card[] = [];
 
         try
         {
             if (existingCards.length == 0)
             {
-                let loadedCards:Card[] = await DataImporter.loadCardsFromJson(message.data);
-                CardDatabase.saveCards(loadedCards);
+                let loadedCards:Set[] = await DataImporter.loadCardsFromJson(message.data);
+                CardDatabase.saveSets(loadedCards);
 
                 <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
             }
