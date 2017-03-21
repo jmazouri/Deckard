@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div class="headerStatus">
+        <div class="headerStatus" v-show="backgroundStatus.currentMessage != undefined">
             {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
         </div>
 
@@ -165,8 +165,6 @@ export default class App extends Vue
                     {
                         thisVue.allSets = value;
                     });
-
-                thisVue.currentSet = "AER";
             }
 
             if (event.data.kind == "Error")

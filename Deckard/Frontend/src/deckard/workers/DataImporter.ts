@@ -111,19 +111,37 @@ onmessage = async args =>
 
     if (message.kind == "LoadSets")
     {
-        let loadedSets:Set[] = await DataImporter.loadSetsFromJson(message.data);
-        CardDatabase.saveSets(loadedSets);
+        let existingSets: Set[] = await CardDatabase.getAllSets();
+        
+        if (existingSets.length == 0)
+        {
+            let loadedSets:Set[] = await DataImporter.loadSetsFromJson(message.data);
+            CardDatabase.saveSets(loadedSets);
 
-        <any>postMessage(new DataImporterMessage("LoadSets", loadedSets.length + " sets saved to database."));
+            <any>postMessage(new DataImporterMessage("LoadSets", loadedSets.length + " sets saved to database."));
+        }
+        else
+        {
+            <any>postMessage(new DataImporterMessage("LoadSets", existingSets.length + " sets skipped, already in database."));
+        }
     }
     else if (message.kind == "LoadCards")
     {
+        let existingCards: Card[] = await CardDatabase.getCardsInSet("LEA");
+
         try
         {
-            let loadedCards:Card[] = await DataImporter.loadCardsFromJson(message.data);
-            CardDatabase.saveCards(loadedCards);
+            if (existingCards.length == 0)
+            {
+                let loadedCards:Card[] = await DataImporter.loadCardsFromJson(message.data);
+                CardDatabase.saveCards(loadedCards);
 
-            <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
+                <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
+            }
+            else
+            {
+                <any>postMessage(new DataImporterMessage("LoadCards", existingCards.length + " cards skipped, already in database."));
+            }
         }
         catch (err)
         {

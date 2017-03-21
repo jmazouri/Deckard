@@ -1,8 +1,9 @@
 <template>
     <div class="fullArt">
-        <div class="cardTitle">{{currentCard.name}}</div>
-
-        <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"></div>
+        <div class="header">
+            <div class="cardTitle">{{currentCard.name}}</div>
+            <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"></div>
+        </div>
 
         <div class="types">
             <span class="cardType" v-for="t in currentCard.types">{{t}}</span>
@@ -51,18 +52,35 @@
         position: relative;
     }
 
-    .cardTitle
+    .header
     {
-        display: inline-block;
-        width: 60%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 
-        font-weight: bold;
-        font-size: 20px;
-        
         top: 34px;
-        left: 40px;
+        left: 38px;
+        width: 81.5%;
 
-        white-space: nowrap;
+        .cardTitle
+        {
+            justify-content: flex-start;
+            align-items: flex-start;
+
+            font-weight: bold;
+            font-size: 20px;
+
+            white-space: nowrap;
+        }
+
+        .cmc
+        {
+            justify-content: flex-end;
+            align-items: flex-end;
+
+            font-weight: bold;
+            font-size: 18px;
+        }
     }
 
     .symbol
@@ -84,21 +102,6 @@
         border-radius: 64px;
 
         box-shadow: 0px 1px 1px black;
-    }
-
-    .cmc
-    {
-        display: inline-block;
-        width: 18.5%;
-
-        font-weight: bold;
-
-        left: 46px;
-        top: 32px;
-
-        text-align: right;
-
-        font-size: 18px;
     }
 
     .costIcon
@@ -226,7 +229,18 @@ export default class FullCard extends Vue
             "{U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/9/9f/U.svg",
             "{B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/2f/B.svg",
             "{R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/87/R.svg",
-            "{G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/88/G.svg"
+            "{G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/88/G.svg",
+
+            "{W/U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/3/39/WU.svg",
+            "{W/B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/a/a6/WB.svg",
+            "{U/B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/1/13/UB.svg",
+            "{U/R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/0/09/UR.svg",
+            "{B/R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/b/bf/BR.svg",
+            "{B/G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/62/BG.svg",
+            "{R/G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/24/RG.svg",
+            "{R/W}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/6b/RW.svg",
+            "{G/W}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/2e/GW.svg",
+            "{G/U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/6f/GU.svg"
         }
 
         var cardHtml = manaCost;
@@ -240,7 +254,7 @@ export default class FullCard extends Vue
                     return `<img class='costIcon' src="${colors[color]}">`;
                 });
 
-                cardHtml = cardHtml.replace(/{\d}/g, function(match)
+                cardHtml = cardHtml.replace(/{(\d|\X)}/g, function(match)
                 {
                     return `<span class="symbol">${match.substr(1, match.length - 2)}</span>`;
                 });
