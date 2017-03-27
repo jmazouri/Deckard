@@ -27,25 +27,24 @@
 </template>
 
 <style lang="scss">
+
+@import url('https://fonts.googleapis.com/css?family=Kreon');
+
 @font-face
 {
     font-family: "Beleren Bold";
     src: url('../assets/beleren.ttf');
 }
 
-@font-face
-{
-    font-family: "MPlantin";
-    src: url('../assets/mplantin.ttf');
-}
-
 .fullArt
 {
     background-image: url(http://i.imgur.com/4CMXVNi.jpg);
+    background-size: 100%;
+    
     width: 400px;
     height: 560px;
 
-    font-family: "Beleren Bold";
+    font-family: "Kreon";
 
     & > *
     {
@@ -64,6 +63,8 @@
 
         .cardTitle
         {
+            font-family: "Beleren Bold";
+
             justify-content: flex-start;
             align-items: flex-start;
 
@@ -116,6 +117,8 @@
 
     .types
     {
+        font-family: "Beleren Bold";
+
         top: 295px;
         left: 35px;
 
@@ -129,7 +132,6 @@
 
     @mixin extra-text
     {
-        font-family: "MPlantin";
         font-style: italic;
         color: lighten(black, 35%);
     }
@@ -203,116 +205,15 @@
 </style>
 
 <script>
-import {Vue, Component, Lifecycle, Prop, p} from 'av-ts'
+import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
+import CardView from './CardView.vue'
 import {Card} from '../deckard/models/Card'
 
 @Component({
     name: "FullCard"
 })
-export default class FullCard extends Vue
+export default class FullCard extends Mixin(CardView)
 {
-    @Prop currentCard:any = p(
-    {
-        type: Object,
-        required: true,
-        default()
-        {
-            return new Card();
-        }
-    })
-
-    manaToHtml(manaCost: string)
-    {
-        var colors = 
-        {
-            "{W}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/8e/W.svg",
-            "{U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/9/9f/U.svg",
-            "{B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/2f/B.svg",
-            "{R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/87/R.svg",
-            "{G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/8/88/G.svg",
-
-            "{W/U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/3/39/WU.svg",
-            "{W/B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/a/a6/WB.svg",
-            "{U/B}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/1/13/UB.svg",
-            "{U/R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/0/09/UR.svg",
-            "{B/R}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/b/bf/BR.svg",
-            "{B/G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/62/BG.svg",
-            "{R/G}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/24/RG.svg",
-            "{R/W}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/6b/RW.svg",
-            "{G/W}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/2/2e/GW.svg",
-            "{G/U}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/6/6f/GU.svg"
-        }
-
-        var cardHtml = manaCost;
-
-        for (var color in colors)
-        {
-            if (colors.hasOwnProperty(color))
-            {
-                cardHtml = cardHtml.replace(new RegExp(color, 'g'), function(match)
-                {
-                    return `<img class='costIcon' src="${colors[color]}">`;
-                });
-
-                cardHtml = cardHtml.replace(/{(\d|\X)}/g, function(match)
-                {
-                    return `<span class="symbol">${match.substr(1, match.length - 2)}</span>`;
-                });
-            }
-        }
-
-        return cardHtml;
-    }
-
-    get currentCardText()
-    {
-        if (this.currentCard == null || this.currentCard.text == undefined)
-        {
-            return "";
-        }
-
-        var cardHtml = this.currentCard.text;
-
-        var symbolIcons = 
-        {
-            "{E}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/7/7c/E.svg",
-            "{T}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/b/be/T.svg",
-            "{C}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/1/1a/C.svg"
-        }
-
-        var replacementRegex:any[] =
-        [
-            { 
-                regex: /\(.+\)/g, 
-                format: function(match) { return ` <span class='rulesText'>${match}</span>` } 
-            },
-            { 
-                regex: /\+.\/\+./g, 
-                format: function(match) { return `<strong>${match}</strong>` } 
-            }
-        ];
-
-        for (let pattern of replacementRegex)
-        {
-            cardHtml = cardHtml.replace(pattern.regex, pattern.format);
-        }
-
-        for (var symbol in symbolIcons)
-        {
-            if (symbolIcons.hasOwnProperty(symbol))
-            {
-                cardHtml = cardHtml.replace(new RegExp(symbol, 'g'), function(match)
-                {
-                    return `<img class='textIcon' src="${symbolIcons[symbol]}">`;
-                });
-            }
-        }
-
-        cardHtml = this.manaToHtml(cardHtml);
-
-        return cardHtml;
-    }
-
     // lifecycle hook
     @Lifecycle mounted()
     {

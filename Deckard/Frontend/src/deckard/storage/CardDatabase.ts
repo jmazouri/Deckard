@@ -5,6 +5,28 @@ import * as _ from 'lodash';
 
 export class CardDatabase
 {
+    public static async cardsDbExists(): Promise<boolean>
+    {
+        return new Promise<boolean>((resolve, reject) =>
+        {
+            var req: IDBOpenDBRequest = self.indexedDB.open("deckardCardData");
+
+            req.onsuccess = function (e: any)
+            {
+                let theDb: IDBDatabase = e.target.result;
+                
+                try
+                {
+                    let index: IDBObjectStore = theDb.transaction("cards").objectStore("cards");
+                    resolve(true);
+                }
+                catch (err)
+                {
+                    resolve(false);
+                }
+            };
+        });
+    }
     public static async getCardsInSet(set: string): Promise<Card[]>
     {
         return new Promise<Card[]>((resolve, reject) =>

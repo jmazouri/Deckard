@@ -82,25 +82,16 @@ onmessage = async args =>
 
     if (message.kind == "LoadCards")
     {
-        let existingCards: Card[] = [];
-
-        try
+        if (!(await CardDatabase.cardsDbExists()))
         {
-            if (existingCards.length == 0)
-            {
-                let loadedCards:Set[] = await DataImporter.loadCardsFromJson(message.data);
-                CardDatabase.saveSets(loadedCards);
+            let loadedCards:Set[] = await DataImporter.loadCardsFromJson(message.data);
+            CardDatabase.saveSets(loadedCards);
 
-                <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
-            }
-            else
-            {
-                <any>postMessage(new DataImporterMessage("LoadCards", existingCards.length + " cards skipped, already in database."));
-            }
+            <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
         }
-        catch (err)
+        else
         {
-            debugger;
+            <any>postMessage(new DataImporterMessage("LoadCards", "Saving skipped, database already exists."));
         }
     }
     else

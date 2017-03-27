@@ -4,23 +4,42 @@
             {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
         </div>
 
-        <div class="mainContent">
-            <FullCard :currentCard="currentCard" v-if="currentCard.mciNumber == undefined"></FullCard>
-            <img v-else v-bind:src="'http://magiccards.info/scans/en/' + currentSet.magicCardsInfoCode + '/' + currentCard.mciNumber + '.jpg'"></img>
-        </div>
+        <!--
+        <template v-if="false">
+            <div class="sideBar">
+                Set: 
+                <select v-model="currentSet">
+                    <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
+                </select>
+                <ul>
+                    <li v-for="card in setCards">
+                        <a href="#" v-on:mouseover="currentCard = card">{{card.name}}</a>
+                        <button v-on:click="deck.push(card)">+</button>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="sideBar">
-            Set: 
-            <select v-model="currentSet">
-                <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
-            </select>
-            <ul>
-                <li v-for="card in setCards">
-                    <a href="#" v-on:click="currentCard = card">{{card.name}}</a>
-                </li>
-            </ul>
-        </div>
-    
+            <div class="mainContent">
+                <FullCard :currentCard="currentCard" v-if="currentCard.mciNumber == undefined"></FullCard>
+                <img v-else v-bind:src="'http://magiccards.info/scans/en/' + currentSet.magicCardsInfoCode + '/' + currentCard.mciNumber + '.jpg'"></img>
+
+                <div>
+                    <ul>
+                        <li v-for="card in deck">
+                            <a href="#" v-on:mouseover="currentCard = card">{{card.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </template>
+        -->
+
+        Set: 
+        <select v-model="currentSet">
+            <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
+        </select>
+
+        <CardGrid :cards="setCards"></CardGrid>
     </div>
 </template>
 
@@ -60,7 +79,9 @@ html, body
 
 .mainContent
 {
-    float: left;
+    position: fixed;
+
+    left: 40%;
     width: 45%;
 }
 
@@ -69,13 +90,18 @@ html, body
     float: left;
     width: 40%;
 }
+
+.cardGrid
+{
+    
+}
 </style>
 
 <script>
 import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Watch} from 'av-ts'
 
-import FullCard from './components/FullCard.vue'
+import CardGrid from './components/CardGrid.vue'
 
 import {Card} from './deckard/models/Card'
 import {Set} from './deckard/models/Set'
@@ -90,7 +116,7 @@ let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
 let jsonAllCards = require("file-loader!./assets/AllSets.json");
 
 @Component({
-    components: {'FullCard': FullCard}
+    components: {'CardGrid' : CardGrid}
 })
 export default class App extends Vue
 {
@@ -98,6 +124,8 @@ export default class App extends Vue
     importer = ImportWorker();
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
+
+    deck: Card[] = [];
 
     currentSet: Set = new Set();
     allSets: Set[] = [];
@@ -123,10 +151,18 @@ export default class App extends Vue
             });
     }
 
+    @Watch('deck')
+    deckHandler(newVal, oldVal)
+    {
+        localStorage["currentDeck"] = JSON.stringify(newVal);
+    }
+
     // lifecycle hook
     @Lifecycle mounted()
     {
         let thisVue = this;
+
+        thisVue.deck = (localStorage["currentDeck"] == undefined ? [] : JSON.parse(localStorage["currentDeck"]));
 
         thisVue.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));
 
@@ -140,14 +176,14 @@ export default class App extends Vue
 
             if (event.data.kind == "LoadCards")
             {
-                
                 CardDatabase.getAllSets()
                     .then(function(value)
                     {
                         thisVue.allSets = value;
                         thisVue.currentSet = thisVue.allSets["AER"];
                     });
-                
+
+                console.info(`[${event.data.kind}] ${event.data.data}`);
             }
 
             if (event.data.kind == "Error")
