@@ -1,27 +1,40 @@
 <template>
-    <div class="tinyCard" v-bind:class="cardBgColor" >
+    <div class="tinyCard" v-bind:class="cardBgColor">
         <div class="header">
-            <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types[0]"></img>
+            <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
             <div class="name" v-bind:title="currentCard.name">{{currentCard.name}}</div>
             <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"
                              v-bind:title="'CMC: ' + currentCard.cmc"></div>
         </div>
-        <div class="text" v-html="currentCardText">
+
+        <div class="body">
+            <div class="text" v-html="currentCardText"></div>
+            <div class="flavor" v-if="showDescriptionText || currentCard.text == undefined">{{currentCard.flavor}}</div>
         </div>
+        
+        <div class="pt" v-if="currentCard.power != undefined">{{currentCard.power}}/{{currentCard.toughness}}</div>
     </div>
 </template>
 
 <style lang="scss">
+$lighter-bg: rgba(255, 255, 255, 0.5);
+$card-radius: 0.5em;
+
 .tinyCard
 {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+    align-content: space-between;
+
     font-size: 0.8rem;
 
     width: 220px;
-    overflow: hidden;
 
     background-color: lightgray;
     padding: 0em;
-    border-radius: 0.5em;
+    border-radius: $card-radius;
 
     box-shadow: 0px 0px 4px -1px black;
 
@@ -68,7 +81,7 @@
         font-size: 0.85em;
         font-weight: bold;
 
-        background-color: rgb(195, 187, 183);
+        background-color: #d9d9d9;
         padding: 1px 4px;
     }
 
@@ -84,13 +97,14 @@
         
         font-weight: bold;
 
-        margin-bottom: 0.25em;
         padding: 0.2em 0em 0.2em 0.33em;
 
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: $lighter-bg;
         
-        border-top-left-radius: 0.5em;
-        border-top-right-radius: 0.5em;
+        border-top-left-radius: $card-radius;
+        border-top-right-radius: $card-radius;
+
+        box-shadow: 0px 1px 3px -1px black;
 
         .typeIcon
         {
@@ -99,7 +113,7 @@
 
             justify-content: flex-start;
 
-            margin-right: 0.5em;
+            margin-right: 0.33em;
         }
 
         .name
@@ -127,9 +141,48 @@
         }
     }
 
-    .text
+    .body
     {
-        padding: 0.25em;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+
+        padding: 0.33em;
+
+        .text
+        {
+            flex-grow: 1;
+            strong
+            {
+                font-size: 1.1em;
+            }
+        }
+
+        .flavor
+        {
+
+            justify-content: flex-end;
+
+            font-size: 0.9em;
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.66);
+        }
+    }
+
+    .pt
+    {
+        display: flex;
+        align-self: flex-end;
+        flex-direction: row;
+
+        padding: 0.2em 0.33em;
+
+        border-top-left-radius: $card-radius;
+
+        font-weight: bold;
+        background-color: $lighter-bg;
+
+        box-shadow: -1px -1px 3px -1px black;
     }
     
 

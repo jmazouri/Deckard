@@ -44,7 +44,7 @@ export default class CardView extends Vue
         }
         catch (err)
         {
-            return '';
+            return require("../assets/icons/types/mixed.svg");
         }
     }
 
@@ -97,11 +97,15 @@ export default class CardView extends Vue
         [
             { 
                 regex: /\(.+\)/g, 
-                format: function(match) { return (thisVue.showDescriptionText ? ` <span class='rulesText'>${match}</span>` : '') } 
+                format: function(match) { return (thisVue.showDescriptionText ? `<span class='rulesText'>${match}</span>` : '') } 
             },
+            //Matches (separated by |):
+            //  - +x or -x strings, for pumps & planeswalker abilities
+            //  - Single-word abilities, followed by newlines (Flying, Double strike)
+            //  - Single-word abilities, followed by non-flavor description text (Revolt - when [asdf])
             { 
-                regex: /\+.\/\+./g, 
-                format: function(match) { return `<strong>${match}</strong>` } 
+                regex: /(\+|−|\-).|^\S.*\s{0,2}\n|\S.*(?= —)/gm, 
+                format: function(match) { return (match.length <= 17 ? `<strong>${match}</strong>` : match) } 
             }
         ];
 

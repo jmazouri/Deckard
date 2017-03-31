@@ -15,4 +15,7 @@ export class Card
     toughness: number;
 
     artUrl: string;
+
+    colorIdentity: string[];
+    cmc: number;
 }
