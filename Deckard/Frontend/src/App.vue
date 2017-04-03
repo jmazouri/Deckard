@@ -4,6 +4,28 @@
             {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
         </div>
 
+        <div class="sideBar">
+            <div class="fixed">
+                <CardGrid :cards="deck"></CardGrid>
+            </div>
+        </div>
+
+        <div class="main">
+            Set: 
+            <select v-model="currentSet">
+                <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
+            </select>
+            <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck"></CardGrid>
+
+            <div class="spinner" v-show="setCards.length <= 0">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
         <!--
         <template v-if="false">
             <div class="sideBar">
@@ -33,13 +55,6 @@
             </div>
         </template>
         -->
-
-        Set: 
-        <select v-model="currentSet">
-            <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
-        </select>
-
-        <CardGrid :cards="setCards"></CardGrid>
     </div>
 </template>
 
@@ -54,6 +69,9 @@ html, body
 {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     color: #2c3e50;
+
+    display: flex;
+    flex-direction: row;
 }
 
 .headerStatus
@@ -69,26 +87,43 @@ html, body
     background-color: goldenrod;    
 }
 
-.headerStatus.animating
-{
-    animation-name: slidein;
-    animation-duration: 0.33s;
-    animation-fill-mode: backwards;
-}
-
-
-.mainContent
+.fixed
 {
     position: fixed;
+    top: 0;
+    left: 0;
 
-    left: 40%;
-    width: 45%;
+    width: 27%;
+    height: 100%;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar
+    {
+        width: 8px;
+        background: transparent;
+
+        &:hover
+        {
+            background: rgba(0, 0, 0, 0.25);
+        }
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.33);
+    }
 }
 
 .sideBar
 {
-    float: left;
-    width: 40%;
+    flex-basis: 27%;
+    resize: horizontal;
+}
+
+.main
+{
+    flex-basis: 73%;
 }
 
 .cardGrid
@@ -130,7 +165,6 @@ export default class App extends Vue
     currentSet: Set = new Set();
     allSets: Set[] = [];
 
-    currentCard:Card = new Card();
     setCards: Card[] = [];
 
     @Watch('currentSet')
@@ -143,11 +177,12 @@ export default class App extends Vue
             return;
         }
 
-        CardDatabase.getCardsInSet(thisVue.currentSet.code)
+        thisVue.setCards = [];
+
+        CardDatabase.instance.getCardsInSet(thisVue.currentSet.code)
             .then(function(cards)
             {
                 thisVue.setCards = cards;
-                thisVue.currentCard = thisVue.setCards[0];
             });
     }
 
@@ -155,6 +190,11 @@ export default class App extends Vue
     deckHandler(newVal, oldVal)
     {
         localStorage["currentDeck"] = JSON.stringify(newVal);
+    }
+
+    addToDeck(card)
+    {
+        this.deck.push(card);
     }
 
     // lifecycle hook
@@ -176,13 +216,13 @@ export default class App extends Vue
 
             if (event.data.kind == "LoadCards")
             {
-                CardDatabase.getAllSets()
+                CardDatabase.instance.getAllSets()
                     .then(function(value)
                     {
                         thisVue.allSets = value;
-                        thisVue.currentSet = thisVue.allSets["AER"];
+                        thisVue.currentSet = _.first(thisVue.allSets);
                     });
-
+                
                 console.info(`[${event.data.kind}] ${event.data.data}`);
             }
 

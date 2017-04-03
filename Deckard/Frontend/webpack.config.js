@@ -30,11 +30,15 @@ module.exports = {
         test: /\.ts$/,
         loader: 'vue-ts-loader',
         options: {
+            //2346, 2307
             //I'm not sure how to fix this - this error appears with our worker,
             //assumingly because it's part of our DOM-oriented compilation and typescript
             //gets confused because the tsconfig I'm using for the workers doesn't include the DOM
             //since it overrides our webworker functions. Bluh.
-            "ignoreDiagnostics": [2346, 2307] 
+
+            //2034
+            //Vue only likes ES5, but Dexie uses ES6. Stuff breaks. Bluh.
+            "ignoreDiagnostics": [2346, 2307, 2304] 
         }
       },
       {

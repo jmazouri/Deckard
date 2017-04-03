@@ -1,16 +1,22 @@
 <template>
     <div class="cardGrid">
         <div class="sorting">
+            Filter:
+            <input type="text" v-model="textFilter"></input>
             Sort: 
             <select v-model="sorting">
                 <option>Name</option>
                 <option>CMC</option>
                 <option>Color</option>
             </select>
+            Show text
+            <input type="checkbox" v-model="showAllText"></input>
             Show full text
             <input type="checkbox" v-model="showAllFullText"></input>
         </div>
+
         <contextMenu ref="ctx" @ctx-open="onCtxOpen">
+            <li class="ctx-item" @click="addToDeck()">Add To Deck</li>
             <li class="ctx-item" @click="showFullText()">
                 <span v-if="shouldShowText(rightClickedCard.multiverseid)">✔</span>
                 Show Full Text
@@ -20,13 +26,24 @@
             <li class="ctx-item" @click="goToTCG()">View on TCGPlayer</li>
         </contextMenu>
 
-        <TinyCard v-for="card in sortedCards" :showDescriptionText="shouldShowText(card.multiverseid)" :currentCard="card"
+        <TinyCard v-for="card in sortedCards" :key="card.multiverseid" 
+
+                :showText="showAllText"
+                :showDescriptionText="shouldShowText(card.multiverseid)" 
+                :currentCard="card"
+
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
+
+        <div class="noCards" v-if="sortedCards.length == 0">
+            No cards found - maybe clear your filters?
+        </div>
     </div>
 </template>
 
 <style lang="scss">
+@import "../styles/loader.scss";
+
 .cardGrid
 {
     display: flex;
@@ -45,6 +62,13 @@
         {
             width: 25%;
         }
+    }
+
+    .noCards
+    {
+        margin: 1em;
+        text-align: center;
+        font-size: 3em;
     }
 }
 
@@ -76,8 +100,10 @@ export default class CardGrid extends Vue
         }
     })
 
+    textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;
+    showAllText: boolean = true;
 
     showText: any = {};
 
@@ -111,6 +137,11 @@ export default class CardGrid extends Vue
         }
     }
 
+    addToDeck()
+    {
+        this.$emit("addToDeck", this.rightClickedCard);
+    }
+
     goToGatherer()
     {
         window.open("http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + this.rightClickedCard.multiverseid, "_blank");
@@ -128,11 +159,48 @@ export default class CardGrid extends Vue
         this.$set(this.showText, this.rightClickedCard.multiverseid, newVal);
     }
 
+    containsAny(lowercaseFilter, input)
+    {
+        if (lowercaseFilter.length == 0) { return true; }
+
+        input = input.toLowerCase();
+
+        return _.every(lowercaseFilter, function(word)
+        {
+            return input.indexOf(word) > -1;
+        });
+    }
+
     get sortedCards()
     {
         let sorting: string = this.sorting;
+        let textFilter: string = this.textFilter;
+        let containsAny = this.containsAny;
 
-        return _.sortBy(this.cards, function(element: Card)
+        let filteredCards = this.cards;
+
+        if (textFilter.length > 0)
+        {
+            filteredCards = _.filter(filteredCards, function(element: Card)
+            {
+                var lowercaseFilter = textFilter.toLowerCase().split(" ");
+
+                var textContains = (element.text != undefined ? containsAny(lowercaseFilter, element.text) : false);
+                var nameContains = containsAny(lowercaseFilter, element.name);
+                //var typeContains = containsAny(lowercaseFilter, element.type);
+
+                /*
+                if (element.rarity == "Basic Land")
+                {
+                    return false;
+                }
+                */
+
+                return textContains || nameContains;// || typeContains;
+            });
+        }
+
+        return _.sortBy(filteredCards, function(element: Card)
         {
             switch (sorting)
             {

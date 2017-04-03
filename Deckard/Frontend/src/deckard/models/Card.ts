@@ -4,17 +4,17 @@ export class Card
 
     name: string;
 
+    type: string;
     types: string[];
 
     set: string;
 
     text: string;
     flavor: string;
+    rarity: string;
 
     power: number;
     toughness: number;
-
-    artUrl: string;
 
     colorIdentity: string[];
     cmc: number;

@@ -7,12 +7,15 @@
                              v-bind:title="'CMC: ' + currentCard.cmc"></div>
         </div>
 
-        <div class="body">
+        <div class="body" v-if="showText">
             <div class="text" v-html="currentCardText"></div>
-            <div class="flavor" v-if="showDescriptionText || currentCard.text == undefined">{{currentCard.flavor}}</div>
+            <div class="flavor" v-if="showDescriptionText">{{currentCard.flavor}}</div>
         </div>
         
-        <div class="pt" v-if="currentCard.power != undefined">{{currentCard.power}}/{{currentCard.toughness}}</div>
+        <div class="footer">
+            <div class="rarity" v-bind:class="cardRarity">{{currentCard.rarity[0]}}</div>
+            <div class="pt" v-if="currentCard.power != undefined">{{currentCard.power}}/{{currentCard.toughness}}</div>
+        </div>
     </div>
 </template>
 
@@ -30,7 +33,8 @@ $card-radius: 0.5em;
 
     font-size: 0.8rem;
 
-    width: 220px;
+    width: 210px;
+    margin-bottom: 0.5em;
 
     background-color: lightgray;
     padding: 0em;
@@ -169,24 +173,60 @@ $card-radius: 0.5em;
         }
     }
 
-    .pt
+    .footer
     {
+        font-family: monospace;
+        font-size: 1.25em;
+
         display: flex;
-        align-self: flex-end;
         flex-direction: row;
+        justify-content: space-between;
 
-        padding: 0.2em 0.33em;
+        &>*
+        {
+            align-self: center;
+            padding: 0.2em 0.33em;
+            font-weight: bold;
+            background-color: $lighter-bg;
+        }
 
-        border-top-left-radius: $card-radius;
+        .rarity
+        {
+            color: white;
+            text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.66);
 
-        font-weight: bold;
-        background-color: $lighter-bg;
+            border-top-right-radius: $card-radius;
+            border-bottom-left-radius: $card-radius;
 
-        box-shadow: -1px -1px 3px -1px black;
+            &.C
+            {
+                background-color: rgb(70, 63, 63);
+            }
+
+            &.U
+            {
+                background-color: rgb(158, 158, 158);
+            }
+
+            &.R
+            {
+                background-color: rgb(242, 129, 0);
+            }
+
+            &.M
+            {
+                background-color: rgb(221, 188, 106);
+            }
+        }
+
+        .pt
+        {
+            border-top-left-radius: $card-radius;
+            border-bottom-right-radius: $card-radius;
+
+            box-shadow: -1px -1px 3px -1px black;
+        }
     }
-    
-
-    margin-bottom: 1em;
 }
 </style>
 
@@ -210,6 +250,12 @@ export default class TinyCard extends Mixin(CardView)
         }
         
     }
+
+    get cardRarity()
+    {
+        return (<any>this).currentCard.rarity[0];
+    }
+
     // lifecycle hook
     @Lifecycle mounted()
     {

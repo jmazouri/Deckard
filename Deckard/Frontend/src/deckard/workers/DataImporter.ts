@@ -82,10 +82,10 @@ onmessage = async args =>
 
     if (message.kind == "LoadCards")
     {
-        if (!(await CardDatabase.cardsDbExists()))
+        if (!(await CardDatabase.instance.cardsDbExists()))
         {
             let loadedCards:Set[] = await DataImporter.loadCardsFromJson(message.data);
-            CardDatabase.saveSets(loadedCards);
+            await CardDatabase.instance.saveSets(loadedCards);
 
             <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
         }

@@ -35,6 +35,18 @@ export default class CardView extends Vue
         }
     })
 
+    @Prop showText:any = p(
+    {
+        type: Boolean,
+        required: false,
+        default()
+        {
+            return true;
+        }
+    })
+
+    
+
     typeToHtml(type: string)
     {
         try
