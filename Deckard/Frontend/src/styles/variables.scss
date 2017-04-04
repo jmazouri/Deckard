@@ -1,0 +1,8 @@
+$mtg-blue: #aae0fa;
+$mtg-black: #cbc2bf;
+$mtg-red: #f9aa8f;
+$mtg-white: #fffbd5;
+$mtg-green: #9bd3ae;
+
+$mtg-color-names: U, B, R, W, G;
+$mtg-colors: $mtg-blue, darken($mtg-black, 33%), $mtg-red, $mtg-white, $mtg-green;

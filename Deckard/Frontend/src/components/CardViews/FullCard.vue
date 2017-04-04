@@ -33,7 +33,7 @@
 @font-face
 {
     font-family: "Beleren Bold";
-    src: url('../assets/beleren.ttf');
+    src: url('../../assets/beleren.ttf');
 }
 
 .fullArt
@@ -207,7 +207,7 @@
 <script>
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
-import {Card} from '../deckard/models/Card'
+import {Card} from '../../deckard/models/Card'
 
 @Component({
     name: "FullCard"

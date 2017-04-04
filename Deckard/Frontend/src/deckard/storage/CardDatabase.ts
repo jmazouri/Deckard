@@ -20,7 +20,7 @@ export class CardDatabase extends Dexie
         (
             {
                 sets: '++code, name, releaseDate, magicCardsInfoCode',
-                cards: '++multiverseid, name, types, set, text, flavor, power, toughness, colorIdentity, cmc'
+                cards: '++multiverseid, name, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber'
             }
         );
 
@@ -43,6 +43,16 @@ export class CardDatabase extends Dexie
     public async cardsDbExists(): Promise<boolean>
     {
         return await this.cards.count() > 0;
+    }
+
+    public async searchCards(query: string) : Promise<Card[]>
+    {
+        return await this.cards.filter(function(card)
+        {
+            return card.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
+                   (card.text != undefined ?  card.text.toLowerCase().indexOf(query.toLowerCase()) > -1 : false);
+
+        }).toArray();
     }
 
     public async getCardsInSet(set: string): Promise<Card[]>
@@ -87,7 +97,7 @@ export class CardDatabase extends Dexie
         {
             return _.map(set.cards, function(card)
             {
-                return _.assign(card, {'set': set.code});
+                return _.assign(card, {'set': set.code, "magicCardsInfoCode": set.magicCardsInfoCode});
             });
         });
 

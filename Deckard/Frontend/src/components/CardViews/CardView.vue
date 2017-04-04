@@ -8,7 +8,7 @@
 
 <script>
 import {Vue, Component, Lifecycle, Prop, Trait, p} from 'av-ts'
-import {Card} from '../deckard/models/Card'
+import {Card} from '../../deckard/models/Card'
 
 
 
@@ -45,25 +45,39 @@ export default class CardView extends Vue
         }
     })
 
-    
+    get cardBgColor()
+    {
+        if ((<any>this).currentCard.colorIdentity != undefined)
+        {
+            return (<any>this).currentCard.colorIdentity[0];
+        }
+        else
+        {
+            return "";
+        }
+        
+    }
+
+    get cardRarity()
+    {
+        return (<any>this).currentCard.rarity[0];
+    }
 
     typeToHtml(type: string)
     {
         try
         {
-            let potentialImage = require("../assets/icons/types/" + type.toLowerCase() + ".svg");
+            let potentialImage = require("../../assets/icons/types/" + type.toLowerCase() + ".svg");
             return potentialImage;
         }
         catch (err)
         {
-            return require("../assets/icons/types/mixed.svg");
+            return require("../../assets/icons/types/mixed.svg");
         }
     }
 
     manaToHtml(manaCost: string)
     {
-       
-
         var cardHtml = manaCost;
 
         //Replace {W/U} tokens with {WU} to match icon file names
@@ -78,11 +92,9 @@ export default class CardView extends Vue
         //Replace symbol tokens with images
         cardHtml = cardHtml.replace(/{(\D*?)}/g, function(match, group)
         {
-            let potentialImage = require("../assets/icons/symbols/" + group + ".svg");
+            let potentialImage = require("../../assets/icons/symbols/" + group + ".svg");
             return `<img class='costIcon' src="${potentialImage}">`;
         });
-
-
 
         return cardHtml;
     }
@@ -97,13 +109,6 @@ export default class CardView extends Vue
         }
 
         var cardHtml = this.currentCard.text;
-
-        var symbolIcons = 
-        {
-            "{E}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/7/7c/E.svg",
-            "{T}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/b/be/T.svg",
-            "{C}": "https://hydra-media.cursecdn.com/mtg.gamepedia.com/1/1a/C.svg"
-        }
 
         var replacementRegex:any[] =
         [
@@ -124,17 +129,6 @@ export default class CardView extends Vue
         for (let pattern of replacementRegex)
         {
             cardHtml = cardHtml.replace(pattern.regex, pattern.format);
-        }
-
-        for (var symbol in symbolIcons)
-        {
-            if (symbolIcons.hasOwnProperty(symbol))
-            {
-                cardHtml = cardHtml.replace(new RegExp(symbol, 'g'), function(match)
-                {
-                    return `<img class='textIcon' src="${symbolIcons[symbol]}">`;
-                });
-            }
         }
 
         cardHtml = this.manaToHtml(cardHtml);

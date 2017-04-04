@@ -6,11 +6,16 @@
 
         <div class="sideBar">
             <div class="fixed">
-                <CardGrid :cards="deck"></CardGrid>
+                <CardGrid class="smaller" :cards="deck" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
             </div>
         </div>
 
         <div class="main">
+            Search:
+            <input type="text" v-model="searchQuery" />
+            <button v-on:click="performSearch">Search</button>
+            <br />
+
             Set: 
             <select v-model="currentSet">
                 <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
@@ -59,6 +64,8 @@
 </template>
 
 <style lang="scss">
+@import "./styles/reset.scss";
+
 html, body
 {
     margin: 0;
@@ -72,6 +79,7 @@ html, body
 
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
 }
 
 .headerStatus
@@ -93,37 +101,42 @@ html, body
     top: 0;
     left: 0;
 
-    width: 27%;
+    width: 20%;
+    min-width: 235px;
+
     height: 100%;
     overflow-y: scroll;
+
+    box-shadow: 2px 0px 4px -1px lighten(black, 33%);
 
     &::-webkit-scrollbar
     {
         width: 8px;
         background: transparent;
-
-        &:hover
-        {
-            background: rgba(0, 0, 0, 0.25);
-        }
     }
 
     &::-webkit-scrollbar-thumb
     {
         border-radius: 10px;
-        background: rgba(0, 0, 0, 0.33);
+        background: rgba(0, 0, 0, 0.1);
+
+        &:hover
+        {
+            background: rgba(0, 0, 0, 0.33);
+        }
     }
 }
 
 .sideBar
 {
-    flex-basis: 27%;
-    resize: horizontal;
+    flex-basis: 20%;
+    min-width: 235px;
 }
 
 .main
 {
-    flex-basis: 73%;
+    padding: 1em;
+    flex-basis: 80%;
 }
 
 .cardGrid
@@ -160,6 +173,8 @@ export default class App extends Vue
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
+    searchQuery: string = "";
+
     deck: Card[] = [];
 
     currentSet: Set = new Set();
@@ -195,6 +210,24 @@ export default class App extends Vue
     addToDeck(card)
     {
         this.deck.push(card);
+    }
+
+    removeFromDeck(card)
+    {
+        this.deck.splice(this.deck.indexOf(card), 1);
+    }
+
+    performSearch()
+    {
+        let thisVue:App = this;
+
+        thisVue.setCards = [];
+
+        CardDatabase.instance.searchCards(this.searchQuery)
+            .then(function(cards)
+            {
+                thisVue.setCards = cards;
+            });
     }
 
     // lifecycle hook

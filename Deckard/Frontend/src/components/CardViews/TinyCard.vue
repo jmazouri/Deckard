@@ -20,6 +20,9 @@
 </template>
 
 <style lang="scss">
+@import "../../styles/variables.scss";
+@import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
+
 $lighter-bg: rgba(255, 255, 255, 0.5);
 $card-radius: 0.5em;
 
@@ -34,6 +37,8 @@ $card-radius: 0.5em;
     font-size: 0.8rem;
 
     width: 210px;
+    min-height: 38px;
+
     margin-bottom: 0.5em;
 
     background-color: lightgray;
@@ -44,23 +49,23 @@ $card-radius: 0.5em;
 
     &.U
     {
-        background-color: #aae0fa;
+        background-color: $mtg-blue;
     }
     &.B
     {
-        background-color: #cbc2bf;
+        background-color: $mtg-black;
     }
     &.R
     {
-        background-color: #f9aa8f;
+        background-color: $mtg-red;
     }
     &.W
     {
-        background-color: #fffbd5;
+        background-color: $mtg-white;
     }
     &.G
     {
-        background-color: #9bd3ae;
+        background-color: $mtg-green;
     }
 
     .textIcon, .costIcon, .symbol
@@ -71,7 +76,7 @@ $card-radius: 0.5em;
     .textIcon, .costIcon
     {
         width: 1.15em;
-        vertical-align: text-bottom;
+        vertical-align: middle;
     }
 
     .symbol, .costIcon
@@ -82,11 +87,12 @@ $card-radius: 0.5em;
 
     .symbol
     {
+        font-family: "Noto Serif";
         font-size: 0.85em;
         font-weight: bold;
 
         background-color: #d9d9d9;
-        padding: 1px 4px;
+        padding: 2px 4px 2px 4px;
     }
 
     .header
@@ -99,6 +105,7 @@ $card-radius: 0.5em;
         flex-wrap: nowrap;
         align-items: center;
         
+        font-family: "Noto Serif";
         font-weight: bold;
 
         padding: 0.2em 0em 0.2em 0.33em;
@@ -152,13 +159,24 @@ $card-radius: 0.5em;
         flex-grow: 1;
 
         padding: 0.33em;
+        line-height: 1.2;
+
+        font-family: "Hind", sans-serif;
+
+        .symbol
+        {    
+            display: inline-block;
+            padding-top: 0;
+        }
 
         .text
         {
             flex-grow: 1;
+
             strong
             {
                 font-size: 1.1em;
+                font-weight: bold;
             }
         }
 
@@ -175,8 +193,8 @@ $card-radius: 0.5em;
 
     .footer
     {
-        font-family: monospace;
-        font-size: 1.25em;
+        font-family: "Noto Serif";
+        
 
         display: flex;
         flex-direction: row;
@@ -210,12 +228,12 @@ $card-radius: 0.5em;
 
             &.R
             {
-                background-color: rgb(242, 129, 0);
+                background-color: rgb(221, 188, 106);
             }
 
             &.M
             {
-                background-color: rgb(221, 188, 106);
+                background-color: rgb(242, 129, 0);
             }
         }
 
@@ -233,29 +251,11 @@ $card-radius: 0.5em;
 <script>
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
-import {Card} from '../deckard/models/Card'
+import {Card} from '../../deckard/models/Card'
 
 @Component
 export default class TinyCard extends Mixin(CardView)
 {
-    get cardBgColor()
-    {
-        if ((<any>this).currentCard.colorIdentity != undefined)
-        {
-            return (<any>this).currentCard.colorIdentity[0];
-        }
-        else
-        {
-            return "";
-        }
-        
-    }
-
-    get cardRarity()
-    {
-        return (<any>this).currentCard.rarity[0];
-    }
-
     // lifecycle hook
     @Lifecycle mounted()
     {

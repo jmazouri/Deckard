@@ -1,22 +1,48 @@
 <template>
-    <div class="cardGrid">
+    <div class="cardGrid" v-bind:class="viewMode">
         <div class="sorting">
-            Filter:
-            <input type="text" v-model="textFilter"></input>
-            Sort: 
-            <select v-model="sorting">
-                <option>Name</option>
-                <option>CMC</option>
-                <option>Color</option>
-            </select>
-            Show text
-            <input type="checkbox" v-model="showAllText"></input>
-            Show full text
-            <input type="checkbox" v-model="showAllFullText"></input>
+            <div>
+                View:
+                <select v-model="viewMode">
+                    <option value="bigCards">Big Cards</option>
+                    <option value="tinyCards">Tiny Cards</option>
+                    <option value="list">List</option>
+                    <option value="cardArt">Card Art</option>
+                </select>
+            </div>
+
+            <div>
+                Filter:
+                <input type="text" v-model="textFilter"></input>
+            </div>
+
+            <div>
+                Sort: 
+                <select v-model="sorting">
+                    <option>Name</option>
+                    <option>CMC</option>
+                    <option>Color</option>
+                    <option>Type</option>
+                </select>
+            </div>
+
+            <div>
+                <div>
+                    Show text
+                    <input type="checkbox" v-model="showAllText"></input>
+                </div>
+
+                <div>
+                    Show flavor/rules
+                    <input type="checkbox" v-model="showAllFullText"></input>
+                </div>
+            </div>
         </div>
 
         <contextMenu ref="ctx" @ctx-open="onCtxOpen">
-            <li class="ctx-item" @click="addToDeck()">Add To Deck</li>
+            <li class="ctx-item" @click="addToDeck()" v-if="!removeCard">Add To Deck</li>
+            <li class="ctx-item" @click="removeFromDeck()" v-if="removeCard">Remove From Deck</li>
+
             <li class="ctx-item" @click="showFullText()">
                 <span v-if="shouldShowText(rightClickedCard.multiverseid)">✔</span>
                 Show Full Text
@@ -26,7 +52,14 @@
             <li class="ctx-item" @click="goToTCG()">View on TCGPlayer</li>
         </contextMenu>
 
-        <TinyCard v-for="card in sortedCards" :key="card.multiverseid" 
+        <CardListEntry v-if="viewMode == 'list'" v-for="card in sortedCards" :key="card.multiverseid"
+                       
+                :currentCard="card"
+                
+                @contextmenu.prevent.native="$refs.ctx.open($event, card)">
+        </CardListEntry>
+
+        <TinyCard v-if="viewMode == 'tinyCards'" v-for="card in sortedCards" :key="card.multiverseid" 
 
                 :showText="showAllText"
                 :showDescriptionText="shouldShowText(card.multiverseid)" 
@@ -34,6 +67,20 @@
 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
+
+        <FullCard v-if="viewMode == 'bigCards'" v-for="card in sortedCards" :key="card.multiverseid"
+                       
+                :currentCard="card"
+                
+                @contextmenu.prevent.native="$refs.ctx.open($event, card)">
+        </FullCard>
+
+        <CardArt v-if="viewMode == 'cardArt'" v-for="card in sortedCards" :key="card.multiverseid"
+                       
+                :currentCard="card"
+                
+                @contextmenu.prevent.native="$refs.ctx.open($event, card)">
+        </CardArt>
 
         <div class="noCards" v-if="sortedCards.length == 0">
             No cards found - maybe clear your filters?
@@ -46,10 +93,18 @@
 
 .cardGrid
 {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    &.tinyCards, &.cardArt
+    {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    &.list
+    {
+
+    }
 
     padding: 0.5em;
 
@@ -58,9 +113,11 @@
         width: 100%;
         justify-content: flex-end;
 
-        select
+        margin-bottom: 1em;
+
+        div
         {
-            width: 25%;
+            display: inline-block;
         }
     }
 
@@ -82,11 +139,18 @@ li.separator
 import * as _ from "lodash"
 
 import {Vue, Component, Lifecycle, Prop, p, Watch} from 'av-ts'
-import TinyCard from './TinyCard.vue'
+
+import FullCard from './CardViews/FullCard.vue'
+import TinyCard from './CardViews/TinyCard.vue'
+import CardListEntry from './CardViews/CardListEntry.vue'
+import CardArt from './CardViews/CardArt.vue'
+
 import {Card} from '../deckard/models/Card'
 
 @Component({
-    components: {'TinyCard' : TinyCard, 'contextMenu': require('vue-context-menu') }
+    components: {'TinyCard' : TinyCard, 'CardListEntry': CardListEntry,
+                 'FullCard' : FullCard, 'CardArt': CardArt,
+                 'contextMenu': require('vue-context-menu') }
 })
 export default class CardGrid extends Vue
 {
@@ -100,6 +164,17 @@ export default class CardGrid extends Vue
         }
     })
 
+    @Prop removeCard: any = p(
+    {
+        type: Boolean,
+        required: false,
+        default()
+        {
+            return false;
+        }
+    })
+
+    viewMode: string = "list";
     textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;
@@ -140,6 +215,11 @@ export default class CardGrid extends Vue
     addToDeck()
     {
         this.$emit("addToDeck", this.rightClickedCard);
+    }
+
+    removeFromDeck()
+    {
+        this.$emit("removeFromDeck", this.rightClickedCard);
     }
 
     goToGatherer()
@@ -210,6 +290,8 @@ export default class CardGrid extends Vue
                     return (element.cmc == undefined ? -11 : element.cmc);
                 case "Color":
                     return (element.colorIdentity == undefined ? "" : element.colorIdentity[0]);
+                case "Type":
+                    return element.type;
                 default:
                     return "";
             }

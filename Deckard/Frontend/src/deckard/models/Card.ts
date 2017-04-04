@@ -7,6 +7,8 @@ export class Card
     type: string;
     types: string[];
 
+    magicCardsInfoCode: string;
+    mciNumber: string;
     set: string;
 
     text: string;
@@ -18,4 +20,13 @@ export class Card
 
     colorIdentity: string[];
     cmc: number;
+
+    static artUrl(card: Card): string
+    {
+        var split = card.mciNumber.split('/');
+
+        var number = (split.length > 1 ? split[2] : split[0]);
+
+        return 'http://magiccards.info/scans/en/' + card.magicCardsInfoCode + '/' + number + '.jpg';
+    }
 }
