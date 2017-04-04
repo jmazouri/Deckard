@@ -60,7 +60,7 @@ export default class CardView extends Vue
 
     get cardRarity()
     {
-        return (<any>this).currentCard.rarity[0];
+        return (<any>this).currentCard.rarity.substring(0, 2);
     }
 
     typeToHtml(type: string)

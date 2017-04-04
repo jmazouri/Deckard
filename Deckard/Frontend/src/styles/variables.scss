@@ -4,5 +4,15 @@ $mtg-red: #f9aa8f;
 $mtg-white: #fffbd5;
 $mtg-green: #9bd3ae;
 
+$mtg-artifact: #d9d9d9;
+
+$mtg-common: rgb(70, 63, 63);
+$mtg-uncommon: rgb(158, 158, 158);
+$mtg-rare: rgb(221, 188, 106);
+$mtg-mythic: rgb(242, 129, 0);
+
+$mtg-rarity-names: Co, Un, Ra, My;
+$mtg-rarity-colors: $mtg-common, $mtg-uncommon, $mtg-rare, $mtg-mythic;
+
 $mtg-color-names: U, B, R, W, G;
-$mtg-colors: $mtg-blue, darken($mtg-black, 33%), $mtg-red, $mtg-white, $mtg-green;
+$mtg-colors: $mtg-blue, $mtg-black, $mtg-red, $mtg-white, $mtg-green;

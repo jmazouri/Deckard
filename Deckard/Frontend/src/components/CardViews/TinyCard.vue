@@ -216,22 +216,22 @@ $card-radius: 0.5em;
             border-top-right-radius: $card-radius;
             border-bottom-left-radius: $card-radius;
 
-            &.C
+            &.Co
             {
                 background-color: rgb(70, 63, 63);
             }
 
-            &.U
+            &.Un
             {
                 background-color: rgb(158, 158, 158);
             }
 
-            &.R
+            &.Ra
             {
                 background-color: rgb(221, 188, 106);
             }
 
-            &.M
+            &.My
             {
                 background-color: rgb(242, 129, 0);
             }

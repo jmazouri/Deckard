@@ -23,6 +23,7 @@
                     <option>CMC</option>
                     <option>Color</option>
                     <option>Type</option>
+                    <option>Rarity</option>
                 </select>
             </div>
 
@@ -54,6 +55,8 @@
 
         <CardListEntry v-if="viewMode == 'list'" v-for="card in sortedCards" :key="card.multiverseid"
                        
+                :showText="showAllText"
+                :showDescriptionText="shouldShowText(card.multiverseid)" 
                 :currentCard="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
@@ -105,8 +108,6 @@
     {
 
     }
-
-    padding: 0.5em;
 
     .sorting
     {
@@ -292,6 +293,8 @@ export default class CardGrid extends Vue
                     return (element.colorIdentity == undefined ? "" : element.colorIdentity[0]);
                 case "Type":
                     return element.type;
+                case "Rarity":
+                    return element.rarity;
                 default:
                     return "";
             }

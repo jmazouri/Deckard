@@ -4,22 +4,28 @@
             {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
         </div>
 
-        <div class="sideBar">
+        <div class="sideBar" v-if="showDeck">
             <div class="fixed">
                 <CardGrid class="smaller" :cards="deck" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
             </div>
         </div>
 
         <div class="main">
-            Search:
-            <input type="text" v-model="searchQuery" />
-            <button v-on:click="performSearch">Search</button>
-            <br />
+            <div class="cardBrowser">
+                Search:
+                <input type="text" v-model="searchQuery" />
+                <button v-on:click="performSearch">Search</button>
+                <br />
 
-            Set: 
-            <select v-model="currentSet">
-                <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
-            </select>
+                Set: 
+                <select v-model="currentSet">
+                    <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
+                </select>
+
+                <button v-on:click="showDeck = !showDeck">Toggle Deck</button>
+                <button v-on:click="exportDeck()">Export Deck</button>
+            </div>
+
             <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck"></CardGrid>
 
             <div class="spinner" v-show="setCards.length <= 0">
@@ -97,9 +103,13 @@ html, body
 
 .fixed
 {
+    box-sizing: border-box;
+
     position: fixed;
     top: 0;
     left: 0;
+
+    padding: 0.5em;
 
     width: 20%;
     min-width: 235px;
@@ -137,6 +147,11 @@ html, body
 {
     padding: 1em;
     flex-basis: 80%;
+
+    .cardBrowser
+    {
+        margin-bottom: 1em;
+    }
 }
 
 .cardGrid
@@ -174,6 +189,7 @@ export default class App extends Vue
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
     searchQuery: string = "";
+    showDeck: boolean = true;
 
     deck: Card[] = [];
 
@@ -215,6 +231,24 @@ export default class App extends Vue
     removeFromDeck(card)
     {
         this.deck.splice(this.deck.indexOf(card), 1);
+    }
+
+    exportDeck()
+    {
+        var baseUrl = "data:text/plain,";
+
+        this.deck.forEach(function(card)
+        {
+            baseUrl += card.name + "\r\n";
+        });
+
+        var downloadLink = document.createElement("a");
+        downloadLink.href = encodeURI(baseUrl);
+        downloadLink.download = "myDeck.txt";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     }
 
     performSearch()
