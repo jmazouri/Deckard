@@ -45,7 +45,7 @@ $card-radius: 0.5em;
     padding: 0em;
     border-radius: $card-radius;
 
-    box-shadow: 0px 0px 4px -1px black;
+    border: 1px solid darkgray;
 
     &.U
     {
@@ -82,7 +82,7 @@ $card-radius: 0.5em;
     .symbol, .costIcon
     {
         border-radius: 4em;
-        box-shadow: 0px 0px 2px black;
+        border: 1px solid gray;
     }
 
     .symbol
@@ -242,7 +242,8 @@ $card-radius: 0.5em;
             border-top-left-radius: $card-radius;
             border-bottom-right-radius: $card-radius;
 
-            box-shadow: -1px -1px 3px -1px black;
+            border-top: 1px solid gray;
+            border-left: 1px solid gray;
         }
     }
 }

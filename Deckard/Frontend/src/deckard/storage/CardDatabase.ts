@@ -47,12 +47,14 @@ export class CardDatabase extends Dexie
 
     public async searchCards(query: string) : Promise<Card[]>
     {
-        return await this.cards.filter(function(card)
+        var found = await this.cards.filter(function(card)
         {
             return card.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
                    (card.text != undefined ?  card.text.toLowerCase().indexOf(query.toLowerCase()) > -1 : false);
 
         }).toArray();
+
+        return _.uniqBy(found, card => card.name);
     }
 
     public async getCardsInSet(set: string): Promise<Card[]>

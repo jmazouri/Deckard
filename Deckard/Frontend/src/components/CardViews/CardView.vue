@@ -121,7 +121,7 @@ export default class CardView extends Vue
             //  - Single-word abilities, followed by newlines (Flying, Double strike)
             //  - Single-word abilities, followed by non-flavor description text (Revolt - when [asdf])
             { 
-                regex: /(\+|−|\-).|^\S.*\s{0,2}\n|\S.*(?= —)/gm, 
+                regex: /(\+|−|\-)\s.|^\S.*\s{0,2}\n|\S.*(?= —)/gm, 
                 format: function(match) { return (match.length <= 17 ? `<strong>${match}</strong>` : match) } 
             }
         ];

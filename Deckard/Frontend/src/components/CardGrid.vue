@@ -104,6 +104,11 @@
         justify-content: space-between;
     }
 
+    &.cardArt
+    {
+        justify-content: space-around;
+    }
+
     &.list
     {
 
