@@ -3,9 +3,11 @@
 
         <div class="header">
             <div class="left">
+                <img class="typeIcon" v-if="!showText" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
+
                 <span class="name">{{currentCard.name}}</span>
 
-                <span class="info">
+                <span class="info" v-if="showText">
                     <span class="types" v-html="currentCard.types + (currentCard.subtypes != undefined ? ' - ' + currentCard.subtypes : '')"></span>
                 </span>
             </div>

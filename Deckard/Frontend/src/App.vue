@@ -4,7 +4,7 @@
             {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
         </div>
 
-        <div class="sideBar" v-if="showDeck">
+        <div class="sideBar">
             <div class="fixed">
                 <CardGrid class="smaller" :cards="deck" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
             </div>
@@ -22,7 +22,7 @@
                     <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
                 </select>
 
-                <button v-on:click="showDeck = !showDeck">Toggle Deck</button>
+                <button v-on:click="showImportModal = true">Import Deck</button>
                 <button v-on:click="exportDeck()">Export Deck</button>
             </div>
 
@@ -34,6 +34,14 @@
                 <div class="rect3"></div>
                 <div class="rect4"></div>
                 <div class="rect5"></div>
+            </div>
+        </div>
+
+        <div class="importDeckModal" v-if="showImportModal">
+            <button v-on:click="showImportModal = false">X</button>
+            <div class="modalContent">
+                <textarea v-model="textImport" placeholder="Paste your deck here..."></textarea>
+                <button v-on:click="importDeck()">Import</button>
             </div>
         </div>
 
@@ -70,6 +78,7 @@
 </template>
 
 <style lang="scss">
+@import "./styles/variables.scss";
 @import "./styles/reset.scss";
 
 html, body
@@ -154,6 +163,35 @@ html, body
     }
 }
 
+.importDeckModal
+{
+    box-sizing: border-box;
+    position: absolute;
+
+    background-color: transparentize($mtg-common, 0.1);
+
+    left: 15%;
+    top: 14%;
+    width: 75%;
+    height: 350px;
+
+    .modalContent
+    {
+        padding: 2em;
+    }
+
+    textarea
+    {
+        width: 100%;
+        height: 280px;
+    }
+
+    button
+    {
+        float: right;
+    }
+}
+
 .cardGrid
 {
     
@@ -188,8 +226,9 @@ export default class App extends Vue
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
+    textImport: string = "";
     searchQuery: string = "";
-    showDeck: boolean = true;
+    showImportModal: boolean = false;
 
     deck: Card[] = [];
 
@@ -249,6 +288,18 @@ export default class App extends Vue
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
+    }
+
+    importDeck()
+    {
+        let thisVue:App = this;
+        this.deck = [];
+
+        CardDatabase.instance.importCards(this.textImport.split('\n'))
+            .then(function(cards)
+            {
+                thisVue.deck = cards;
+            });
     }
 
     performSearch()

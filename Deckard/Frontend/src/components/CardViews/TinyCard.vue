@@ -216,6 +216,9 @@ $card-radius: 0.5em;
             border-top-right-radius: $card-radius;
             border-bottom-left-radius: $card-radius;
 
+            border-top: 1px solid gray;
+            border-right: 1px solid gray;
+
             &.Co
             {
                 background-color: rgb(70, 63, 63);

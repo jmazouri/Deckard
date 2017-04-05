@@ -27,13 +27,15 @@
                 </select>
             </div>
 
+            <br />
+
             <div>
                 <div>
                     Show text
                     <input type="checkbox" v-model="showAllText"></input>
                 </div>
 
-                <div>
+                <div v-if="showAllText">
                     Show flavor/rules
                     <input type="checkbox" v-model="showAllFullText"></input>
                 </div>
@@ -44,41 +46,43 @@
             <li class="ctx-item" @click="addToDeck()" v-if="!removeCard">Add To Deck</li>
             <li class="ctx-item" @click="removeFromDeck()" v-if="removeCard">Remove From Deck</li>
 
-            <li class="ctx-item" @click="showFullText()">
-                <span v-if="shouldShowText(rightClickedCard.multiverseid)">✔</span>
-                Show Full Text
-            </li>
             <li class="separator"></li>
             <li class="ctx-item" @click="goToGatherer()">View on Gatherer</li>
             <li class="ctx-item" @click="goToTCG()">View on TCGPlayer</li>
         </contextMenu>
 
-        <CardListEntry v-if="viewMode == 'list'" v-for="card in sortedCards" :key="card.multiverseid"
+        <CardListEntry v-if="viewMode == 'list'" v-for="(card, index) in sortedCards" :key="index"
                        
-                :showText="showAllText"
-                :showDescriptionText="shouldShowText(card.multiverseid)" 
+                @click.native="showFullText(card.multiverseid)"
+                @click.ctrl.native="addToDeck(card)"
+
+                :showText="shouldShowText(card.multiverseid)"
+                :showDescriptionText="showAllFullText" 
                 :currentCard="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardListEntry>
 
-        <TinyCard v-if="viewMode == 'tinyCards'" v-for="card in sortedCards" :key="card.multiverseid" 
+        <TinyCard v-if="viewMode == 'tinyCards'" v-for="(card, index) in sortedCards" :key="index" 
 
-                :showText="showAllText"
-                :showDescriptionText="shouldShowText(card.multiverseid)" 
+                @click.native="showFullText(card.multiverseid)"
+                @click.ctrl.native="addToDeck(card)"
+
+                :showText="shouldShowText(card.multiverseid)"
+                :showDescriptionText="showAllFullText" 
                 :currentCard="card"
 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
 
-        <FullCard v-if="viewMode == 'bigCards'" v-for="card in sortedCards" :key="card.multiverseid"
+        <FullCard v-if="viewMode == 'bigCards'" v-for="(card, index) in sortedCards" :key="index"
                        
                 :currentCard="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </FullCard>
 
-        <CardArt v-if="viewMode == 'cardArt'" v-for="card in sortedCards" :key="card.multiverseid"
+        <CardArt v-if="viewMode == 'cardArt'" v-for="(card, index) in sortedCards" :key="index"
                        
                 :currentCard="card"
                 
@@ -203,7 +207,7 @@ export default class CardGrid extends Vue
 
     shouldShowText(multiverseid)
     {
-        if (this.showAllFullText)
+        if (this.showAllText)
         {
             return true;
         }
@@ -218,9 +222,9 @@ export default class CardGrid extends Vue
         }
     }
 
-    addToDeck()
+    addToDeck(card)
     {
-        this.$emit("addToDeck", this.rightClickedCard);
+        this.$emit("addToDeck", (card == undefined ? this.rightClickedCard : card));
     }
 
     removeFromDeck()
@@ -238,11 +242,11 @@ export default class CardGrid extends Vue
         window.open("http://shop.tcgplayer.com/productcatalog/product/show?ProductName=" + encodeURI(this.rightClickedCard.name), "_blank");
     }
 
-    showFullText()
+    showFullText(multiverseid)
     {
-        var newVal = !(this.shouldShowText(this.rightClickedCard.multiverseid));
+        var newVal = !(this.shouldShowText(multiverseid));
 
-        this.$set(this.showText, this.rightClickedCard.multiverseid, newVal);
+        this.$set(this.showText, multiverseid, newVal);
     }
 
     containsAny(lowercaseFilter, input)

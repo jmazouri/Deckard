@@ -57,6 +57,27 @@ export class CardDatabase extends Dexie
         return _.uniqBy(found, card => card.name);
     }
 
+    public async importCards(lines: string[]) : Promise<Card[]>
+    {
+        var ret: Card[] = [];
+        var cards = this.cards;
+
+        for (let line of lines)
+        {
+            var count = parseInt(line.split(/\s/g, 1)[0]);
+            var name = line.substring(line.indexOf(count.toString()) + 1).trim();
+
+            var found: Card[] = await cards.where("name").equals(name).toArray();
+
+            for (var i = 0; i < count; i++)
+            {
+                ret.push(found[0]);
+            }
+        }
+
+        return ret;
+    }
+
     public async getCardsInSet(set: string): Promise<Card[]>
     {
         return await this.cards.where("set").equals(set).toArray();
