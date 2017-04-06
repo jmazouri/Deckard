@@ -1,16 +1,17 @@
 <template>
     <div id="app">
-        <div class="headerStatus" v-show="backgroundStatus.currentMessage != undefined">
-            {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
-        </div>
-
         <div class="sideBar">
             <div class="fixed">
+                <h2>Your Deck</h2>
                 <CardGrid class="smaller" :cards="deck" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
             </div>
         </div>
 
         <div class="main">
+            <div class="headerStatus" v-show="backgroundStatus.currentMessage != undefined">
+                {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
+            </div>
+
             <div class="cardBrowser">
                 Search:
                 <input type="text" v-model="searchQuery" />
@@ -144,6 +145,19 @@ html, body
             background: rgba(0, 0, 0, 0.33);
         }
     }
+
+    h2
+    {
+        text-align: center;
+
+        font-weight: bold;
+        font-size: 1.5em;
+
+        margin-bottom: 0.66em;
+        padding: 0.25em 0.5em;
+        
+        box-shadow: 0px 14px 16px -10px black;
+    }
 }
 
 .sideBar
@@ -276,10 +290,13 @@ export default class App extends Vue
     {
         var baseUrl = "data:text/plain,";
 
-        this.deck.forEach(function(card)
+        var cards: any = _.groupBy(this.deck, function(card) { return card.name });
+
+        for (let cardGrp in cards)
         {
-            baseUrl += card.name + "\r\n";
-        });
+            baseUrl += cards[cardGrp].length + " ";
+            baseUrl += cardGrp + "\r\n";
+        }
 
         var downloadLink = document.createElement("a");
         downloadLink.href = encodeURI(baseUrl);

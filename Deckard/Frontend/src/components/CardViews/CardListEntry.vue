@@ -3,7 +3,7 @@
 
         <div class="header">
             <div class="left">
-                <img class="typeIcon" v-if="!showText" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
+                <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
 
                 <span class="name">{{currentCard.name}}</span>
 
@@ -57,12 +57,15 @@ $light-text: lighten(black, 33%);
 .smaller .listEntry
 {
     font-size: 1em;
+
+    .body, .header .left .info
+    {
+        font-size: 0.75em;
+    }
 }
 
 .listEntry
 {
-    position: relative;
-
     font-family: "Noto Serif";
     font-size: 1.75em;
 
@@ -81,7 +84,8 @@ $light-text: lighten(black, 33%);
 
         box-shadow: 0px 0px 8px transparentize(black, 0.5);
 
-        z-index: 999;
+        position:relative;
+        z-index: 1;
     }
 
     .header
@@ -95,6 +99,11 @@ $light-text: lighten(black, 33%);
         {
             flex-grow: 1;
 
+            .typeIcon
+            {
+                
+            }
+
             .name
             {
                 font-weight: bold;
@@ -102,6 +111,8 @@ $light-text: lighten(black, 33%);
 
             .info
             {
+                display: inline-block;
+                
                 font-size: 0.5em;
                 align-items: center;
 
@@ -111,15 +122,23 @@ $light-text: lighten(black, 33%);
 
         .right
         {
+            display: flex;
+            flex-direction: row;
+
+            justify-content: flex-end;
+            
             .cmc
             {
-                justify-content: flex-end;
-                flex-wrap: nowrap;
+                display: flex;
+                flex-grow: 1;
 
-                display: inline-block;
-                position: relative;
+                align-items: stretch;
 
-                top: -0.1em;
+                .symbol
+                {
+                    padding: 0.24em 0.3em 0.34em 0.3em;
+                    text-align: center;
+                }
             }
         }
     }

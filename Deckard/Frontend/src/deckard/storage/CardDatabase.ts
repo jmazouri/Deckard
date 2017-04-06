@@ -47,6 +47,8 @@ export class CardDatabase extends Dexie
 
     public async searchCards(query: string) : Promise<Card[]>
     {
+        if (query.length < 3) { return []; }
+        
         var found = await this.cards.filter(function(card)
         {
             return card.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
@@ -64,7 +66,7 @@ export class CardDatabase extends Dexie
 
         for (let line of lines)
         {
-            var count = parseInt(line.split(/\s/g, 1)[0]);
+            var count = parseInt(line.split(/\s+/g, 1)[0]);
             var name = line.substring(line.indexOf(count.toString()) + 1).trim();
 
             var found: Card[] = await cards.where("name").equals(name).toArray();
