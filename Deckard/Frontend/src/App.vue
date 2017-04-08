@@ -2,8 +2,7 @@
     <div id="app">
         <div class="sideBar">
             <div class="fixed">
-                <h2>Your Deck</h2>
-                <CardGrid class="smaller" :cards="deck" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
+                <DeckEditor v-on:removeFromDeck="removeFromDeck" :deck="deck"></DeckEditor>
             </div>
         </div>
 
@@ -22,9 +21,6 @@
                 <select v-model="currentSet">
                     <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
                 </select>
-
-                <button v-on:click="showImportModal = true">Import Deck</button>
-                <button v-on:click="exportDeck()">Export Deck</button>
             </div>
 
             <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck"></CardGrid>
@@ -38,13 +34,7 @@
             </div>
         </div>
 
-        <div class="importDeckModal" v-if="showImportModal">
-            <button v-on:click="showImportModal = false">X</button>
-            <div class="modalContent">
-                <textarea v-model="textImport" placeholder="Paste your deck here..."></textarea>
-                <button v-on:click="importDeck()">Import</button>
-            </div>
-        </div>
+
 
         <!--
         <template v-if="false">
@@ -177,35 +167,6 @@ html, body
     }
 }
 
-.importDeckModal
-{
-    box-sizing: border-box;
-    position: absolute;
-
-    background-color: transparentize($mtg-common, 0.1);
-
-    left: 15%;
-    top: 14%;
-    width: 75%;
-    height: 350px;
-
-    .modalContent
-    {
-        padding: 2em;
-    }
-
-    textarea
-    {
-        width: 100%;
-        height: 280px;
-    }
-
-    button
-    {
-        float: right;
-    }
-}
-
 .cardGrid
 {
     
@@ -217,6 +178,7 @@ import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Watch} from 'av-ts'
 
 import CardGrid from './components/CardGrid.vue'
+import DeckEditor from './components/DeckEditor.vue'
 
 import {Card} from './deckard/models/Card'
 import {Set} from './deckard/models/Set'
@@ -231,7 +193,7 @@ let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
 let jsonAllCards = require("file-loader!./assets/AllSets.json");
 
 @Component({
-    components: {'CardGrid' : CardGrid}
+    components: {'CardGrid' : CardGrid, 'DeckEditor': DeckEditor}
 })
 export default class App extends Vue
 {
@@ -240,9 +202,7 @@ export default class App extends Vue
 
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
-    textImport: string = "";
     searchQuery: string = "";
-    showImportModal: boolean = false;
 
     deck: Card[] = [];
 
@@ -284,39 +244,6 @@ export default class App extends Vue
     removeFromDeck(card)
     {
         this.deck.splice(this.deck.indexOf(card), 1);
-    }
-
-    exportDeck()
-    {
-        var baseUrl = "data:text/plain,";
-
-        var cards: any = _.groupBy(this.deck, function(card) { return card.name });
-
-        for (let cardGrp in cards)
-        {
-            baseUrl += cards[cardGrp].length + " ";
-            baseUrl += cardGrp + "\r\n";
-        }
-
-        var downloadLink = document.createElement("a");
-        downloadLink.href = encodeURI(baseUrl);
-        downloadLink.download = "myDeck.txt";
-
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-    }
-
-    importDeck()
-    {
-        let thisVue:App = this;
-        this.deck = [];
-
-        CardDatabase.instance.importCards(this.textImport.split('\n'))
-            .then(function(cards)
-            {
-                thisVue.deck = cards;
-            });
     }
 
     performSearch()

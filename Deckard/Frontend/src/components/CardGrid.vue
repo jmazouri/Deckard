@@ -184,11 +184,20 @@ export default class CardGrid extends Vue
         }
     })
 
+    @Prop showAllText: any = p(
+    {
+        type: Boolean,
+        required: false,
+        default()
+        {
+            return true;
+        }
+    })
+
     viewMode: string = "list";
     textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;
-    showAllText: boolean = true;
 
     showText: any = {};
 

@@ -1,31 +1,35 @@
 import {Set} from '../models/Set'
 import {Card} from '../models/Card'
+import {Deck} from '../models/Deck'
 
 import * as _ from 'lodash';
 import Dexie from 'dexie';
 
 export class CardDatabase extends Dexie
 {
-    static dbName = "deckardCardData";
+    static dbName = "CardDatabase";
     static dbVersion = 1;
 
     sets: Dexie.Table<Set, string>;
     cards: Dexie.Table<Card, number>;
+    decks: Dexie.Table<Deck, string>;
 
     constructor()
     {
-        super("CardDatabase");
+        super(CardDatabase.dbName);
 
-        this.version(1).stores
+        this.version(CardDatabase.dbVersion).stores
         (
             {
                 sets: '++code, name, releaseDate, magicCardsInfoCode',
-                cards: '++multiverseid, name, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber'
+                cards: '++multiverseid, name, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
+                decks: 'name, cards'
             }
         );
 
         this.sets.mapToClass(Set);
         this.cards.mapToClass(Card);
+        this.decks.mapToClass(Deck);
     }
 
     private static _instance: CardDatabase;
@@ -90,30 +94,14 @@ export class CardDatabase extends Dexie
         return await this.sets.toArray();
     }
 
-    public static async getCard(id: number): Promise<Card>
+    public async getDecks() : Promise<Deck[]>
     {
-        return new Promise<Card>((resolve, reject) =>
-        {
-            var req: IDBOpenDBRequest = self.indexedDB.open(CardDatabase.dbName, CardDatabase.dbVersion);
-            req.onsuccess = function (e: any)
-            {
-                let theDb: IDBDatabase = e.target.result;
-                let store: IDBObjectStore = theDb.transaction("cards").objectStore("cards");
-                let request: IDBRequest = store.get(id);
+        return await this.decks.toArray();
+    }
 
-                request.onsuccess = function(event)
-                {
-                    theDb.close();
-                    resolve(<Card>request.result);
-                }
-
-                request.onerror = function(event)
-                {
-                    theDb.close();
-                    reject(event.type);
-                }
-            }
-        });
+    public async saveDeck(deck: Deck)
+    {
+        await this.decks.put(deck);
     }
 
     public saveSets(sets: Set[])
@@ -133,18 +121,5 @@ export class CardDatabase extends Dexie
 
         this.sets.bulkAdd(allSets);
         this.cards.bulkAdd(allCards);
-    }
-
-    public static tableInit(e: any)
-    {
-        debugger;
-
-        let theDb:IDBDatabase = e.target.result;
-        var parms: IDBObjectStoreParameters;
-
-        let setTable: IDBObjectStore = theDb.createObjectStore("sets", { keyPath: "code" });
-
-        let cardTable: IDBObjectStore = theDb.createObjectStore("cards", { keyPath: "multiverseid" });
-        cardTable.createIndex("cardSet", "set");
     }
 }
