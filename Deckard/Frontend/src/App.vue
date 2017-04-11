@@ -1,9 +1,7 @@
 <template>
     <div id="app">
         <div class="sideBar">
-            <div class="fixed">
-                <DeckEditor v-on:removeFromDeck="removeFromDeck" :deck="deck"></DeckEditor>
-            </div>
+            <DeckEditor v-on:removeFromDeck="removeFromDeck"></DeckEditor>
         </div>
 
         <div class="main">
@@ -78,14 +76,41 @@ html, body
     padding: 0;
 }
 
+*
+{
+    &::-webkit-scrollbar
+    {
+        width: 10px;
+    }
+
+    &::-webkit-resizer
+    {
+        background: red;
+        border: 1px dotted black;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.25);
+
+        &:hover
+        {
+            background: rgba(0, 0, 0, 0.33);
+        }
+    }
+}
+
 #app
 {
+    max-width: calc(100% - 8px);
+
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     color: #2c3e50;
 
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 .headerStatus
@@ -101,40 +126,28 @@ html, body
     background-color: goldenrod;    
 }
 
-.fixed
+.sideBar
 {
-    box-sizing: border-box;
+    position: sticky;
+    top: 0;
 
+    height: 100vh;
+
+    resize: horizontal;
+
+    width: 33vw;
+    min-width: 25vw;
+
+    /*
     position: fixed;
     top: 0;
     left: 0;
+    */
 
-    padding: 0.5em;
-
-    width: 20%;
-    min-width: 235px;
-
-    height: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
 
     box-shadow: 2px 0px 4px -1px lighten(black, 33%);
-
-    &::-webkit-scrollbar
-    {
-        width: 8px;
-        background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb
-    {
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.1);
-
-        &:hover
-        {
-            background: rgba(0, 0, 0, 0.33);
-        }
-    }
 
     h2
     {
@@ -150,16 +163,12 @@ html, body
     }
 }
 
-.sideBar
-{
-    flex-basis: 20%;
-    min-width: 235px;
-}
-
 .main
 {
-    padding: 1em;
-    flex-basis: 80%;
+    padding: 0.5em;
+
+    width: 67vw;
+    min-width: 50vw;
 
     .cardBrowser
     {
@@ -182,6 +191,7 @@ import DeckEditor from './components/DeckEditor.vue'
 
 import {Card} from './deckard/models/Card'
 import {Set} from './deckard/models/Set'
+import {Deck} from './deckard/models/Deck'
 
 import {MessageKind} from './deckard/models/BaseWorkerMessage'
 import {BackgroundProcessStatus} from './deckard/models/BackgroundProcessStatus'
@@ -203,8 +213,6 @@ export default class App extends Vue
     backgroundStatus:BackgroundProcessStatus = new BackgroundProcessStatus();
 
     searchQuery: string = "";
-
-    deck: Card[] = [];
 
     currentSet: Set = new Set();
     allSets: Set[] = [];
@@ -230,20 +238,19 @@ export default class App extends Vue
             });
     }
 
-    @Watch('deck')
-    deckHandler(newVal, oldVal)
-    {
-        localStorage["currentDeck"] = JSON.stringify(newVal);
-    }
-
     addToDeck(card)
     {
-        this.deck.push(card);
+        this.$store.commit('addToDeck', card);
     }
 
     removeFromDeck(card)
     {
-        this.deck.splice(this.deck.indexOf(card), 1);
+        this.$store.commit('removeFromDeck', card);
+    }
+    
+    get deck()
+    {
+        return this.$store.state.currentDeck;
     }
 
     performSearch()
@@ -264,7 +271,11 @@ export default class App extends Vue
     {
         let thisVue = this;
 
-        thisVue.deck = (localStorage["currentDeck"] == undefined ? [] : JSON.parse(localStorage["currentDeck"]));
+        if (localStorage["currentDeck"] != undefined)
+        {
+            let deck = JSON.parse(localStorage["currentDeck"]);
+            thisVue.$store.commit('loadDeck', deck);
+        }
 
         thisVue.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));
 

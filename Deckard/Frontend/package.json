@@ -18,14 +18,13 @@
     "vue": "^2.2.1",
     "vue-context-menu": "^2.0.2",
     "vue-ts-loader": "0.0.3",
+    "vuex": "^2.2.1",
     "worker-loader": "^0.8.0"
   },
   "devDependencies": {
-    "@types/core-js": "^0.9.37",
     "babel-core": "^6.0.0",
     "babel-loader": "^6.0.0",
     "babel-preset-latest": "^6.0.0",
-    "core-js": "^2.4.1",
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
     "file-loader": "^0.9.0",

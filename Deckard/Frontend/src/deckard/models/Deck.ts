@@ -2,6 +2,6 @@ import {Card} from './Card'
 
 export class Deck
 {
-    name: string;
-    cards: Card[];
+    name: string = "Default Name";
+    cards: Card[] = [];
 }

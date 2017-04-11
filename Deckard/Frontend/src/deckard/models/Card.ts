@@ -3,6 +3,7 @@ export class Card
     multiverseid: number;
 
     name: string;
+    names: string[];
 
     type: string;
     types: string[];

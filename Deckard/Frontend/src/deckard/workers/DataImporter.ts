@@ -12,7 +12,7 @@ let theWorker = this;
 
 class DataImporter
 {
-    private static sendStatusMessage(message: string, current: number, max: number)
+    static sendStatusMessage(message: string, current: number, max: number)
     {
         let msg: BackgroundProcessStatus = new BackgroundProcessStatus();
         msg.currentMessage = message;
@@ -37,6 +37,8 @@ class DataImporter
             {
                 loadedSets.push(<Set>setsAndCards[set]);
                 setIndex++;
+
+                this.sendStatusMessage(`Loading set ${set}`, setIndex, setsAndCards.length);
             }
         }
 

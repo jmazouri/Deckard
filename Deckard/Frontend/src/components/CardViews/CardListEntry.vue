@@ -3,9 +3,11 @@
 
         <div class="header">
             <div class="left">
+                <span class="quantity" v-if="quantity > 1">{{quantity}}x</span>
+
                 <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
 
-                <span class="name">{{currentCard.name}}</span>
+                <span class="name" v-html="cardName"></span>
 
                 <span class="info" v-if="showText">
                     <span class="types" v-html="currentCard.types + (currentCard.subtypes != undefined ? ' - ' + currentCard.subtypes : '')"></span>
@@ -13,7 +15,7 @@
             </div>
             <div class="right">
                 <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"
-                             v-bind:title="'CMC: ' + currentCard.cmc"></div>
+                             v-bind:title="currentCard.manaCost"></div>
             </div>
         </div>
 
@@ -31,28 +33,6 @@
 
 $border-vars: 0.3rem solid;
 $light-text: lighten(black, 33%);
-
-@mixin list-bg-colors()
-{
-    border-left: $border-vars darken(lightgray, 25%);
-    background: linear-gradient(90deg, lightgray 0%, white 100%);
-
-    @for $i from 1 through length($mtg-color-names)
-    {
-        &.#{nth($mtg-color-names, $i)}
-        {
-            background: linear-gradient(90deg, lighten(nth($mtg-colors, $i), 6%) 0%, white 100%);
-        }
-    }
-
-    @for $i from 1 through length($mtg-rarity-names)
-    {
-        &.#{nth($mtg-rarity-names, $i)}
-        {
-            border-left: $border-vars nth($mtg-rarity-colors, $i);
-        }
-    }
-};
 
 .smaller .listEntry
 {
@@ -82,7 +62,7 @@ $light-text: lighten(black, 33%);
     {
         border-left-width: 0.4rem;
 
-        box-shadow: 0px 0px 8px transparentize(black, 0.5);
+        box-shadow: 0px 0px 6px -1px transparentize(black, 0.25);
 
         position:relative;
         z-index: 1;
@@ -101,12 +81,24 @@ $light-text: lighten(black, 33%);
 
             .typeIcon
             {
-                
+                position: relative;
+                top: -0.1em;
+            }
+
+            .quantity
+            {
+                font-family: "Consolas", monospace;
             }
 
             .name
             {
                 font-weight: bold;
+                
+                small
+                {
+                    font-size: 0.65em;
+                    color: $light-text;
+                }
             }
 
             .info

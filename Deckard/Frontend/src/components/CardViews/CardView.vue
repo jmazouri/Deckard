@@ -7,14 +7,24 @@
 </style>
 
 <script>
+import * as _ from "lodash"
+
 import {Vue, Component, Lifecycle, Prop, Trait, p} from 'av-ts'
 import {Card} from '../../deckard/models/Card'
-
-
 
 @Trait
 export default class CardView extends Vue
 {
+    @Prop quantity:any = p(
+    {
+        type: Number,
+        required: false,
+        default()
+        {
+            return 1;
+        }
+    })
+
     @Prop currentCard:any = p(
     {
         type: Object,
@@ -56,6 +66,27 @@ export default class CardView extends Vue
             return "";
         }
         
+    }
+
+    get cardName()
+    {
+        var multipleNames = (<any>this).currentCard.names;
+
+        if (multipleNames == undefined)
+        {
+            return (<any>this).currentCard.name;
+        }
+        else
+        {
+            var mainName = (<any>this).currentCard.name;
+
+            var otherName = _.filter(multipleNames, function(name)
+            {
+                return name != mainName;
+            });
+            
+            return mainName + " <small>// " + otherName + "</small>";
+        }
     }
 
     get cardRarity()

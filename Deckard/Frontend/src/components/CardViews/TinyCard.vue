@@ -2,12 +2,15 @@
     <div class="tinyCard" v-bind:class="cardBgColor">
         <div class="header">
             <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
-            <div class="name" v-bind:title="currentCard.name">{{currentCard.name}}</div>
+            <div class="name" v-bind:title="cardName">
+                <span class="quantity" v-if="quantity > 0">{{quantity}}x</span>
+                <span v-html="cardName"></span>
+            </div>
             <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"
                              v-bind:title="'CMC: ' + currentCard.cmc"></div>
         </div>
 
-        <div class="body" v-if="showText">
+        <div class="body" v-if="showText && currentCardText.length > 0">
             <div class="text" v-html="currentCardText"></div>
             <div class="flavor" v-if="showDescriptionText">{{currentCard.flavor}}</div>
         </div>
@@ -36,7 +39,10 @@ $card-radius: 0.5em;
 
     font-size: 0.8rem;
 
-    width: 210px;
+    min-width: 210px;
+    width: 95%;
+    max-width: 300px;
+
     min-height: 38px;
 
     margin-bottom: 0.5em;

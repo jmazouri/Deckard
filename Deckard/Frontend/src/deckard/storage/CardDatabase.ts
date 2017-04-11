@@ -22,7 +22,7 @@ export class CardDatabase extends Dexie
         (
             {
                 sets: '++code, name, releaseDate, magicCardsInfoCode',
-                cards: '++multiverseid, name, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
+                cards: 'id, name, multiverseid, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
                 decks: 'name, cards'
             }
         );
@@ -55,7 +55,9 @@ export class CardDatabase extends Dexie
         
         var found = await this.cards.filter(function(card)
         {
-            return card.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
+            var name = (card.names != undefined ? card.names.join(" ") : card.name);
+
+            return name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
                    (card.text != undefined ?  card.text.toLowerCase().indexOf(query.toLowerCase()) > -1 : false);
 
         }).toArray();

@@ -1,3 +1,4 @@
+//Global vars
 $mtg-blue: #aae0fa;
 $mtg-black: #cbc2bf;
 $mtg-red: #f9aa8f;
@@ -10,9 +11,33 @@ $mtg-common: rgb(70, 63, 63);
 $mtg-uncommon: rgb(158, 158, 158);
 $mtg-rare: rgb(221, 188, 106);
 $mtg-mythic: rgb(242, 129, 0);
+$mtg-special: DarkOrchid;
 
-$mtg-rarity-names: Co, Un, Ra, My;
-$mtg-rarity-colors: $mtg-common, $mtg-uncommon, $mtg-rare, $mtg-mythic;
+$mtg-rarity-names: Co, Un, Ra, My, Sp;
+$mtg-rarity-colors: $mtg-common, $mtg-uncommon, $mtg-rare, $mtg-mythic, $mtg-special;
 
 $mtg-color-names: U, B, R, W, G;
 $mtg-colors: $mtg-blue, $mtg-black, $mtg-red, $mtg-white, $mtg-green;
+
+//Global mixins
+@mixin list-bg-colors()
+{
+    border-left: $border-vars darken(lightgray, 25%);
+    background: linear-gradient(90deg, lightgray 0%, white 100%);
+
+    @for $i from 1 through length($mtg-color-names)
+    {
+        &.#{nth($mtg-color-names, $i)}
+        {
+            background: linear-gradient(90deg, lighten(nth($mtg-colors, $i), 6%) 0%, white 100%);
+        }
+    }
+
+    @for $i from 1 through length($mtg-rarity-names)
+    {
+        &.#{nth($mtg-rarity-names, $i)}
+        {
+            border-left: $border-vars nth($mtg-rarity-colors, $i);
+        }
+    }
+};

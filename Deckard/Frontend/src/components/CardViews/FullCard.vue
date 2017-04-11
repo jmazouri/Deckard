@@ -1,7 +1,7 @@
 <template>
     <div class="fullArt">
         <div class="header">
-            <div class="cardTitle">{{currentCard.name}}</div>
+            <div class="cardTitle">{{cardName}}</div>
             <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"></div>
         </div>
 

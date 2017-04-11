@@ -31,14 +31,24 @@
 
             <div>
                 <div>
+                    Group by Name
+                    <input type="checkbox" v-model="shouldGroup"></input>
+                </div>
+
+                <div>
                     Show text
                     <input type="checkbox" v-model="showAllText"></input>
                 </div>
+                
 
                 <div v-if="showAllText">
                     Show flavor/rules
                     <input type="checkbox" v-model="showAllFullText"></input>
                 </div>
+            </div>
+
+            <div class="cardCount">
+                {{cards.length}} cards <small v-if="hiddenCardCount > 0">{{hiddenCardCount}} hidden</small>
             </div>
         </div>
 
@@ -59,6 +69,7 @@
                 :showText="shouldShowText(card.multiverseid)"
                 :showDescriptionText="showAllFullText" 
                 :currentCard="card"
+                :quantity="getCardQuantity(card.multiverseid)"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardListEntry>
@@ -71,6 +82,7 @@
                 :showText="shouldShowText(card.multiverseid)"
                 :showDescriptionText="showAllFullText" 
                 :currentCard="card"
+                :quantity="getCardQuantity(card.multiverseid)"
 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
@@ -88,10 +100,6 @@
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardArt>
-
-        <div class="noCards" v-if="sortedCards.length == 0">
-            No cards found - maybe clear your filters?
-        </div>
     </div>
 </template>
 
@@ -105,11 +113,6 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    &.cardArt
-    {
         justify-content: space-around;
     }
 
@@ -123,19 +126,33 @@
         width: 100%;
         justify-content: flex-end;
 
-        margin-bottom: 1em;
+        padding: 0 0.5em;
+
+        input[type=text]
+        {
+            width: 66%;
+        }
 
         div
         {
             display: inline-block;
         }
-    }
 
-    .noCards
-    {
-        margin: 1em;
-        text-align: center;
-        font-size: 3em;
+        .cardCount
+        {
+            width: calc(100% - 10px);
+            margin: 1em 0em 0.25em 0;
+
+            font-size: 1.5em;
+            font-weight: bold;
+
+            text-align: right;
+
+            small
+            {
+                font-size: 0.5em;
+            }
+        }
     }
 }
 
@@ -194,19 +211,68 @@ export default class CardGrid extends Vue
         }
     })
 
+    groupedOverride: any = undefined;
+    @Prop isGrouped: any = p(
+    {
+        type: Boolean,
+        required: false,
+        default()
+        {
+            return false;
+        }
+    })
+
     viewMode: string = "list";
     textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;
 
     showText: any = {};
+    cardQty: any = {};
 
     rightClickedCard: any = {};
+
+    get shouldGroup()
+    {
+        return this.groupedOverride != undefined ? this.groupedOverride : this.isGrouped;
+    }
+
+    set shouldGroup(newValue)
+    {
+        this.groupedOverride = newValue;
+    }
+
+    get hiddenCardCount()
+    {
+        return this.cards.length - this.sortedCards.length;
+    }
+
+    @Watch('shouldGroup')
+    groupHandler(newVal, oldVal)
+    {
+        this.calcCardQty();
+    }
+
+    calcCardQty()
+    {
+        if (this.shouldGroup) 
+        {
+            this.cardQty = _.groupBy(this.cards, function(card: Card)
+            {
+                return card.multiverseid;
+            });
+        }
+        else
+        {
+            this.cardQty = {};
+        }
+    }
 
     @Watch('cards')
     cardsHandler(newVal, oldVal)
     {
         this.showText = {};
+        this.calcCardQty();
     }
 
     onCtxOpen(vars)
@@ -228,6 +294,18 @@ export default class CardGrid extends Vue
         else
         {
             return this.showText[multiverseid];
+        }
+    }
+
+    getCardQuantity(multiverseid)
+    {
+        if (this.cardQty[multiverseid] == undefined)
+        {
+            return 1;
+        }
+        else
+        {
+            return this.cardQty[multiverseid].length;
         }
     }
 
@@ -299,7 +377,9 @@ export default class CardGrid extends Vue
             });
         }
 
-        return _.sortBy(filteredCards, function(element: Card)
+        var rarityOrder = ["Basic Land", "Common", "Uncommon", "Rare", "Special", "Mythic Rare"];
+
+        filteredCards = _.sortBy(filteredCards, function(element: Card)
         {
             switch (sorting)
             {
@@ -312,12 +392,22 @@ export default class CardGrid extends Vue
                 case "Type":
                     return element.type;
                 case "Rarity":
-                    return element.rarity;
+                    return rarityOrder.indexOf(element.rarity);
                 default:
                     return "";
             }
             
         });
+
+        if (this.shouldGroup)
+        {
+            filteredCards = _.sortedUniqBy(filteredCards, function(card: Card)
+            {
+                return card.multiverseid;
+            });
+        }
+
+        return filteredCards;
     }
 
     // lifecycle hook
