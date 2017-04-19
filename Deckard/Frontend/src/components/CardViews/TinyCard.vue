@@ -1,9 +1,9 @@
 <template>
     <div class="tinyCard" v-bind:class="cardBgColor">
         <div class="header">
-            <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
+            <img class="typeIcon" v-bind:src="typeToHtml" v-bind:title="currentCard.type"></img>
             <div class="name" v-bind:title="cardName">
-                <span class="quantity" v-if="quantity > 0">{{quantity}}x</span>
+                <span class="quantity" v-if="quantity > 1">{{quantity}}x</span>
                 <span v-html="cardName"></span>
             </div>
             <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"
@@ -53,26 +53,7 @@ $card-radius: 0.5em;
 
     border: 1px solid darkgray;
 
-    &.U
-    {
-        background-color: $mtg-blue;
-    }
-    &.B
-    {
-        background-color: $mtg-black;
-    }
-    &.R
-    {
-        background-color: $mtg-red;
-    }
-    &.W
-    {
-        background-color: $mtg-white;
-    }
-    &.G
-    {
-        background-color: $mtg-green;
-    }
+    @include card-bg-colors();
 
     .textIcon, .costIcon, .symbol
     {

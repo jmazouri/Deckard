@@ -6,7 +6,7 @@
         </div>
 
         <div class="types">
-            <span class="cardType" v-for="t in currentCard.types">{{t}}</span>
+            <span class="cardType">{{currentCard.type}}</span>
         </div>
 
         <div class="cardBody">

@@ -8,8 +8,12 @@
 
             <br />
 
-            <button v-on:click="showImportModal = true">Import Deck</button>
-            <button v-on:click="exportDeck()">Export Deck</button>
+            <div class="buttonRow">
+                <button v-on:click="createDeck()">New</button>
+                <button v-on:click="">Delete</button>
+                <button v-on:click="showImportModal = true">Import</button>
+                <button v-on:click="exportDeck()">Export</button>
+            </div>
         </div>
 
         <CardGrid class="smaller" :isGrouped="true" :showAllText="false" 
@@ -40,6 +44,17 @@
     .options
     {
         padding: 0.5em;
+
+        .buttonRow
+        {
+            display: flex;
+            justify-content: space-around;
+
+            & > *
+            {
+                flex-grow: 1;
+            }
+        }
     }
 }
 
@@ -125,6 +140,15 @@ export default class DeckEditor extends Vue
 
                 thisVue.$store.commit('loadDeck', newDeck);
             });
+    }
+
+    createDeck()
+    {
+        let newDeck: Deck = new Deck();
+        newDeck.name = "Created Deck";
+        newDeck.cards = [];
+
+        this.$store.commit('loadDeck', newDeck);
     }
 
     removeFromDeck(card)

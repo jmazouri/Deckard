@@ -21,7 +21,7 @@
                 </select>
             </div>
 
-            <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck"></CardGrid>
+            <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck" v-on:searchAll="searchAll"></CardGrid>
 
             <div class="spinner" v-show="setCards.length <= 0">
                 <div class="rect1"></div>
@@ -247,6 +247,19 @@ export default class App extends Vue
     {
         this.$store.commit('removeFromDeck', card);
     }
+
+    searchAll(card)
+    {
+        let thisVue:App = this;
+        
+        this.setCards = [];
+
+        CardDatabase.instance.findAllVersions(card)
+            .then(function(cards)
+            {
+                thisVue.setCards = cards;
+            });
+    }
     
     get deck()
     {
@@ -292,8 +305,12 @@ export default class App extends Vue
                 CardDatabase.instance.getAllSets()
                     .then(function(value)
                     {
-                        thisVue.allSets = value;
-                        thisVue.currentSet = _.first(thisVue.allSets);
+                        thisVue.allSets = _.sortBy(value, function(set: Set)
+                        {
+                            return set.releaseDate;
+                        });
+
+                        thisVue.currentSet = _.last(thisVue.allSets);
                     });
                 
                 console.info(`[${event.data.kind}] ${event.data.data}`);

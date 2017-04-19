@@ -57,9 +57,18 @@ export default class CardView extends Vue
 
     get cardBgColor()
     {
-        if ((<any>this).currentCard.colorIdentity != undefined)
+        let colorId = (<any>this).currentCard.colorIdentity;
+
+        if (colorId != undefined)
         {
-            return (<any>this).currentCard.colorIdentity[0];
+            if (colorId.length <= 2)
+            {
+                return colorId.join("");
+            }
+            else
+            {
+                return colorId[0];
+            }
         }
         else
         {
@@ -94,22 +103,30 @@ export default class CardView extends Vue
         return (<any>this).currentCard.rarity.substring(0, 2);
     }
 
-    typeToHtml(type: string)
+    get typeToHtml()
     {
-        try
+        var validTypes = ["Creature", "Enchantment", "Instant", "Land", "Planeswalker", "Sorcery", "Artifact"];
+        var matches = _.intersection(this.currentCard.types, validTypes);
+
+        if (matches.length > 0)
         {
-            let potentialImage = require("../../assets/icons/types/" + type.toLowerCase() + ".svg");
-            return potentialImage;
-        }
-        catch (err)
-        {
-            return require("../../assets/icons/types/mixed.svg");
+            try
+            {
+                let potentialImage = require("../../assets/icons/types/" + matches[0].toLowerCase() + ".svg");
+                return potentialImage;
+            }
+            catch (err)
+            {
+                return require("../../assets/icons/types/mixed.svg");
+            }
         }
     }
 
     manaToHtml(manaCost: string)
     {
         var cardHtml = manaCost;
+
+        if (cardHtml == null || cardHtml == undefined) { return ""; }
 
         //Replace {W/U} tokens with {WU} to match icon file names
         cardHtml = cardHtml.replace(/{(.)\/(.)}/g, '{$1$2}');

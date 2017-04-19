@@ -22,7 +22,7 @@ export class CardDatabase extends Dexie
         (
             {
                 sets: '++code, name, releaseDate, magicCardsInfoCode',
-                cards: 'id, name, multiverseid, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
+                cards: 'id, *name, *multiverseid, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
                 decks: 'name, cards'
             }
         );
@@ -49,7 +49,7 @@ export class CardDatabase extends Dexie
         return await this.cards.count() > 0;
     }
 
-    public async searchCards(query: string) : Promise<Card[]>
+    public async searchCards(query: string, includeDuplicates: boolean = false) : Promise<Card[]>
     {
         if (query.length < 3) { return []; }
         
@@ -62,7 +62,19 @@ export class CardDatabase extends Dexie
 
         }).toArray();
 
-        return _.uniqBy(found, card => card.name);
+        found = _.filter(found, card => card.multiverseid);
+        return (includeDuplicates ? found :  _.uniqBy(found, card => card.name));
+    }
+
+    public async findAllVersions(original: Card) : Promise<Card[]>
+    {
+        var found = await this.cards.filter(card => 
+        {
+            return card.name == original.name || card.multiverseid == original.multiverseid || 
+                       (card.names == undefined ? false : card.names.indexOf(original.name) > -1);
+        }).toArray();
+        
+        return found;
     }
 
     public async importCards(lines: string[]) : Promise<Card[]>

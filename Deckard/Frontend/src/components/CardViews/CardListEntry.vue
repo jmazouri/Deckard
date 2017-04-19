@@ -5,12 +5,12 @@
             <div class="left">
                 <span class="quantity" v-if="quantity > 1">{{quantity}}x</span>
 
-                <img class="typeIcon" v-bind:src="typeToHtml(currentCard.types[0])" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
+                <img class="typeIcon" v-bind:src="typeToHtml" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
 
                 <span class="name" v-html="cardName"></span>
 
                 <span class="info" v-if="showText">
-                    <span class="types" v-html="currentCard.types + (currentCard.subtypes != undefined ? ' - ' + currentCard.subtypes : '')"></span>
+                    <span class="types">{{currentCard.type}}</span>
                 </span>
             </div>
             <div class="right">
@@ -31,7 +31,6 @@
 @import "../../styles/variables.scss";
 @import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
 
-$border-vars: 0.3rem solid;
 $light-text: lighten(black, 33%);
 
 .smaller .listEntry

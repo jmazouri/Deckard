@@ -1,60 +1,62 @@
 <template>
     <div class="cardGrid" v-bind:class="viewMode">
         <div class="sorting">
-            <div>
-                View:
-                <select v-model="viewMode">
-                    <option value="bigCards">Big Cards</option>
-                    <option value="tinyCards">Tiny Cards</option>
-                    <option value="list">List</option>
-                    <option value="cardArt">Card Art</option>
-                </select>
-            </div>
+            <div class="controls">
+                <label>
+                    View
+                    <select v-model="viewMode">
+                        <option value="bigCards">Big Cards</option>
+                        <option value="tinyCards">Tiny Cards</option>
+                        <option value="list">List</option>
+                        <option value="cardArt">Card Art</option>
+                    </select>
+                </label>
 
-            <div>
-                Filter:
-                <input type="text" v-model="textFilter"></input>
-            </div>
+                <label>
+                    Filter
+                    <input type="text" v-model="textFilter"></input>
+                </label>
 
-            <div>
-                Sort: 
-                <select v-model="sorting">
-                    <option>Name</option>
-                    <option>CMC</option>
-                    <option>Color</option>
-                    <option>Type</option>
-                    <option>Rarity</option>
-                </select>
-            </div>
+                <label>
+                    Sort
+                    <select v-model="sorting">
+                        <option>Name</option>
+                        <option>CMC</option>
+                        <option>Color</option>
+                        <option>Type</option>
+                        <option>Rarity</option>
+                    </select>
+                </label>
 
-            <br />
+                <div class="opts">
+                    <label>
+                        <input type="checkbox" v-model="shouldGroup"></input>
+                        Group by Name
+                    </label>
 
-            <div>
-                <div>
-                    Group by Name
-                    <input type="checkbox" v-model="shouldGroup"></input>
+                    <label>
+                        <input type="checkbox" v-model="showAllText"></input>
+                        Show text
+                    </label>
+                    
+                    <label v-if="showAllText">
+                        <input type="checkbox" v-model="showAllFullText"></input>
+                        Show flavor/rules
+                    </label>
                 </div>
 
-                <div>
-                    Show text
-                    <input type="checkbox" v-model="showAllText"></input>
+                <div class="cardCount">
+                    {{cards.length}} cards <small v-if="hiddenCardCount > 0">{{hiddenCardCount}} hidden</small>
                 </div>
-                
-
-                <div v-if="showAllText">
-                    Show flavor/rules
-                    <input type="checkbox" v-model="showAllFullText"></input>
-                </div>
-            </div>
-
-            <div class="cardCount">
-                {{cards.length}} cards <small v-if="hiddenCardCount > 0">{{hiddenCardCount}} hidden</small>
             </div>
         </div>
 
         <contextMenu ref="ctx" @ctx-open="onCtxOpen">
             <li class="ctx-item" @click="addToDeck()" v-if="!removeCard">Add To Deck</li>
             <li class="ctx-item" @click="removeFromDeck()" v-if="removeCard">Remove From Deck</li>
+
+            <li class="separator"></li>
+            <li class="ctx-item" @click="searchAll()">Find All Versions</li>
 
             <li class="separator"></li>
             <li class="ctx-item" @click="goToGatherer()">View on Gatherer</li>
@@ -123,36 +125,60 @@
 
     .sorting
     {
+        display: flex;
+        flex-direction: row;
+
         width: 100%;
-        justify-content: flex-end;
 
         padding: 0 0.5em;
 
-        input[type=text]
+        .controls
         {
-            width: 66%;
-        }
+            width: 100%;
 
-        div
-        {
-            display: inline-block;
-        }
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
 
-        .cardCount
-        {
-            width: calc(100% - 10px);
-            margin: 1em 0em 0.25em 0;
-
-            font-size: 1.5em;
-            font-weight: bold;
-
-            text-align: right;
-
-            small
+            label
             {
-                font-size: 0.5em;
+                display: inline-block;
+                margin-right: 0.5em;
+
+                input[type=checkbox]
+                {
+                    position: relative;
+
+                    top: 2px;
+
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            .opts
+            {
+                flex-basis: 100%;
+            }
+
+            .cardCount
+            {
+                flex-grow: 1;
+                align-self: flex-end;
+
+                font-size: 1.5em;
+                font-weight: bold;
+                text-align: right;
+
+                margin-right: 0.5em;
+
+                small
+                {
+                    font-size: 0.5em;
+                }
             }
         }
+
     }
 }
 
@@ -329,6 +355,11 @@ export default class CardGrid extends Vue
         window.open("http://shop.tcgplayer.com/productcatalog/product/show?ProductName=" + encodeURI(this.rightClickedCard.name), "_blank");
     }
 
+    searchAll()
+    {
+        this.$emit("searchAll", this.rightClickedCard);
+    }
+
     showFullText(multiverseid)
     {
         var newVal = !(this.shouldShowText(multiverseid));
@@ -388,7 +419,7 @@ export default class CardGrid extends Vue
                 case "CMC":
                     return (element.cmc == undefined ? -11 : element.cmc);
                 case "Color":
-                    return (element.colorIdentity == undefined ? "" : element.colorIdentity[0]);
+                    return (element.colorIdentity == undefined ? "" : element.colorIdentity);
                 case "Type":
                     return element.type;
                 case "Rarity":
