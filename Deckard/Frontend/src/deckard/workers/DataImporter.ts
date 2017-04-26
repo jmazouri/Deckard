@@ -10,6 +10,13 @@ let theWorker = this;
 
 //let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
 
+//the default type definitions for webworker are broken/outdated,
+//so let's just insert a tiny 
+function postMessage(msg)
+{
+    (<any>self).postMessage(msg);
+}
+
 class DataImporter
 {
     static sendStatusMessage(message: string, current: number, max: number)
@@ -18,8 +25,8 @@ class DataImporter
         msg.currentMessage = message;
         msg.currentProgress = current;
         msg.maxProgress = max;
-        
-        <any>postMessage(msg);
+
+        postMessage(msg);
     }
     
     public static async loadCardsFromJson(jsonUrl: string) : Promise<Set[]>
@@ -89,16 +96,16 @@ onmessage = async args =>
             let loadedCards:Set[] = await DataImporter.loadCardsFromJson(message.data);
             await CardDatabase.instance.saveSets(loadedCards);
 
-            <any>postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
+            postMessage(new DataImporterMessage("LoadCards", loadedCards.length + " cards saved to database."));
         }
         else
         {
-            <any>postMessage(new DataImporterMessage("LoadCards", "Saving skipped, database already exists."));
+            postMessage(new DataImporterMessage("LoadCards", "Saving skipped, database already exists."));
         }
     }
     else
     {
-        <any>postMessage(new DataImporterMessage("Error", "Nothing was loaded."));
+        postMessage(new DataImporterMessage("Error", "Nothing was loaded."));
     }
     
 };

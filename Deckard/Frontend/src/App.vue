@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div class="sideBar">
-            <DeckEditor v-on:removeFromDeck="removeFromDeck"></DeckEditor>
+            <DeckEditor></DeckEditor>
         </div>
 
         <div class="main">
@@ -10,18 +10,17 @@
             </div>
 
             <div class="cardBrowser">
-                Search:
-                <input type="text" v-model="searchQuery" />
-                <button v-on:click="performSearch">Search</button>
-                <br />
+                <input type="text" v-model="searchQuery" placeholder="Search" />
+                <button v-on:click="performSearch">
+                    <img src="./assets/icons/ui/search.png">
+                </button>
 
-                Set: 
                 <select v-model="currentSet">
                     <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
                 </select>
             </div>
 
-            <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:addToDeck="addToDeck" v-on:searchAll="searchAll"></CardGrid>
+            <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:searchAll="searchAll"></CardGrid>
 
             <div class="spinner" v-show="setCards.length <= 0">
                 <div class="rect1"></div>
@@ -70,6 +69,9 @@
 @import "./styles/variables.scss";
 @import "./styles/reset.scss";
 
+@import './styles/themes/green.scss';
+@import "./styles/base.scss";
+
 html, body
 {
     margin: 0;
@@ -85,8 +87,9 @@ html, body
 
     &::-webkit-resizer
     {
-        background: red;
-        border: 1px dotted black;
+        //background: red;
+        background: $sidebar-bg;
+        border: 1px solid red;
     }
 
     &::-webkit-scrollbar-thumb
@@ -105,7 +108,6 @@ html, body
 {
     max-width: calc(100% - 8px);
 
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
     color: #2c3e50;
 
     display: flex;
@@ -144,10 +146,13 @@ html, body
     left: 0;
     */
 
-    overflow-y: scroll;
+    overflow-y: overlay;
     overflow-x: hidden;
 
     box-shadow: 2px 0px 4px -1px lighten(black, 33%);
+
+    background: $sidebar-bg;
+    color: $sidebar-text-color;
 
     h2
     {
@@ -165,6 +170,9 @@ html, body
 
 .main
 {
+    background: $main-bg;
+    color: $main-text-color;
+
     padding: 0.5em;
 
     width: 67vw;
@@ -172,17 +180,18 @@ html, body
 
     .cardBrowser
     {
-        margin-bottom: 1em;
-    }
-}
+        margin-bottom: 0.5em;
 
-.cardGrid
-{
-    
+        button
+        {
+            text-align: center;
+            width: 24px;
+        }
+    }
 }
 </style>
 
-<script>
+<script lang="ts">
 import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Watch} from 'av-ts'
 
@@ -238,16 +247,6 @@ export default class App extends Vue
             });
     }
 
-    addToDeck(card)
-    {
-        this.$store.commit('addToDeck', card);
-    }
-
-    removeFromDeck(card)
-    {
-        this.$store.commit('removeFromDeck', card);
-    }
-
     searchAll(card)
     {
         let thisVue:App = this;
@@ -284,7 +283,7 @@ export default class App extends Vue
     {
         let thisVue = this;
 
-        if (localStorage["currentDeck"] != undefined)
+        if (thisVue.$store.state.allDecks.length == 0 && localStorage["currentDeck"] != undefined)
         {
             let deck = JSON.parse(localStorage["currentDeck"]);
             thisVue.$store.commit('loadDeck', deck);

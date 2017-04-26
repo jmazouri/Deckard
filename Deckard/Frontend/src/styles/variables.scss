@@ -23,21 +23,33 @@ $mtg-guilds:
 (
     WU: ($mtg-white, $mtg-blue),
     WB: ($mtg-white, $mtg-black),
+
     UB: ($mtg-blue, $mtg-black),
     UR: ($mtg-blue, $mtg-red),
+
     BR: ($mtg-black, $mtg-red),
     BG: ($mtg-black, $mtg-green),
+
     RG: ($mtg-red, $mtg-green),
+    GR: ($mtg-red, $mtg-green),
+
     RW: ($mtg-red, $mtg-white),
 
-    //yes, it's reversed.
     WG: ($mtg-green, $mtg-white),
+    GW: ($mtg-green, $mtg-white),
+
     GU: ($mtg-green, $mtg-blue)
 );
 
 $border-vars: 0.3rem solid;
 
 //Global mixins
+
+@mixin clear-appearance()
+{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
 
 @mixin card-bg-colors()
 {
@@ -62,7 +74,6 @@ $border-vars: 0.3rem solid;
 {
     border-left: $border-vars darken(lightgray, 25%);
     background: linear-gradient(0deg, lighten(lightgray, 6%) 25%, lighten(lightgray, 10%) 100%);
-    
 
     @for $i from 1 through length($mtg-color-names)
     {
@@ -81,8 +92,13 @@ $border-vars: 0.3rem solid;
 
         &.#{$guild}
         {
-            background: linear-gradient(0deg, lighten($first-color, 4%) 60%, lighten($second-color, 0%) 100%);
+            background: linear-gradient(to left top, lighten($first-color, 4%) 16%, lighten($second-color, 0%) 100%);
         }
+    }
+
+    &.Gld
+    {
+        background: linear-gradient(0deg, lighten($mtg-rare, 15%) 25%, lighten($mtg-rare, 10%) 100%);
     }
 
     @for $i from 1 through length($mtg-rarity-names)

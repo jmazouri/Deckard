@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
+
+body > *, select, input, button
+{
+    font-family: "Noto Serif", sans-serif;
+}
+
+select, input, button
+{
+    background: darken($base-color, 18%);
+    color: white;
+
+    border: 2px solid darken($base-color, 5%);
+    padding: 2px;
+
+    margin: 1px 0;
+}

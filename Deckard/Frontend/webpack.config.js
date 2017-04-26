@@ -20,12 +20,13 @@ module.exports = {
             // other preprocessors should work out of the box, no loader config like this necessary.
             'scss': 'vue-style-loader!css-loader!sass-loader',
             'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-            'js': 'vue-ts-loader'
+            'js': 'ts-loader'
           },
           esModule: true
           // other vue-loader options go here
         }
       },
+      /*
       {
         test: /\.ts$/,
         loader: 'vue-ts-loader',
@@ -40,6 +41,12 @@ module.exports = {
             //Vue only likes ES5, but Dexie uses ES6. Stuff breaks. Bluh.
             "ignoreDiagnostics": [2346, 2307, 2304] 
         }
+      },
+      */
+      { 
+          test: /\.ts$/,
+          loader: 'ts-loader',
+          options: { appendTsSuffixTo: [/\.vue$/] } 
       },
       {
         test: /\.(png|jpg|gif|svg|ttf)$/,

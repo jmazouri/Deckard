@@ -34,8 +34,8 @@ $card-radius: 0.5em;
     display: flex;
     flex-direction: column;
 
-    justify-content: space-between;
-    align-content: space-between;
+    justify-content: space-around;
+    align-content: space-around;
 
     font-size: 0.8rem;
 
@@ -150,6 +150,8 @@ $card-radius: 0.5em;
 
         font-family: "Hind", sans-serif;
 
+        white-space: pre-line;
+
         .symbol
         {    
             display: inline-block;
@@ -225,6 +227,11 @@ $card-radius: 0.5em;
             {
                 background-color: rgb(242, 129, 0);
             }
+
+            &.Sp
+            {
+                background-color: $mtg-special;
+            }
         }
 
         .pt
@@ -239,13 +246,13 @@ $card-radius: 0.5em;
 }
 </style>
 
-<script>
+<script lang="ts">
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
 import {Card} from '../../deckard/models/Card'
 
 @Component
-export default class TinyCard extends Mixin(CardView)
+export default class TinyCard extends CardView
 {
     // lifecycle hook
     @Lifecycle mounted()

@@ -6,7 +6,7 @@
 
 </style>
 
-<script>
+<script lang="ts">
 import * as _ from "lodash"
 
 import {Vue, Component, Lifecycle, Prop, Trait, p} from 'av-ts'
@@ -25,7 +25,7 @@ export default class CardView extends Vue
         }
     })
 
-    @Prop currentCard:any = p(
+    @Prop card:any = p(
     {
         type: Object,
         required: true,
@@ -34,6 +34,11 @@ export default class CardView extends Vue
             return new Card();
         }
     })
+
+    get currentCard(): Card
+    {
+        return <Card>this.card;
+    }
 
     @Prop showDescriptionText:any = p(
     {
@@ -57,24 +62,19 @@ export default class CardView extends Vue
 
     get cardBgColor()
     {
-        let colorId = (<any>this).currentCard.colorIdentity;
+        let colorId = this.currentCard.colorIdentity;
 
         if (colorId != undefined)
         {
             if (colorId.length <= 2)
             {
-                return colorId.join("");
+                return colorId.slice(0, 2).join(""); //dual-color
             }
-            else
-            {
-                return colorId[0];
-            }
+
+            return "Gld"; //multicolor (gold)
         }
-        else
-        {
-            return "";
-        }
-        
+
+        return ""; //artifact/devoid/whatever
     }
 
     get cardName()
@@ -150,6 +150,22 @@ export default class CardView extends Vue
     get currentCardText()
     {
         var thisVue = this;
+        let keywords = ["Deathtouch", "Defender", "Double Strike", "Enchant", "Equip", "Flashback", "Flying",
+                        "Haste", "Hexproof", "Indestructible", "Intimidate", "Lifelink", "Protection", "Flanking",
+                        "Reach", "Shroud", "Trample", "Vigilance", "Banding", "Rampage", "Cumulative Upkeep", 
+                        "Phasing", "Buyback", "Shadow", "Cycling", "Echo", "Horsemanship", "Fading", "Kicker",
+                        "Flash", "Madness", "Fear", "Megamorph", "Morph", "Amplify", "Provoke", "Storm", "Affinity", "Entwine",
+                        "Modular", "Sunburst", "Bushido", "Soulshift", "Splice", "Offering", "Ninjutsu", "Epic",
+                        "Convoke", "Dredge", "Transmute", "Bloodthirst", "Haunt", "Replicate", "Forecast", "Graft",
+                        "Recover", "Ripple", "Split Second", "Suspend", "Vanishing", "Absorb", "Swap", "Delve", "Fortify",
+                        "Frenzy", "Gravestorm", "Poisonous", "Transfigure", "Champion", "Changeling", "Evoke", "Hideaway",
+                        "Prowl", "Reinforce", "Conspire", "Persist", "Wither", "Retrace", "Devour", "Exalted", "Unearth",
+                        "Cascade", "Annihilator", "Level Up", "Rebound", "Armor", "Infect", "Battle Cry", "Weapon", "Undying", "Miracle",
+                        "Soulbond", "Overload", "Scavenge", "Unleash", "Cipher", "Evolve", "Extort", "Fuse", "Bestow",
+                        "Tribute", "Dethrone", "Agenda", "Outlast", "Prowess", "Dash", "Exploit", "Menace", "Renown",
+                        "Awaken", "Devoid", "Ingest", "Myriad", "Surge", "Skulk", "Emerge", "Escalate", "Melee", "Crew",
+                        "Fabricate", "Partner", "Undaunted", "Improvise", "First strike", "Islandwalk", "Mountainwalk",
+                        "Swampwalk", "Plainswalk", "Forestwalk", "Exert"];
 
         if (this.currentCard == null || this.currentCard.text == undefined)
         {
@@ -166,10 +182,9 @@ export default class CardView extends Vue
             },
             //Matches (separated by |):
             //  - +x or -x strings, for pumps & planeswalker abilities
-            //  - Single-word abilities, followed by newlines (Flying, Double strike)
             //  - Single-word abilities, followed by non-flavor description text (Revolt - when [asdf])
             { 
-                regex: /(\+|−|\-)\s.|^\S.*\s{0,2}\n|\S.*(?= —)/gm, 
+                regex: /(\+|−|\-)\s.|\S.*(?= —)/gm, 
                 format: function(match) { return (match.length <= 17 ? `<strong>${match}</strong>` : match) } 
             }
         ];
@@ -180,6 +195,14 @@ export default class CardView extends Vue
         }
 
         cardHtml = this.manaToHtml(cardHtml);
+
+        for (let word of keywords)
+        {
+            cardHtml = cardHtml.replace(new RegExp(`${word}(\\s|,|\\z)`, 'gmi'), function(match, group)
+            {
+                return `<strong>${match}</strong> `;
+            });
+        }
 
         return cardHtml;
     }

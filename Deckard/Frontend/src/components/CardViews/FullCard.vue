@@ -204,7 +204,7 @@
 }
 </style>
 
-<script>
+<script lang="ts">
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
 import {Card} from '../../deckard/models/Card'
@@ -212,7 +212,7 @@ import {Card} from '../../deckard/models/Card'
 @Component({
     name: "FullCard"
 })
-export default class FullCard extends Mixin(CardView)
+export default class FullCard extends CardView
 {
     // lifecycle hook
     @Lifecycle mounted()

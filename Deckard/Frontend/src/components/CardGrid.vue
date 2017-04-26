@@ -3,7 +3,9 @@
         <div class="sorting">
             <div class="controls">
                 <label>
-                    View
+                    <div>
+                        View
+                    </div>
                     <select v-model="viewMode">
                         <option value="bigCards">Big Cards</option>
                         <option value="tinyCards">Tiny Cards</option>
@@ -13,12 +15,9 @@
                 </label>
 
                 <label>
-                    Filter
-                    <input type="text" v-model="textFilter"></input>
-                </label>
-
-                <label>
-                    Sort
+                    <div>
+                        Sort
+                    </div>
                     <select v-model="sorting">
                         <option>Name</option>
                         <option>CMC</option>
@@ -26,6 +25,10 @@
                         <option>Type</option>
                         <option>Rarity</option>
                     </select>
+                </label>
+
+                <label>
+                    <input type="text" v-model="textFilter" placeholder="Filter..."></input>
                 </label>
 
                 <div class="opts">
@@ -52,7 +55,7 @@
         </div>
 
         <contextMenu ref="ctx" @ctx-open="onCtxOpen">
-            <li class="ctx-item" @click="addToDeck()" v-if="!removeCard">Add To Deck</li>
+            <li class="ctx-item" @click="addToDeck()">Add To Deck</li>
             <li class="ctx-item" @click="removeFromDeck()" v-if="removeCard">Remove From Deck</li>
 
             <li class="separator"></li>
@@ -63,42 +66,42 @@
             <li class="ctx-item" @click="goToTCG()">View on TCGPlayer</li>
         </contextMenu>
 
-        <CardListEntry v-if="viewMode == 'list'" v-for="(card, index) in sortedCards" :key="index"
+        <CardListEntry class="card" v-if="viewMode == 'list'" v-for="(card, index) in sortedCards" :key="index"
                        
                 @click.native="showFullText(card.multiverseid)"
                 @click.ctrl.native="addToDeck(card)"
 
                 :showText="shouldShowText(card.multiverseid)"
                 :showDescriptionText="showAllFullText" 
-                :currentCard="card"
+                :card="card"
                 :quantity="getCardQuantity(card.multiverseid)"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardListEntry>
 
-        <TinyCard v-if="viewMode == 'tinyCards'" v-for="(card, index) in sortedCards" :key="index" 
+        <TinyCard class="card" v-if="viewMode == 'tinyCards'" v-for="(card, index) in sortedCards" :key="index" 
 
                 @click.native="showFullText(card.multiverseid)"
                 @click.ctrl.native="addToDeck(card)"
 
                 :showText="shouldShowText(card.multiverseid)"
                 :showDescriptionText="showAllFullText" 
-                :currentCard="card"
+                :card="card"
                 :quantity="getCardQuantity(card.multiverseid)"
 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
 
-        <FullCard v-if="viewMode == 'bigCards'" v-for="(card, index) in sortedCards" :key="index"
+        <FullCard class="card" v-if="viewMode == 'bigCards'" v-for="(card, index) in sortedCards" :key="index"
                        
-                :currentCard="card"
+                :card="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </FullCard>
 
-        <CardArt v-if="viewMode == 'cardArt'" v-for="(card, index) in sortedCards" :key="index"
+        <CardArt class="card" v-if="viewMode == 'cardArt'" v-for="(card, index) in sortedCards" :key="index"
                        
-                :currentCard="card"
+                :card="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardArt>
@@ -106,10 +109,13 @@
 </template>
 
 <style lang="scss">
+@import "../styles/variables.scss";
 @import "../styles/loader.scss";
 
 .cardGrid
 {
+    background-color: transparent;
+
     &.tinyCards, &.cardArt
     {
         display: flex;
@@ -118,9 +124,9 @@
         justify-content: space-around;
     }
 
-    &.list
+    .card
     {
-
+        color: black;
     }
 
     .sorting
@@ -145,14 +151,38 @@
                 display: inline-block;
                 margin-right: 0.5em;
 
+                > div
+                {
+                    display: inline-block;
+                    min-width: 2.5em;
+                }
+
                 input[type=checkbox]
                 {
+                    @include clear-appearance();
+
+                    background: transparent;
+
                     position: relative;
 
                     top: 2px;
 
                     width: 16px;
                     height: 16px;
+
+                    &:checked:after
+                    {
+                        content: '✔';
+                        position: relative;
+
+                        top: -5px;
+                        left: -1px;
+                    }
+
+                    &:focus
+                    {
+                        outline: none;
+                    }
                 }
             }
 
@@ -188,7 +218,7 @@ li.separator
 }
 </style>
 
-<script>
+<script lang="ts">
 import * as _ from "lodash"
 
 import {Vue, Component, Lifecycle, Prop, p, Watch} from 'av-ts'
@@ -337,12 +367,12 @@ export default class CardGrid extends Vue
 
     addToDeck(card)
     {
-        this.$emit("addToDeck", (card == undefined ? this.rightClickedCard : card));
+        this.$store.commit('addToDeck', (card == undefined ? this.rightClickedCard : card));
     }
 
     removeFromDeck()
     {
-        this.$emit("removeFromDeck", this.rightClickedCard);
+        this.$store.commit('removeFromDeck', this.rightClickedCard);
     }
 
     goToGatherer()
@@ -362,6 +392,7 @@ export default class CardGrid extends Vue
 
     showFullText(multiverseid)
     {
+        if (this.showAllText) { return; }
         var newVal = !(this.shouldShowText(multiverseid));
 
         this.$set(this.showText, multiverseid, newVal);

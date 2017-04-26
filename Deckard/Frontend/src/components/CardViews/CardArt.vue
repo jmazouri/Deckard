@@ -29,13 +29,13 @@
 
 </style>
 
-<script>
+<script lang="ts">
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
 import {Card} from '../../deckard/models/Card'
 
 @Component
-export default class CardArt extends Mixin(CardView)
+export default class CardArt extends CardView
 {
     get currentCardArt()
     {

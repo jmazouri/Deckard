@@ -21,7 +21,7 @@
 
         <div class="body" v-if="showText">
             <div class="text" v-html="currentCardText"></div>
-            <div class="flavor" v-if="showDescriptionText">{{currentCard.flavor}}</div>
+            <div class="flavor" v-if="showDescriptionText && currentCard.flavor != undefined">{{currentCard.flavor}}</div>
         </div>
 
     </div>
@@ -29,7 +29,6 @@
 
 <style lang="scss">
 @import "../../styles/variables.scss";
-@import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
 
 $light-text: lighten(black, 33%);
 
@@ -186,13 +185,13 @@ $light-text: lighten(black, 33%);
 }
 </style>
 
-<script>
+<script lang="ts">
 import {Vue, Component, Lifecycle, Prop, Mixin, p} from 'av-ts'
 import CardView from './CardView.vue'
 import {Card} from '../../deckard/models/Card'
 
 @Component
-export default class CardListEntry extends Mixin(CardView)
+export default class CardListEntry extends CardView
 {
     // lifecycle hook
     @Lifecycle mounted()
