@@ -1,0 +1,13 @@
+$global-font: "Segoe UI", "Helvetica", sans-serif;
+
+$base-color: lightblue;
+
+$sidebar-bg: lighten($base-color, 0%);
+$main-bg: $sidebar-bg;
+
+$sidebar-text-color: rgb(35, 35, 35);
+$main-text-color: $sidebar-text-color;
+
+$control-bg: darken($base-color, 20%);
+$control-border: 2px solid darken($base-color, 33%);
+$control-fg: $sidebar-text-color;

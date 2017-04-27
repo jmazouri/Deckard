@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
 $global-font: "Noto Serif", sans-serif;
 
-$base-color: green;
+$base-color: red;
 
-$sidebar-bg: darken($base-color, 21%);
+$sidebar-bg: darken($base-color, 40%);
 $main-bg: $sidebar-bg;
 
 $sidebar-text-color: rgb(220, 220, 220);
 $main-text-color: $sidebar-text-color;
 
-$control-bg: darken($base-color, 18%);
-$control-border: 2px solid darken($base-color, 5%);
+$control-bg: darken($base-color, 33%);
+$control-border: 2px solid darken($base-color, 16%);
 $control-fg: white;

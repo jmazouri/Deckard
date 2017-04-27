@@ -69,7 +69,7 @@
 @import "./styles/variables.scss";
 @import "./styles/reset.scss";
 
-@import './styles/themes/green.scss';
+@import './styles/themes/lightblue.scss';
 @import "./styles/base.scss";
 
 html, body
