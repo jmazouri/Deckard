@@ -5,7 +5,7 @@
             <div class="left">
                 <span class="quantity" v-if="quantity > 1">{{quantity}}x</span>
 
-                <img class="typeIcon" v-bind:src="typeToHtml" v-bind:title="currentCard.types + ' - ' + currentCard.subtypes"></img>
+                <span class="typeIcon" v-html="typeToHtml" v-bind:title="currentCard.type"></span>
 
                 <span class="name" v-html="cardName"></span>
 
@@ -30,8 +30,6 @@
 <style lang="scss">
 @import "../../styles/variables.scss";
 
-$light-text: lighten(black, 33%);
-
 .smaller .listEntry
 {
     font-size: 1em;
@@ -44,7 +42,7 @@ $light-text: lighten(black, 33%);
 
 .listEntry
 {
-    font-family: "Noto Serif";
+    font-family: $card-list-font;
     font-size: 1.75em;
 
     padding: 0.25em;
@@ -77,8 +75,10 @@ $light-text: lighten(black, 33%);
         {
             flex-grow: 1;
 
-            .typeIcon
+            .typeIcon svg
             {
+                fill: currentColor;
+
                 position: relative;
                 top: -0.1em;
             }
@@ -133,7 +133,7 @@ $light-text: lighten(black, 33%);
         }
     }
 
-    .typeIcon, .costIcon, .symbol
+    .typeIcon svg, .costIcon, .symbol
     {
         max-height: 0.85em;
         width: 0.85em;
@@ -151,11 +151,12 @@ $light-text: lighten(black, 33%);
 
     .symbol
     {
-        font-family: "Noto Serif";
-        font-size: 0.6em;
+        font-family: $card-list-font;
+        font-size: 0.75em;
         font-weight: bold;
+        font-family: sans-serif;
 
-        background-color: $mtg-artifact;
+        background-color: lightgray;
         padding: 0em 0.45em 0.05em 0.45em;
 
         border-radius: 8em;

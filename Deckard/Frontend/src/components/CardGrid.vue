@@ -7,10 +7,9 @@
                         View
                     </div>
                     <select v-model="viewMode">
-                        <option value="bigCards">Big Cards</option>
-                        <option value="tinyCards">Tiny Cards</option>
+                        <option value="cards">Cards</option>
                         <option value="list">List</option>
-                        <option value="cardArt">Card Art</option>
+                        <option value="cardArt">Art</option>
                     </select>
                 </label>
 
@@ -27,9 +26,7 @@
                     </select>
                 </label>
 
-                <label>
-                    <input type="text" v-model="textFilter" placeholder="Filter..."></input>
-                </label>
+                <input type="text" v-model="textFilter" placeholder="Filter..."></input>
 
                 <div class="opts">
                     <label>
@@ -79,7 +76,7 @@
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardListEntry>
 
-        <TinyCard class="card" v-if="viewMode == 'tinyCards'" v-for="(card, index) in sortedCards" :key="index" 
+        <TinyCard class="card" v-if="viewMode == 'cards'" v-for="(card, index) in sortedCards" :key="index" 
 
                 @click.native="showFullText(card.multiverseid)"
                 @click.ctrl.native="addToDeck(card)"
@@ -91,13 +88,6 @@
 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </TinyCard>
-
-        <FullCard class="card" v-if="viewMode == 'bigCards'" v-for="(card, index) in sortedCards" :key="index"
-                       
-                :card="card"
-                
-                @contextmenu.prevent.native="$refs.ctx.open($event, card)">
-        </FullCard>
 
         <CardArt class="card" v-if="viewMode == 'cardArt'" v-for="(card, index) in sortedCards" :key="index"
                        
@@ -116,7 +106,7 @@
 {
     background-color: transparent;
 
-    &.tinyCards, &.cardArt
+    &.cards, &.cardArt
     {
         display: flex;
         flex-direction: row;
@@ -126,7 +116,7 @@
 
     .card
     {
-        color: black;
+        color: $card-text-color;
     }
 
     .sorting
@@ -153,15 +143,15 @@
 
                 > div
                 {
-                    display: inline-block;
-                    min-width: 2.5em;
+                    font-size: 0.8em;
+                    margin-bottom: 0.25em;
                 }
 
                 input[type=checkbox]
                 {
                     @include clear-appearance();
 
-                    background: transparent;
+                    background: $control-bg;
 
                     position: relative;
 
@@ -184,6 +174,12 @@
                         outline: none;
                     }
                 }
+            }
+
+            input[type=text]
+            {
+                margin-top: 16px;
+                width: 32%;
             }
 
             .opts
@@ -232,7 +228,7 @@ import {Card} from '../deckard/models/Card'
 
 @Component({
     components: {'TinyCard' : TinyCard, 'CardListEntry': CardListEntry,
-                 'FullCard' : FullCard, 'CardArt': CardArt,
+                 'CardArt': CardArt,
                  'contextMenu': require('vue-context-menu') }
 })
 export default class CardGrid extends Vue
@@ -278,7 +274,7 @@ export default class CardGrid extends Vue
         }
     })
 
-    viewMode: string = "list";
+    viewMode: string = "cards";
     textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;

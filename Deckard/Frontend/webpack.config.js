@@ -43,13 +43,14 @@ module.exports = {
         }
       },
       */
+      
       { 
           test: /\.ts$/,
           loader: 'ts-loader',
           options: { appendTsSuffixTo: [/\.vue$/] } 
       },
       {
-        test: /\.(png|jpg|gif|svg|ttf)$/,
+        test: /\.(png|jpg|gif|ttf)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'

@@ -54,12 +54,14 @@
 
     .options
     {
-        padding: 0.5em 0.5em 0 0.5em;
+        padding: 0.5em 0 0 0.5em;
 
         .buttonRow
         {
             display: flex;
             justify-content: space-around;
+
+            margin-bottom: 0.5em;
 
             & > *
             {

@@ -13,6 +13,13 @@ $mtg-rare: rgb(221, 188, 106);
 $mtg-mythic: rgb(242, 129, 0);
 $mtg-special: DarkOrchid;
 
+$card-text-color: black;
+$light-text: lighten($card-text-color, 33%);
+
+$card-list-font: sans-serif;
+
+@import './themes/amonkhet.scss';
+
 $mtg-rarity-names: Co, Un, Ra, My, Sp;
 $mtg-rarity-colors: $mtg-common, $mtg-uncommon, $mtg-rare, $mtg-mythic, $mtg-special;
 
@@ -43,69 +50,4 @@ $mtg-guilds:
 
 $border-vars: 0.3rem solid;
 
-//Global mixins
-
-@mixin clear-appearance()
-{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-@mixin card-bg-colors()
-{
-    @for $i from 1 through length($mtg-color-names)
-    {
-        &.#{nth($mtg-color-names, $i)}
-        {
-            background-color: lighten(nth($mtg-colors, $i), 6%);
-        }
-    }
-
-    @each $guild, $colors in $mtg-guilds
-    {
-        &.#{$guild}
-        {
-            background: linear-gradient(45deg, lighten(nth($colors, 1), 6%) 0%, nth($colors, 2) 100%);
-        }
-    }
-}
-
-@mixin list-bg-colors()
-{
-    border-left: $border-vars darken(lightgray, 25%);
-    background: linear-gradient(0deg, lighten(lightgray, 6%) 25%, lighten(lightgray, 10%) 100%);
-
-    @for $i from 1 through length($mtg-color-names)
-    {
-        $cur-color: nth($mtg-colors, $i);
-
-        &.#{nth($mtg-color-names, $i)}
-        {
-            background: linear-gradient(0deg, lighten($cur-color, 6%) 25%, lighten($cur-color, 10%) 100%);
-        }
-    }
-
-    @each $guild, $colors in $mtg-guilds
-    {
-        $first-color: nth($colors, 1);
-        $second-color: nth($colors, 2);
-
-        &.#{$guild}
-        {
-            background: linear-gradient(to left top, lighten($first-color, 4%) 16%, lighten($second-color, 0%) 100%);
-        }
-    }
-
-    &.Gld
-    {
-        background: linear-gradient(0deg, lighten($mtg-rare, 15%) 25%, lighten($mtg-rare, 10%) 100%);
-    }
-
-    @for $i from 1 through length($mtg-rarity-names)
-    {
-        &.#{nth($mtg-rarity-names, $i)}
-        {
-            border-left: $border-vars nth($mtg-rarity-colors, $i);
-        }
-    }
-};
+@import './mixins.scss';

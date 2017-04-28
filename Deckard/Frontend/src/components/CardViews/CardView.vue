@@ -3,7 +3,10 @@
 </template>
 
 <style lang="scss">
-
+.symbol
+{
+    color: black;
+}
 </style>
 
 <script lang="ts">
@@ -112,12 +115,12 @@ export default class CardView extends Vue
         {
             try
             {
-                let potentialImage = require("../../assets/icons/types/" + matches[0].toLowerCase() + ".svg");
+                let potentialImage = require("svg-inline-loader?removeSVGTagAttrs=true!../../assets/icons/types/" + matches[0].toLowerCase() + ".svg");
                 return potentialImage;
             }
             catch (err)
             {
-                return require("../../assets/icons/types/mixed.svg");
+                return require("svg-inline-loader?removeSVGTagAttrs=true!../../assets/icons/types/mixed.svg");
             }
         }
     }
@@ -140,7 +143,7 @@ export default class CardView extends Vue
         //Replace symbol tokens with images
         cardHtml = cardHtml.replace(/{(\D*?)}/g, function(match, group)
         {
-            let potentialImage = require("../../assets/icons/symbols/" + group + ".svg");
+            let potentialImage = require("file-loader!../../assets/icons/symbols/" + group + ".svg");
             return `<img class='costIcon' src="${potentialImage}">`;
         });
 

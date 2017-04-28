@@ -1,4 +1,6 @@
-$global-font: "Segoe UI", "Helvetica", sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Muli');
+$global-font: "Muli", "Helvetica", sans-serif;
+$card-list-font: $global-font;
 
 $base-color: lightblue;
 
@@ -11,3 +13,4 @@ $main-text-color: $sidebar-text-color;
 $control-bg: darken($base-color, 20%);
 $control-border: 2px solid darken($base-color, 33%);
 $control-fg: $sidebar-text-color;
+$control-placeholder-fg: lighten($control-fg, 10%);

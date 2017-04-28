@@ -1,7 +1,7 @@
 <template>
     <div class="tinyCard" v-bind:class="cardBgColor">
         <div class="header">
-            <img class="typeIcon" v-bind:src="typeToHtml" v-bind:title="currentCard.type"></img>
+            <span class="typeIcon" v-html="typeToHtml" v-bind:title="currentCard.type"></span>
             <div class="name" v-bind:title="cardName">
                 <span class="quantity" v-if="quantity > 1">{{quantity}}x</span>
                 <span v-html="cardName"></span>
@@ -24,7 +24,7 @@
 
 <style lang="scss">
 @import "../../styles/variables.scss";
-@import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
+@import url('https://fonts.googleapis.com/css?family=Hind:400,700');
 
 $lighter-bg: rgba(255, 255, 255, 0.5);
 $card-radius: 0.5em;
@@ -47,7 +47,6 @@ $card-radius: 0.5em;
 
     margin-bottom: 0.5em;
 
-    background-color: lightgray;
     padding: 0em;
     border-radius: $card-radius;
 
@@ -74,7 +73,6 @@ $card-radius: 0.5em;
 
     .symbol
     {
-        font-family: "Noto Serif";
         font-size: 0.85em;
         font-weight: bold;
 
@@ -84,6 +82,8 @@ $card-radius: 0.5em;
 
     .header
     {
+        color: black;
+        
         display: flex;
         flex-direction: row;
 
@@ -91,8 +91,7 @@ $card-radius: 0.5em;
         
         flex-wrap: nowrap;
         align-items: center;
-        
-        font-family: "Noto Serif";
+
         font-weight: bold;
 
         padding: 0.2em 0em 0.2em 0.33em;
@@ -104,7 +103,7 @@ $card-radius: 0.5em;
 
         box-shadow: 0px 1px 3px -1px black;
 
-        .typeIcon
+        .typeIcon svg
         {
             max-height: 14px;
             width: 14px;
@@ -182,8 +181,7 @@ $card-radius: 0.5em;
 
     .footer
     {
-        font-family: "Noto Serif";
-        
+        color: black;
 
         display: flex;
         flex-direction: row;

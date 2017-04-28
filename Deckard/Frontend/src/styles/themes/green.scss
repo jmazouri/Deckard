@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Hind:400,700|Noto+Serif');
 $global-font: "Noto Serif", sans-serif;
+$card-list-font: $global-font;
 
 $base-color: green;
 
@@ -12,3 +13,4 @@ $main-text-color: $sidebar-text-color;
 $control-bg: darken($base-color, 18%);
 $control-border: 2px solid darken($base-color, 5%);
 $control-fg: white;
+$control-placeholder-fg: darken($control-fg, 25%);

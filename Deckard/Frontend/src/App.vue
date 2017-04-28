@@ -30,86 +30,16 @@
                 <div class="rect5"></div>
             </div>
         </div>
-
-
-
-        <!--
-        <template v-if="false">
-            <div class="sideBar">
-                Set: 
-                <select v-model="currentSet">
-                    <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
-                </select>
-                <ul>
-                    <li v-for="card in setCards">
-                        <a href="#" v-on:mouseover="currentCard = card">{{card.name}}</a>
-                        <button v-on:click="deck.push(card)">+</button>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="mainContent">
-                <FullCard :currentCard="currentCard" v-if="currentCard.mciNumber == undefined"></FullCard>
-                <img v-else v-bind:src="'http://magiccards.info/scans/en/' + currentSet.magicCardsInfoCode + '/' + currentCard.mciNumber + '.jpg'"></img>
-
-                <div>
-                    <ul>
-                        <li v-for="card in deck">
-                            <a href="#" v-on:mouseover="currentCard = card">{{card.name}}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </template>
-        -->
     </div>
 </template>
 
 <style lang="scss">
-@import "./styles/variables.scss";
 @import "./styles/reset.scss";
-
-@import './styles/themes/lightblue.scss';
+@import "./styles/variables.scss";
 @import "./styles/base.scss";
-
-html, body
-{
-    margin: 0;
-    padding: 0;
-}
-
-*
-{
-    &::-webkit-scrollbar
-    {
-        width: 10px;
-    }
-
-    &::-webkit-resizer
-    {
-        //background: red;
-        background: $sidebar-bg;
-        border: 1px solid red;
-    }
-
-    &::-webkit-scrollbar-thumb
-    {
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.25);
-
-        &:hover
-        {
-            background: rgba(0, 0, 0, 0.33);
-        }
-    }
-}
 
 #app
 {
-    max-width: calc(100% - 8px);
-
-    color: #2c3e50;
-
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -130,6 +60,8 @@ html, body
 
 .sideBar
 {
+    box-sizing: border-box;
+
     position: sticky;
     top: 0;
 
@@ -140,11 +72,7 @@ html, body
     width: 33vw;
     min-width: 25vw;
 
-    /*
-    position: fixed;
-    top: 0;
-    left: 0;
-    */
+    padding: 0 10px 0 0;
 
     overflow-y: overlay;
     overflow-x: hidden;
@@ -170,10 +98,10 @@ html, body
 
 .main
 {
-    background: $main-bg;
-    color: $main-text-color;
+    box-sizing: border-box;
 
-    padding: 0.5em;
+    background: transparent;
+    color: $main-text-color;
 
     width: 67vw;
     min-width: 50vw;
@@ -318,16 +246,7 @@ export default class App extends Vue
             if (event.data.kind == "Error")
             {
                 console.error(event.data);
-            }
-
-            /*
-            CardDatabase.getAllSets()
-                .then(function(value)
-                {
-                    thisVue.currentCardId = 417618;
-                });
-            */
-            
+            }            
         });
     }
 }
