@@ -10,7 +10,7 @@
                              v-bind:title="'CMC: ' + currentCard.cmc"></div>
         </div>
 
-        <div class="body" v-if="showText && currentCardText.length > 0">
+        <div class="body" v-if="showText">
             <div class="text" v-html="currentCardText"></div>
             <div class="flavor" v-if="showDescriptionText">{{currentCard.flavor}}</div>
         </div>

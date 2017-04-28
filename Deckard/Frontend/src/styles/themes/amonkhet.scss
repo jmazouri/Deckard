@@ -26,3 +26,5 @@ $mtg-white: transparentize(darken(desaturate($mtg-white, 95%), 60%), 0.1);
 $mtg-green: transparentize(darken(saturate($mtg-green, 33%), 50%), 0.15);
 
 $mtg-artifact: transparentize(darken($mtg-artifact, 45%), 0.1);
+
+$mtg-gold: transparentize(darken(saturate($mtg-gold, 33%), 40%), 0.1);

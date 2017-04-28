@@ -5,13 +5,14 @@ $mtg-red: #f9aa8f;
 $mtg-white: #fffbd5;
 $mtg-green: #9bd3ae;
 
-$mtg-artifact: #d9d9d9;
-
 $mtg-common: rgb(70, 63, 63);
 $mtg-uncommon: rgb(158, 158, 158);
 $mtg-rare: rgb(221, 188, 106);
 $mtg-mythic: rgb(242, 129, 0);
 $mtg-special: DarkOrchid;
+
+$mtg-artifact: #d9d9d9;
+$mtg-gold: $mtg-rare;
 
 $card-text-color: black;
 $light-text: lighten($card-text-color, 33%);

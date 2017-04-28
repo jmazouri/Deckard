@@ -25,6 +25,11 @@
             background: linear-gradient(45deg, lighten(nth($colors, 1), 6%) 0%, nth($colors, 2) 100%);
         }
     }
+
+    &.Gld
+    {
+        background: linear-gradient(0deg, lighten($mtg-gold, 15%) 25%, lighten($mtg-gold, 10%) 100%);
+    }
 }
 
 @mixin list-bg-colors()
@@ -55,7 +60,7 @@
 
     &.Gld
     {
-        background: linear-gradient(0deg, lighten($mtg-rare, 15%) 25%, lighten($mtg-rare, 10%) 100%);
+        background: linear-gradient(0deg, lighten($mtg-gold, 15%) 25%, lighten($mtg-gold, 10%) 100%);
     }
 
     @for $i from 1 through length($mtg-rarity-names)
