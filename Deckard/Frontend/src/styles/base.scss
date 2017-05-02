@@ -62,6 +62,7 @@ select, input, button
 {
     background: $control-bg;
     color: $control-fg;
+    fill: $control-fg;
 
     border: $control-border;
     padding: 2px;
@@ -83,4 +84,9 @@ label
 button
 {
     font-weight: bold;
+
+    svg
+    {
+        vertical-align: middle;
+    }
 }

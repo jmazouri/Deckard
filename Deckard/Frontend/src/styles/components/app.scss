@@ -75,4 +75,28 @@
             width: 24px;
         }
     }
+
+    .tabContainer
+    {
+        display: flex;
+
+        .tab
+        {
+            cursor: pointer;
+            
+            background: $control-bg;
+            color: $control-placeholder-fg;
+
+            font-size: 1.25em;
+            padding: 0.5em;
+
+            margin-right: 0.1em;
+            
+            &.current
+            {
+                color: $control-fg;
+                font-weight: bold;
+            }
+        }
+    }
 }

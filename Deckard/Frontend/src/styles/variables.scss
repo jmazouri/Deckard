@@ -18,3 +18,23 @@ $card-text-color: black;
 $light-text: lighten($card-text-color, 33%);
 
 $card-list-font: sans-serif;
+
+//Default theme settings
+$global-font: sans-serif;
+$card-list-font: $global-font;
+
+$base-color: white;
+
+$sidebar-bg: rgba(255, 255, 255, 0.33);
+$main-bg: white;
+
+$sidebar-text-color: rgb(35, 35, 35);
+$main-text-color: $sidebar-text-color;
+
+$control-bg: white;
+$control-border: 2px solid darken($base-color, 25%);
+$control-fg: black;
+$control-placeholder-fg: lighten($control-fg, 40%);
+
+$card-text-color: black;
+$light-text: darken(desaturate($card-text-color, 100%), 6%);
