@@ -33,92 +33,6 @@
     </div>
 </template>
 
-<style lang="scss">
-@import "./styles/reset.scss";
-@import "./styles/variables.scss";
-@import "./styles/base.scss";
-
-#app
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-}
-
-.headerStatus
-{
-    box-sizing: border-box;
-
-    color: black;
-
-    width: 100%;
-    text-align: center;
-    padding: 8px;
-
-    background-color: goldenrod;    
-}
-
-.sideBar
-{
-    box-sizing: border-box;
-
-    position: sticky;
-    top: 0;
-
-    height: 100vh;
-
-    resize: horizontal;
-
-    width: 33vw;
-    min-width: 25vw;
-
-    padding: 0 10px 0 0;
-
-    overflow-y: overlay;
-    overflow-x: hidden;
-
-    box-shadow: 2px 0px 4px -1px lighten(black, 33%);
-
-    background: $sidebar-bg;
-    color: $sidebar-text-color;
-
-    h2
-    {
-        text-align: center;
-
-        font-weight: bold;
-        font-size: 1.5em;
-
-        margin-bottom: 0.66em;
-        padding: 0.25em 0.5em;
-        
-        box-shadow: 0px 14px 16px -10px black;
-    }
-}
-
-.main
-{
-    box-sizing: border-box;
-
-    background: transparent;
-    color: $main-text-color;
-
-    width: 67vw;
-    min-width: 50vw;
-
-    .cardBrowser
-    {
-        margin-bottom: 0.5em;
-
-        button
-        {
-            text-align: center;
-            width: 24px;
-        }
-    }
-}
-</style>
-
 <script lang="ts">
 import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Watch} from 'av-ts'
@@ -138,6 +52,8 @@ import {CardDatabase} from './deckard/storage/CardDatabase'
 let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
 
 let jsonAllCards = require("file-loader!./assets/AllSets.json");
+
+require('./styles/themes/amonkhet/theme.scss');
 
 @Component({
     components: {'CardGrid' : CardGrid, 'DeckEditor': DeckEditor}

@@ -98,122 +98,6 @@
     </div>
 </template>
 
-<style lang="scss">
-@import "../styles/variables.scss";
-@import "../styles/loader.scss";
-
-.cardGrid
-{
-    background-color: transparent;
-
-    &.cards, &.cardArt
-    {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
-
-    .card
-    {
-        color: $card-text-color;
-    }
-
-    .sorting
-    {
-        display: flex;
-        flex-direction: row;
-
-        width: 100%;
-
-        padding: 0 0.5em;
-
-        .controls
-        {
-            width: 100%;
-
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-
-            label
-            {
-                display: inline-block;
-                margin-right: 0.5em;
-
-                > div
-                {
-                    font-size: 0.8em;
-                    margin-bottom: 0.25em;
-                }
-
-                input[type=checkbox]
-                {
-                    @include clear-appearance();
-
-                    background: $control-bg;
-
-                    position: relative;
-
-                    top: 2px;
-
-                    width: 16px;
-                    height: 16px;
-
-                    &:checked:after
-                    {
-                        content: '✔';
-                        position: relative;
-
-                        top: -5px;
-                        left: -1px;
-                    }
-
-                    &:focus
-                    {
-                        outline: none;
-                    }
-                }
-            }
-
-            input[type=text]
-            {
-                margin-top: 16px;
-                width: 32%;
-            }
-
-            .opts
-            {
-                flex-basis: 100%;
-            }
-
-            .cardCount
-            {
-                flex-grow: 1;
-                align-self: flex-end;
-
-                font-size: 1.5em;
-                font-weight: bold;
-                text-align: right;
-
-                margin-right: 0.5em;
-
-                small
-                {
-                    font-size: 0.5em;
-                }
-            }
-        }
-
-    }
-}
-
-li.separator
-{
-    border-bottom: 1px solid black;
-}
-</style>
-
 <script lang="ts">
 import * as _ from "lodash"
 
@@ -274,7 +158,7 @@ export default class CardGrid extends Vue
         }
     })
 
-    viewMode: string = "cards";
+    viewMode: string = "list";
     textFilter: string = "";
     sorting: string = "Name";
     showAllFullText: boolean = false;

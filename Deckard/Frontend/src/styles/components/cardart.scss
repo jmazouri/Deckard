@@ -1,0 +1,27 @@
+.cardImg, .cardImg img, .noArt
+{
+    width: 100%;
+    max-width: 300px;
+
+    height: 100%;
+}
+
+.noArt
+{
+    padding: 0.5em 0.2em;
+
+    font-size: 1.25em;
+    font-weight: bold;
+    text-align: center;
+
+    background-color: $control-bg;
+    border: $control-border;
+
+    small
+    {
+        display: block;
+        font-size: 0.7em;
+
+        color: $control-placeholder-fg;
+    }
+}

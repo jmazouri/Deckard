@@ -1,3 +1,12 @@
+@import "./imports/loader.scss";
+@import "./imports/reset.scss";
+
+@import "./components/app.scss";
+@import "./components/cardgrid.scss";
+@import "./components/cardlistentry.scss";
+@import "./components/tinycard.scss";
+@import "./components/cardart.scss";
+
 *
 {
     &::-webkit-scrollbar
@@ -36,6 +45,8 @@ body
 {
     overflow-x: hidden;
     background: $main-bg;
+
+    background-size: cover;
 
     background-position: 50% 0%;
     background-repeat: no-repeat;

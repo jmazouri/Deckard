@@ -18,37 +18,3 @@ $card-text-color: black;
 $light-text: lighten($card-text-color, 33%);
 
 $card-list-font: sans-serif;
-
-@import './themes/amonkhet.scss';
-
-$mtg-rarity-names: Co, Un, Ra, My, Sp;
-$mtg-rarity-colors: $mtg-common, $mtg-uncommon, $mtg-rare, $mtg-mythic, $mtg-special;
-
-$mtg-color-names: U, B, R, W, G;
-$mtg-colors: $mtg-blue, $mtg-black, $mtg-red, $mtg-white, $mtg-green;
-
-$mtg-guilds:
-(
-    WU: ($mtg-white, $mtg-blue),
-    WB: ($mtg-white, $mtg-black),
-
-    UB: ($mtg-blue, $mtg-black),
-    UR: ($mtg-blue, $mtg-red),
-
-    BR: ($mtg-black, $mtg-red),
-    BG: ($mtg-black, $mtg-green),
-
-    RG: ($mtg-red, $mtg-green),
-    GR: ($mtg-red, $mtg-green),
-
-    RW: ($mtg-red, $mtg-white),
-
-    WG: ($mtg-green, $mtg-white),
-    GW: ($mtg-green, $mtg-white),
-
-    GU: ($mtg-green, $mtg-blue)
-);
-
-$border-vars: 0.3rem solid;
-
-@import './mixins.scss';

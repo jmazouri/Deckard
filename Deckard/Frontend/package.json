@@ -9,30 +9,32 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.55",
+    "@types/lodash": "^4.14.63",
     "av-ts": "^0.7.1",
     "dexie": "^2.0.0-beta.10",
     "lodash": "^4.17.4",
+    "resolve-url-loader": "^2.0.2",
+    "style-loader": "^0.17.0",
+    "svg-inline-loader": "^0.7.1",
     "ts-loader": "^2.0.1",
     "typescript": "^2.3.1",
-    "vue": "^2.2.1",
+    "vue": "^2.3.0",
     "vue-context-menu": "^2.0.2",
-    "vuex": "^2.2.1",
-    "worker-loader": "^0.8.0",
-    "svg-inline-loader": "^0.7.1"
+    "vuex": "^2.3.1",
+    "worker-loader": "^0.8.0"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0",
-    "babel-loader": "^6.0.0",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
     "babel-preset-latest": "^6.0.0",
     "cross-env": "^3.0.0",
-    "css-loader": "^0.25.0",
-    "file-loader": "^0.9.0",
-    "node-sass": "^4.5.0",
+    "css-loader": "^0.28.0",
+    "file-loader": "^0.11.1",
+    "node-sass": "^4.5.2",
     "sass-loader": "^5.0.1",
-    "vue-loader": "^11.1.4",
-    "vue-template-compiler": "^2.2.1",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "^2.2.0"
+    "vue-loader": "^12.0.2",
+    "vue-template-compiler": "^2.3.0",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.5"
   }
 }

@@ -9,6 +9,11 @@ var App = require('./App.vue').default
 Vue.use(Vuex);
 var store = require('./deckard/state/DataStore').default;
 
+if (localStorage["theme"] == undefined)
+{
+    localStorage["theme"] = "plain";
+}
+
 new Vue({
   el: '#app',
   store,

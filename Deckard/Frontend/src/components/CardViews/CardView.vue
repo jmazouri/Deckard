@@ -161,7 +161,7 @@ export default class CardView extends Vue
                         "Modular", "Sunburst", "Bushido", "Soulshift", "Splice", "Offering", "Ninjutsu", "Epic",
                         "Convoke", "Dredge", "Transmute", "Bloodthirst", "Haunt", "Replicate", "Forecast", "Graft",
                         "Recover", "Ripple", "Split Second", "Suspend", "Vanishing", "Absorb", "Swap", "Delve", "Fortify",
-                        "Frenzy", "Gravestorm", "Poisonous", "Transfigure", "Champion", "Changeling", "Evoke", "Hideaway",
+                        "Frenzy", "Gravestorm", "Poisonous", "Transfigure", "Champion an", "Champion a", "Changeling", "Evoke", "Hideaway",
                         "Prowl", "Reinforce", "Conspire", "Persist", "Wither", "Retrace", "Devour", "Exalted", "Unearth",
                         "Cascade", "Annihilator", "Level Up", "Rebound", "Armor", "Infect", "Battle Cry", "Weapon", "Undying", "Miracle",
                         "Soulbond", "Overload", "Scavenge", "Unleash", "Cipher", "Evolve", "Extort", "Fuse", "Bestow",

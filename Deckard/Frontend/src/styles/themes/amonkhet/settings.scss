@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Cinzel');
+$global-font: "Cinzel", sans-serif;
+$card-list-font: $global-font;
+
+$base-color: goldenrod;
+
+$sidebar-bg: rgba(255, 255, 255, 0.33);
+$main-bg: url('./assets/backgrounds/amonkhet.jpg');
+
+$sidebar-text-color: rgb(35, 35, 35);
+$main-text-color: $sidebar-text-color;
+
+$control-bg: darken(transparentize(saturate($base-color, 100%), 0.1), 20%);
+$control-border: 2px solid darken($base-color, 25%);
+$control-fg: white;
+$control-placeholder-fg: darken($control-fg, 20%);
+
+$card-text-color: rgb(230, 230, 210);
+$light-text: darken(desaturate($card-text-color, 100%), 6%);
+
+//Color overrides
+$mtg-blue: transparentize(darken(saturate($mtg-blue, 33%), 55%), 0.15);
+$mtg-black: transparentize(lighten(black, 10%), 0.15);
+$mtg-red: transparentize(darken(desaturate($mtg-red, 10%), 50%), 0.1);
+$mtg-white: transparentize(darken(desaturate($mtg-white, 95%), 60%), 0.1);
+$mtg-green: transparentize(darken(saturate($mtg-green, 33%), 50%), 0.15);
+
+$mtg-artifact: transparentize(darken($mtg-artifact, 45%), 0.1);
+
+$mtg-gold: transparentize(darken(saturate($mtg-gold, 33%), 40%), 0.1);

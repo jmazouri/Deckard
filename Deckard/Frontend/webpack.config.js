@@ -11,50 +11,33 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this necessary.
-            'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-            'js': 'ts-loader'
-          },
-          esModule: true
-          // other vue-loader options go here
+          test: /\.vue$/,
+          loader: 'vue-loader',
+          options: {
+            loaders: {
+              'js': 'ts-loader'
+              //'scss': 'vue-style-loader!css-loader!resolve-url-loader!sass-loader?sourceMap'
+            },
+            esModule: true
+            // other vue-loader options go here
         }
       },
-      /*
       {
-        test: /\.ts$/,
-        loader: 'vue-ts-loader',
-        options: {
-            //2346, 2307
-            //I'm not sure how to fix this - this error appears with our worker,
-            //assumingly because it's part of our DOM-oriented compilation and typescript
-            //gets confused because the tsconfig I'm using for the workers doesn't include the DOM
-            //since it overrides our webworker functions. Bluh.
-
-            //2034
-            //Vue only likes ES5, but Dexie uses ES6. Stuff breaks. Bluh.
-            "ignoreDiagnostics": [2346, 2307, 2304] 
-        }
+            test: /\.scss$/,
+            use: [{ loader: "style-loader" }, { loader: "css-loader" },
+                  { loader: "resolve-url-loader"}, { loader: "sass-loader?sourceMap" }]
       },
-      */
-      
       { 
           test: /\.ts$/,
           loader: 'ts-loader',
           options: { appendTsSuffixTo: [/\.vue$/] } 
       },
       {
-        test: /\.(png|jpg|gif|ttf)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
+          test: /\.(png|jpg|gif|ttf)$/,
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]?[hash]'
+          }
       }
     ]
   },
