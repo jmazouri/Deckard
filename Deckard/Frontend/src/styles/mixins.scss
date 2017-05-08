@@ -28,6 +28,7 @@ $mtg-guilds:
 );
 
 $border-vars: 0.3rem solid;
+$scrollbar-color: rgba(red($sidebar-text-color), green($sidebar-text-color), blue($sidebar-text-color), 0.33);
 
 //Global mixins
 @mixin clear-appearance()

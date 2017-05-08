@@ -1,10 +1,17 @@
 <template>
     <div id="app">
-        <div class="sideBar">
+        <div class="sideBar" v-show="showSidebar">
             <DeckEditor></DeckEditor>
         </div>
 
-        <div class="main">
+        <button class="toggleShow" v-on:click="showSidebar = !showSidebar" v-bind:class="{'shown': showSidebar}" title="Toggle Sidebar">
+            <div>
+                <template v-if="showSidebar">&lt;<br>&lt;<br>&lt;</template>
+                <template v-else>&gt;<br>&gt;<br>&gt;</template>
+            </div>
+        </button>
+
+        <div class="main" v-bind:class="{'withoutSidebar': !showSidebar}">
             <div class="headerStatus" v-show="backgroundStatus.currentMessage != undefined">
                 {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
             </div>
@@ -15,8 +22,9 @@
                       v-bind:class="{'current': currentTab == tab.id}">{{tab.name}}</span>
             </div>
 
-            <CardBrowser :allSets="allSets" v-show="currentTab == 'browser'"></CardBrowser>
+            <CardBrowser :allSets="allSets" v-show="currentTab == 'browse'"></CardBrowser>
             <Settings v-show="currentTab == 'settings'"></Settings>
+            <Search v-show="currentTab == 'search'"></Search>
 
         </div>
     </div>
@@ -30,6 +38,7 @@ import CardGrid from './components/CardGrid.vue'
 import DeckEditor from './components/DeckEditor.vue'
 import CardBrowser from './components/CardBrowser.vue'
 import Settings from './components/Settings.vue'
+import Search from './components/Search.vue'
 
 import {Card} from './deckard/models/Card'
 import {Set} from './deckard/models/Set'
@@ -44,14 +53,14 @@ let ImportWorker:any = require("worker-loader!./deckard/workers/DataImporter");
 
 let jsonAllCards = require("file-loader!./assets/AllSets.json");
 
-require('./styles/themes/' + localStorage['theme'] + '/theme.scss');
-
 @Component({
     components: {'CardGrid' : CardGrid, 'DeckEditor': DeckEditor,
-                 'CardBrowser': CardBrowser, 'Settings': Settings}
+                 'CardBrowser': CardBrowser, 'Settings': Settings,
+                 'Search': Search}
 })
 export default class App extends Vue
 {
+    showSidebar = true;
     loadStatus = new BackgroundProcessStatus();
     importer = ImportWorker();
 
@@ -62,8 +71,12 @@ export default class App extends Vue
     tabs =
     [
         {
-            id: "browser",
-            name: "Browser"
+            id: "browse",
+            name: "Browse"
+        },
+        {
+            id: "search",
+            name: "Search"
         },
         {
             id: "settings",
@@ -71,17 +84,17 @@ export default class App extends Vue
         }
     ];
 
-    currentTab = "browser";
+    currentTab = "search";
 
     // lifecycle hook
     @Lifecycle mounted()
     {
         let thisVue = this;
 
-        if (thisVue.$store.state.allDecks.length == 0 && localStorage["currentDeck"] != undefined)
+        if (thisVue.$store.state.deck.allDecks.length == 0 && localStorage["currentDeck"] != undefined)
         {
             let deck = JSON.parse(localStorage["currentDeck"]);
-            thisVue.$store.commit('loadDeck', deck);
+            thisVue.$store.commit('deck/loadDeck', deck);
         }
 
         thisVue.importer.postMessage(JSON.stringify(new DataImporterMessage("LoadCards", <string>jsonAllCards)));

@@ -1,16 +1,11 @@
 <template>
     <div class="settingsPage">
-        <h1>Settings</h1>
-
         <label>
             Theme
-            <select v-model="selectedTheme">
+            <select v-model="currentTheme">
                 <option v-for="theme in allThemes" v-bind:value="theme.id">{{theme.name}}</option>
             </select>
         </label>
-
-        <br />
-        <button v-on:click="apply()">Apply</button>
     </div>
 </template>
 
@@ -33,33 +28,51 @@
 <script lang="ts">
 import {Vue, Component, Lifecycle, Prop, Mixin, Watch, p} from 'av-ts'
 
+let capitalizeFirstLetter = function(input: string)
+{
+    return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+}
+
 @Component
 export default class Settings extends Vue
 {
-    selectedTheme: string = "";
-    allThemes =
-    [
-        {id: "darkgreen", name: "Dark Green"},
-        {id: "darkred", name: "Dark Red"},
-        {id: "plain", name: "Plain"},
-        {id: "amonkhet", name: "Amonkhet"}
-    ];
+    themeContext = (<any>require).context('../styles/themes/', true, /^.*theme\.scss$/).keys();
 
-    @Watch('selectedTheme')
-    themeWatch(newTheme, oldTheme)
+    allThemes: any[] = [];
+
+    get currentTheme()
     {
-        localStorage["theme"] = this.selectedTheme;
+        return this.$store.state.theme.theme;
     }
 
-    apply()
+    set currentTheme(value)
     {
-        location.reload();
+        this.$store.commit('theme/setTheme', value);
     }
 
     // lifecycle hook
     @Lifecycle mounted()
     {
-        this.selectedTheme = localStorage["theme"];
+        for (let theme of this.themeContext)
+        {
+            var themeId = theme;
+            themeId = themeId.substr(0, themeId.lastIndexOf('/'));
+            themeId = themeId.substr(themeId.lastIndexOf('/') + 1);
+
+            let newName = 
+                themeId.replace(/(\w.*)([A-Z].*)/g, function(g0,g1,g2)
+                {
+                    return capitalizeFirstLetter(g1) + " " + capitalizeFirstLetter(g2);
+                });
+
+            this.allThemes.push
+            (
+                {
+                    id: themeId,
+                    name: (newName == themeId ? capitalizeFirstLetter(newName) : newName)
+                }
+            );
+        }
     }
 }
 </script>

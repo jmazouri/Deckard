@@ -3,7 +3,7 @@
     
         <div class="options">
             <select class="deckSelector" v-model="selectedDeck">
-                <option v-for="deck in $store.state.allDecks" v-bind:value="deck">{{deck.name}}</option>
+                <option v-for="deck in $store.state.deck.allDecks" v-bind:value="deck">{{deck.name}}</option>
             </select>
 
             <br />
@@ -13,6 +13,7 @@
                 <button v-on:click="deleteDeck()">Delete</button>
                 <button v-on:click="showImportModal = true">Import</button>
                 <button v-on:click="exportDeck()">Export</button>
+                <button v-on:click="buyDeck()">TCG</button>
             </div>
         </div>
 
@@ -22,7 +23,7 @@
         <div class="importDeck modal" v-if="showImportModal">
             <button v-on:click="showImportModal = false">X</button>
             <div class="modalContent">
-                <input type="text" v-model="newDeckName"/>
+                <input type="text" v-model="newDeckName" placeholder="Deck Name"/>
                 <textarea v-model="textImport" placeholder="Paste your deck here..."></textarea>
                 <button v-on:click="importDeck()">Import</button>
             </div>
@@ -98,8 +99,8 @@
 
     left: 7%;
     top: 6%;
-    width: 80%;
-    height: 350px;
+    width: 84%;
+    height: 375px;
 
     .modalContent
     {
@@ -127,16 +128,16 @@ export default class DeckEditor extends Vue
     textImport: string = "";
 
     showNewModal: boolean = false;
-    newDeckName: string = "New Deck";
+    newDeckName: string = "";
 
     get selectedDeck() : Deck
     {
-        return this.$store.state.currentDeck;
+        return this.$store.state.deck.currentDeck;
     }
 
     set selectedDeck(deck: Deck)
     {
-        this.$store.commit('setCurrentDeck', deck);
+        this.$store.commit('deck/setCurrentDeck', deck);
     }
 
     get currentCards()
@@ -146,29 +147,62 @@ export default class DeckEditor extends Vue
 
     deleteDeck()
     {
-        this.$store.commit('deleteCurrentDeck');
-        this.$store.commit('setCurrentDeck', this.$store.state.allDecks[0]);
+        this.$store.commit('deck/deleteCurrentDeck');
+        this.$store.commit('deck/setCurrentDeck', this.$store.state.allDecks[0]);
+    }
+
+    //Do some fun form POSTing to TCGPlayer
+    buyDeck()
+    {
+        let baseUrl = "http://store.tcgplayer.com/massentry/";
+        let cardList = this.getDeckAsString("||");
+
+        //Create a form
+        let form = document.createElement("form");
+        form.target = "_blank";
+        form.method = "POST";
+        form.action = baseUrl;
+        form.style.display = "none";
+
+        //Create the input for the form, and pass our
+        //list of cards
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "c";
+        input.value = cardList;
+        form.appendChild(input);
+
+        //Submit the form and delete it
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
     }
 
     exportDeck()
     {
-        var baseUrl = "data:text/plain,";
+        let baseUrl = "data:text/plain,";
+        baseUrl = baseUrl + this.getDeckAsString("\r\n");
 
-        var cards: any = _.groupBy(this.selectedDeck.cards, function(card: Card) { return card.name });
-
-        for (let cardGrp in cards)
-        {
-            baseUrl += cards[cardGrp].length + " ";
-            baseUrl += cardGrp + "\r\n";
-        }
-
-        var downloadLink = document.createElement("a");
+        let downloadLink = document.createElement("a");
         downloadLink.href = encodeURI(baseUrl);
         downloadLink.download = "myDeck.txt";
 
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
+    }
+
+    getDeckAsString(separator: string): string
+    {
+        let ret: string = "";
+        let cards: any = _.groupBy(this.selectedDeck.cards, function(card: Card) { return card.name });
+
+        for (let cardGrp in cards)
+        {
+            ret += cards[cardGrp].length + " " + cardGrp + separator;
+        }
+
+        return ret;
     }
 
     importDeck()
@@ -209,8 +243,6 @@ export default class DeckEditor extends Vue
     {
         this.$store.commit('addToDeck', card);
     }
-
-
 
     // lifecycle hook
     @Lifecycle mounted()

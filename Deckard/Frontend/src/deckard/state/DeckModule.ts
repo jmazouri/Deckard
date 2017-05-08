@@ -1,21 +1,21 @@
 import Vuex from 'vuex';
 import {Deck} from '../models/Deck'
 
-const store = new Vuex.Store(
+import DeckState from '../models/state/DeckState'
+
+const store =
 {
-    strict: true,
-    state:
-    {
-        allDecks: [],
-        currentDeck: null
-    },
+    state: new DeckState(),
     mutations:
     {
         addToDeck(state, card)
         {
-            if (state.currentDeck == null)
+            if (!card) { return; }
+
+            if (!state.currentDeck)
             {
-                store.commit('clearDeck');
+                state.currentDeck = new Deck();
+                state.allDecks.push(state.currentDeck);
             }
 
             state.currentDeck.cards.push(card);
@@ -23,11 +23,15 @@ const store = new Vuex.Store(
         },
         removeFromDeck(state, card)
         {
+            if (card == undefined) { return; }
+
             state.currentDeck.cards.splice(state.currentDeck.cards.indexOf(card), 1);
             localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
         },
         loadDeck(state, deck)
         {
+            if (deck == undefined) { return; }
+
             state.allDecks.push(deck);
             state.currentDeck = state.allDecks[state.allDecks.length - 1];
         },
@@ -43,10 +47,12 @@ const store = new Vuex.Store(
         },
         setCurrentDeck(state, deck)
         {
+            if (deck == undefined) { return; }
+
             state.currentDeck = deck;
             localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
         }
     }
-});
+};
 
 export default store

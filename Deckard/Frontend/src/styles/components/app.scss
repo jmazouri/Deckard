@@ -5,6 +5,56 @@
     justify-content: flex-start;
 }
 
+.toggleShow
+{
+    display: flex;
+    align-content: center;
+
+    position: sticky;
+    top: 0;
+
+    border: 0;
+    border-right: $control-border;
+
+    height: 100vh;
+    margin: 0;
+
+    font-size: 0.8em;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    div
+    {
+        line-height: 0.8;
+    }
+
+    &.shown
+    {
+        position: absolute;
+        left: 9px;
+        z-index: 99;
+
+        background: linear-gradient(90deg, rgba(red($control-bg), green($control-bg), blue($control-bg), 0.6) 0%, transparent 100%);
+
+        height: 8vh;
+        width: 11px;
+
+        border: 0;
+        padding: 0;
+        margin: 0;
+
+        margin-left: -10px;
+
+        color: $sidebar-text-color;
+    }
+
+    &:focus
+    {
+        outline: 0;
+    }
+}
+
 .headerStatus
 {
     box-sizing: border-box;
@@ -37,10 +87,10 @@
     overflow-y: overlay;
     overflow-x: hidden;
 
-    box-shadow: 2px 0px 4px -1px lighten(black, 33%);
-
     background: $sidebar-bg;
     color: $sidebar-text-color;
+
+    box-shadow: 2px 0px 4px -1px lighten(black, 33%);
 
     h2
     {
@@ -65,15 +115,9 @@
 
     width: 67vw;
 
-    .cardBrowser
+    &.withoutSidebar
     {
-        margin-bottom: 0.5em;
-
-        button
-        {
-            text-align: center;
-            width: 24px;
-        }
+        width: 100vw;
     }
 
     .tabContainer

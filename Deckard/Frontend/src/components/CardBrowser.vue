@@ -1,15 +1,10 @@
 <template>
     <div class="cardBrowser">
-        <input type="text" v-model="searchQuery" placeholder="Search" />
-        <button v-on:click="performSearch">
-            <span v-html="searchIconPath"></span>
-        </button>
+        <div class="options">
+            <vSelect tabindex="1" v-model="currentSet" :options="allSets" label="name"></vSelect>
+        </div>
 
-        <select v-model="currentSet">
-            <option v-for="set in allSets" v-bind:value="set">{{set.name}}</option>
-        </select>
-
-        <CardGrid v-show="setCards.length > 0" :cards="setCards" v-on:searchAll="searchAll"></CardGrid>
+        <CardGrid :cards="setCards" v-on:searchAll="searchAll"></CardGrid>
 
         <div class="spinner" v-show="setCards.length <= 0">
             <div class="rect1"></div>
@@ -32,9 +27,10 @@ import {Deck} from '../deckard/models/Deck'
 import {CardDatabase} from '../deckard/storage/CardDatabase'
 import CardGrid from './CardGrid.vue'
 
+import vSelect from 'vue-select'
 
 @Component({
-    components: {'CardGrid' : CardGrid}
+    components: {'CardGrid' : CardGrid, 'vSelect': vSelect }
 })
 export default class CardBrowser extends Vue
 {
@@ -96,7 +92,7 @@ export default class CardBrowser extends Vue
     
     get deck()
     {
-        return this.$store.state.currentDeck;
+        return this.$store.state.deck.currentDeck;
     }
 
     performSearch()

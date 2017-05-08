@@ -135,7 +135,7 @@ export default class CardView extends Vue
         cardHtml = cardHtml.replace(/{(.)\/(.)}/g, '{$1$2}');
 
         //Replace numeric tokens with formatted text
-        cardHtml = cardHtml.replace(/{(\d|\X)}/g, function(match)
+        cardHtml = cardHtml.replace(/{(\d*|\X)}/g, function(match)
         {
             return `<span class="symbol">${match.substr(1, match.length - 2)}</span>`;
         });

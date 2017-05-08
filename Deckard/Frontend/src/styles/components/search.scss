@@ -1,0 +1,18 @@
+.search
+{
+    button
+    {
+        text-align: center;
+        width: 24px;
+    }
+
+    .options
+    {
+        margin: 0.25em 0.5em 0.75em 0.5em;
+
+        input
+        {
+            width: calc(100% - 38px);
+        }
+    }
+}

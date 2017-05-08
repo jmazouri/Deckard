@@ -247,12 +247,12 @@ export default class CardGrid extends Vue
 
     addToDeck(card)
     {
-        this.$store.commit('addToDeck', (card == undefined ? this.rightClickedCard : card));
+        this.$store.commit('deck/addToDeck', (card == undefined ? this.rightClickedCard : card));
     }
 
     removeFromDeck()
     {
-        this.$store.commit('removeFromDeck', this.rightClickedCard);
+        this.$store.commit('deck/removeFromDeck', this.rightClickedCard);
     }
 
     goToGatherer()

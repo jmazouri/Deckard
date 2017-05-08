@@ -1,0 +1,56 @@
+.cardBrowser
+{
+    .options
+    {
+        margin: 0.25em 0.5em 0.75em 0.5em;
+
+        select
+        {
+            width: 100%;
+        }
+    }
+
+    .v-select
+    {
+        font-family: $global-font;
+        background: $control-bg;
+
+        .open-indicator:before
+        {
+            border-color: $control-placeholder-fg;
+        }
+
+        .selected-tag
+        {
+            background: darken($control-bg, 5%);
+            color: $control-fg;
+
+            border: 0px;
+
+            font-size: 0.85em;
+        }
+
+        .dropdown-menu
+        {
+            background: $control-bg;
+            
+            li
+            {
+                line-height: 1.2;
+            }
+
+            li
+            {
+                a
+                {
+                    color: $control-fg;
+                }
+
+                &.highlight a
+                {
+                    background-color: darken($control-bg, 5%);
+                }
+            }
+        }
+    }
+}

@@ -31,7 +31,7 @@ $main-bg: white;
 $sidebar-text-color: rgb(35, 35, 35);
 $main-text-color: $sidebar-text-color;
 
-$control-bg: white;
+$control-bg: transparent;
 $control-border: 2px solid darken($base-color, 25%);
 $control-fg: black;
 $control-placeholder-fg: lighten($control-fg, 40%);
