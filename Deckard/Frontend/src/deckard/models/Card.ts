@@ -7,6 +7,7 @@ export class Card
 
     type: string;
     types: string[];
+    subtypes: string[];
 
     magicCardsInfoCode: string;
     mciNumber: string;

@@ -10,9 +10,14 @@
     {
         margin: 0.25em 0.5em 0.75em 0.5em;
 
-        input
+        .mainSearch
         {
-            width: calc(100% - 38px);
+            width: calc(100% - 66px);
+        }
+
+        label > input
+        {
+            width: 98.5%;
         }
     }
 }

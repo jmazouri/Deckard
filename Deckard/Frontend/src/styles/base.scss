@@ -77,6 +77,12 @@ select, input, button
     {
         color: $control-placeholder-fg;
     }
+
+    &[disabled]
+    {
+        color: $control-placeholder-fg;
+        background-color: desaturate($control-bg, 50%);
+    }
 }
 
 label
@@ -91,5 +97,60 @@ button
     svg
     {
         vertical-align: middle;
+    }
+}
+
+.v-select
+{
+    font-family: $global-font;
+    background: $control-bg;
+
+    .open-indicator:before
+    {
+        border-color: $control-fg;
+    }
+
+    .selected-tag
+    {
+        background: darken($control-bg, 8%);
+        color: $control-fg;
+
+        border: 0px;
+
+        font-size: 0.85em;
+
+        .close
+        {
+            color: $control-fg;
+            opacity: 1;
+        }
+    }
+
+    .dropdown-toggle
+    {
+        border: $control-border;
+    }
+
+    .dropdown-menu
+    {
+        background: $control-bg;
+        
+        li
+        {
+            line-height: 1.2;
+        }
+
+        li
+        {
+            a
+            {
+                color: $control-fg;
+            }
+
+            &.highlight a
+            {
+                background-color: darken($control-bg, 5%);
+            }
+        }
     }
 }

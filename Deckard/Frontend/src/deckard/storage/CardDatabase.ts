@@ -1,6 +1,7 @@
 import {Set} from '../models/Set'
 import {Card} from '../models/Card'
 import {Deck} from '../models/Deck'
+import {SearchQuery} from '../models/SearchQuery'
 
 import * as _ from 'lodash';
 import Dexie from 'dexie';
@@ -22,7 +23,7 @@ export class CardDatabase extends Dexie
         (
             {
                 sets: '++code, name, releaseDate, magicCardsInfoCode',
-                cards: 'id, *name, *multiverseid, types, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
+                cards: 'id, *name, *multiverseid, types, subtypes, set, text, flavor, power, toughness, colorIdentity, cmc, magicCardsInfoCode, mciNumber',
                 decks: 'name, cards'
             }
         );
@@ -66,6 +67,25 @@ export class CardDatabase extends Dexie
         return (includeDuplicates ? found :  _.uniqBy(found, card => card.name));
     }
 
+    public async advancedSearchCards(query: SearchQuery) : Promise<Card[]>
+    {
+        var found = await this.cards.filter(function(card)
+        {
+            let nameMatches = (card.name && query.name.length > 0 ? card.name.toLowerCase().indexOf(query.name.toLowerCase()) > -1 : true);
+            let rulesMatch = (card.text && query.rules.length > 0 ? card.text.toLowerCase().indexOf(query.rules.toLowerCase()) > -1 : true);
+
+            let typesMatch = (query.types.length > 0 ? _.intersection(card.types, query.types).length > 0 : true);
+            let subTypesMatch = (query.subtypes.length > 0 ? _.intersection(card.subtypes, query.subtypes).length > 0 : true);
+
+            return nameMatches && rulesMatch && typesMatch && subTypesMatch;
+
+        }).toArray();
+
+        found = _.filter(found, card => card.multiverseid);
+
+        return _.uniqBy(found, card => card.name);
+    }
+
     public async findAllVersions(original: Card) : Promise<Card[]>
     {
         var found = await this.cards.filter(card => 
@@ -74,6 +94,18 @@ export class CardDatabase extends Dexie
                        (card.names == undefined ? false : card.names.indexOf(original.name) > -1);
         }).toArray();
         
+        return found;
+    }
+
+    public async getAllTypes() : Promise<string[]>
+    {
+        var found = _.filter(_.uniq(_.flatMap(await this.cards.toArray(), card => card.types)), card => card != undefined);
+        return found;
+    }
+
+    public async getAllSubtypes() : Promise<string[]>
+    {
+        var found = _.filter(_.uniq(_.flatMap(await this.cards.toArray(), card => card.subtypes)), card => card != undefined);
         return found;
     }
 
