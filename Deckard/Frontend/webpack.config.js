@@ -23,21 +23,24 @@ module.exports = {
         }
       },
       {
+          test: /\.(png|jpg|gif|ttf|svg)$/,
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]?[hash]'
+          }
+      },
+      {
             test: /\.scss$/,
-            use: [{ loader: "style-loader/useable" }, { loader: "css-loader" },
-                  { loader: "resolve-url-loader"}, { loader: "sass-loader?sourceMap" }]
+            use:
+            [
+                { loader: "style-loader/useable" }, { loader: "css-loader" },
+                { loader: "resolve-url-loader"}, { loader: "sass-loader?sourceMap" }
+            ]
       },
       { 
           test: /\.ts$/,
           loader: 'ts-loader',
           options: { appendTsSuffixTo: [/\.vue$/] } 
-      },
-      {
-          test: /\.(png|jpg|gif|ttf)$/,
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]?[hash]'
-          }
       }
     ]
   },

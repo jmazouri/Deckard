@@ -10,28 +10,76 @@
             </button>
 
             <div class="advancedSearch" v-show="showAdvanced">
-                <label>
-                    <div>Name</div>
-                    <input v-model="currentQuery.name" type="text"></input>
-                </label>
-                <label>
-                    <div>Rules</div>
-                    <input v-model="currentQuery.rules" type="text"></input>
-                </label>
 
-                <br />
+                <div class="full">
+                    <div class="half">
+                        <label>Name</label>
+                        <input class="wide" v-model="currentQuery.name" type="text"></input>
+                    </div>
 
-                <label>Type</label>
-                <vSelect multiple v-model="currentQuery.types" placeholder="Filter card types" :options="cardTypes"></vSelect>
-                
-                <label>Subtype</label>
-                <vSelect multiple v-model="currentQuery.subtypes" placeholder="Filter card subtypes" :options="cardSubTypes"></vSelect>
+                    <div class="half">
+                        <label>Rules</label>
+                        <input class="wide" v-model="currentQuery.rules" type="text"></input>
+                    </div>
+                </div>
+
+                <div class="full">
+                    <div class="half">
+                        <label>Type</label>
+                        <vSelect multiple v-model="currentQuery.types" placeholder="Only include types" :options="cardTypes"></vSelect>
+                    </div>
+                    
+                    <div class="half">
+                        <label>Subtype</label>
+                        <vSelect multiple v-model="currentQuery.subtypes" placeholder="Only include subtypes" :options="cardSubTypes"></vSelect>
+                    </div>
+                </div>
+
+                <div class="full">
+                    <label>Format</label>
+                    <vSelect multiple placeholder="Only if legal in formats" :options="allFormats"></vSelect>
+
+                    <div class="half">
+                        <div class="third">
+                            <label>CMC</label>
+                            <input type="number"></input>
+                        </div>
+                        <div class="third">
+                            <label>Power</label>
+                            <input type="number"></input>
+                        </div>
+                        <div class="third">
+                            <label>Toughness</label>
+                            <input type="number"></input>
+                        </div>
+                    </div>
+
+                    <div class="half">
+                        <div class="half">
+                            <label>
+                                <input type="checkbox"></input>
+                                Exclude Unselected
+                            </label>
+                        </div>
+
+                        <div class="half">
+                            <label>Colors</label>
+                            <br />
+                            <ImageCheckBox class="W" :checkedIcon="'W'" v-on:checkChanged="currentQuery.colors['W'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="U" :checkedIcon="'U'" v-on:checkChanged="currentQuery.colors['U'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="B" :checkedIcon="'B'" v-on:checkChanged="currentQuery.colors['B'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="R" :checkedIcon="'R'" v-on:checkChanged="currentQuery.colors['R'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="G" :checkedIcon="'G'" v-on:checkChanged="currentQuery.colors['G'] = $event"></ImageCheckBox>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <CardGrid v-show="foundCards.length > 0" :cards="foundCards" v-on:searchAll=""></CardGrid>
 
-        <div class="spinner" v-show="foundCards && foundCards.length <= 0 && searchQuery">
+        <div class="spinner" v-show="currentlySearching">
             <div class="rect1"></div>
             <div class="rect2"></div>
             <div class="rect3"></div>
@@ -52,24 +100,33 @@ import {SearchQuery} from '../deckard/models/SearchQuery'
 
 import {CardDatabase} from '../deckard/storage/CardDatabase'
 import CardGrid from './CardGrid.vue'
+import ImageCheckBox from './ImageCheckBox.vue'
 
 import vSelect from 'vue-select'
 
 @Component({
-    components: {'CardGrid' : CardGrid, 'vSelect': vSelect }
+    components: {'CardGrid' : CardGrid, 'vSelect': vSelect, 'ImageCheckBox': ImageCheckBox }
 })
 export default class Search extends Vue
 {
+    currentlySearching: boolean = false;
+
     showAdvanced: boolean = true;
 
     searchQuery: string = "";
     foundCards: Card[] = [];
-    searchIconPath = require('svg-inline-loader!../assets/icons/ui/search.svg');
+    searchIconPath = require('!svg-inline-loader!../assets/icons/ui/search.svg');
 
     cardTypes: string[] = [];
     cardSubTypes: string[] = [];
+    allFormats: string[] = ["Standard", "Modern", "Commander", "Legacy"];
 
     currentQuery: SearchQuery = new SearchQuery();
+
+    debugThing(stuff)
+    {
+        alert(stuff);
+    }
 
     get deck()
     {
@@ -80,6 +137,7 @@ export default class Search extends Vue
     {
         let thisVue:Search = this;
 
+        thisVue.currentlySearching = true;
         thisVue.foundCards = [];
 
         if (this.showAdvanced)
@@ -88,6 +146,7 @@ export default class Search extends Vue
                 .then(function(cards)
                 {
                     thisVue.foundCards = cards;
+                    thisVue.currentlySearching = false;
                 });
         }
         else
@@ -96,6 +155,7 @@ export default class Search extends Vue
                 .then(function(cards)
                 {
                     thisVue.foundCards = cards;
+                    thisVue.currentlySearching = false;
                 });
         }
     }

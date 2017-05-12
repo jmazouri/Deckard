@@ -71,19 +71,34 @@ export class CardDatabase extends Dexie
     {
         var found = await this.cards.filter(function(card)
         {
-            let nameMatches = (card.name && query.name.length > 0 ? card.name.toLowerCase().indexOf(query.name.toLowerCase()) > -1 : true);
-            let rulesMatch = (card.text && query.rules.length > 0 ? card.text.toLowerCase().indexOf(query.rules.toLowerCase()) > -1 : true);
+            let nameMatches = CardDatabase.filterTextField(card.name, query.name);
+            let rulesMatch = CardDatabase.filterTextField(card.text, query.rules);
 
-            let typesMatch = (query.types.length > 0 ? _.intersection(card.types, query.types).length > 0 : true);
-            let subTypesMatch = (query.subtypes.length > 0 ? _.intersection(card.subtypes, query.subtypes).length > 0 : true);
+            let typesMatch = CardDatabase.filterArrayField(card.types, query.types);
+            let subTypesMatch = CardDatabase.filterArrayField(card.subtypes, query.subtypes);
 
-            return nameMatches && rulesMatch && typesMatch && subTypesMatch;
+            let colorsMatch = CardDatabase.filterArrayField(card.colorIdentity, query.selectedColors);
+
+            return nameMatches && rulesMatch && typesMatch && subTypesMatch && colorsMatch;
 
         }).toArray();
 
         found = _.filter(found, card => card.multiverseid);
 
         return _.uniqBy(found, card => card.name);
+    }
+
+    private static filterArrayField(input: string[], matchAgainst: string[]): boolean
+    {
+        return (matchAgainst.length > 0 ? _.intersection(input, matchAgainst).length > 0 : true);
+    }
+
+    private static filterTextField(input: any, matchAgainst: string): boolean
+    {
+        let exists = <boolean>input;
+        if (!exists) { return false; }
+
+        return (matchAgainst.length > 0 ? input.toLowerCase().indexOf(matchAgainst.toLowerCase()) > -1 : true);
     }
 
     public async findAllVersions(original: Card) : Promise<Card[]>

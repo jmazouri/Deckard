@@ -15,9 +15,59 @@
             width: calc(100% - 66px);
         }
 
-        label > input
+        .advancedSearch
         {
-            width: 98.5%;
+            input.wide
+            {
+                width: calc(100% - 0.65em);
+            }
+
+            label, .half, .third
+            {
+                display: inline-block;
+                
+                input[type=text] { width: 100%; }
+                input[type=checkbox] { vertical-align: text-bottom; }
+            }
+
+            label
+            {
+                margin-top: 0.5em;
+            }
+
+            .half, .third
+            {
+                box-sizing: border-box;
+                padding-right: 0.5em;
+            }
+
+            .half
+            {
+                width: calc(50% - 0.2em);
+            }
+
+            .third
+            {
+                width: calc(33% - 0.06em);
+            }
+
+            .full
+            {
+                display: block;
+            }
+
+            $extra-lightness: 0%;
+
+            .imageCheckbox
+            {
+                border: $control-border;
+
+                &.W { background: opacify(lighten($mtg-white, $extra-lightness), 1); }
+                &.U { background: opacify(lighten($mtg-blue, $extra-lightness), 1); }
+                &.B { background: opacify(lighten($mtg-black, $extra-lightness), 1); }
+                &.R { background: opacify(lighten($mtg-red, $extra-lightness), 1); }
+                &.G { background: opacify(lighten($mtg-green, $extra-lightness), 1); }
+            }
         }
     }
 }

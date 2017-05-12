@@ -8,7 +8,7 @@ $sidebar-bg: rgba(255, 255, 255, 0.33);
 $main-bg: url('./assets/backgrounds/amonkhet.jpg');
 
 $sidebar-text-color: rgb(35, 35, 35);
-$main-text-color: $sidebar-text-color;
+$main-text-color: black;
 
 $control-bg: darken(transparentize(saturate($base-color, 100%), 0.1), 20%);
 $control-border: 2px solid darken($base-color, 25%);
