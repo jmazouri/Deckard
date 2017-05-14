@@ -1,7 +1,7 @@
 import {Set} from '../models/Set'
 import {Card} from '../models/Card'
 import {Deck} from '../models/Deck'
-import {SearchQuery} from '../models/SearchQuery'
+import {SearchQuery} from '../models/search/SearchQuery'
 
 import * as _ from 'lodash';
 import Dexie from 'dexie';
@@ -77,9 +77,21 @@ export class CardDatabase extends Dexie
             let typesMatch = CardDatabase.filterArrayField(card.types, query.types);
             let subTypesMatch = CardDatabase.filterArrayField(card.subtypes, query.subtypes);
 
-            let colorsMatch = CardDatabase.filterArrayField(card.colorIdentity, query.selectedColors);
+            let sortedIdentity: string[] = card.colorIdentity ? card.colorIdentity.sort() : [];
 
-            return nameMatches && rulesMatch && typesMatch && subTypesMatch && colorsMatch;
+            let colorsMatch = query.onlyMulticolor && sortedIdentity.length <= 1
+                              ? false 
+                              : query.excludeUnselectedColors 
+                                ? _.every(sortedIdentity, color => query.selectedColors.indexOf(color) > -1)
+                                : CardDatabase.filterArrayField(sortedIdentity, query.selectedColors);
+
+            let cmcValid = query.cmc && query.cmc.meetsCriteria(card.cmc);
+            let powerValid = query.power && query.power.meetsCriteria(card.power);
+            let toughnessValid = query.toughness && query.toughness.meetsCriteria(card.toughness);
+
+            return nameMatches && rulesMatch && typesMatch &&
+                   subTypesMatch && colorsMatch && cmcValid &&
+                   powerValid && toughnessValid;
 
         }).toArray();
 
@@ -90,6 +102,9 @@ export class CardDatabase extends Dexie
 
     private static filterArrayField(input: string[], matchAgainst: string[]): boolean
     {
+        if (input == undefined) { return false; }
+        if (matchAgainst == undefined) { return true; }
+
         return (matchAgainst.length > 0 ? _.intersection(input, matchAgainst).length > 0 : true);
     }
 

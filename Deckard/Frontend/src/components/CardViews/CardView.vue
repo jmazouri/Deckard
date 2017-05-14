@@ -168,7 +168,7 @@ export default class CardView extends Vue
                         "Tribute", "Dethrone", "Agenda", "Outlast", "Prowess", "Dash", "Exploit", "Menace", "Renown",
                         "Awaken", "Devoid", "Ingest", "Myriad", "Surge", "Skulk", "Emerge", "Escalate", "Melee", "Crew",
                         "Fabricate", "Partner", "Undaunted", "Improvise", "First strike", "Islandwalk", "Mountainwalk",
-                        "Swampwalk", "Plainswalk", "Forestwalk", "Exert"];
+                        "Swampwalk", "Plainswalk", "Forestwalk", "Exert", "Landwalk"];
 
         if (this.currentCard == null || this.currentCard.text == undefined)
         {

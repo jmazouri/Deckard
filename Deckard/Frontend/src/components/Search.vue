@@ -36,40 +36,44 @@
                 </div>
 
                 <div class="full">
+                    <!--
                     <label>Format</label>
-                    <vSelect multiple placeholder="Only if legal in formats" :options="allFormats"></vSelect>
-
+                    <vSelect multiple placeholder="Only if legal in formats" :options="allFormats" v-model="currentQuery.formats"></vSelect>
+                    -->
                     <div class="half">
                         <div class="third">
                             <label>CMC</label>
-                            <input type="number"></input>
+                            <NumericCriteriaInput v-model="currentQuery.cmc"></NumericCriteriaInput>
                         </div>
                         <div class="third">
                             <label>Power</label>
-                            <input type="number"></input>
+                            <NumericCriteriaInput v-model="currentQuery.power"></NumericCriteriaInput>
                         </div>
                         <div class="third">
                             <label>Toughness</label>
-                            <input type="number"></input>
+                            <NumericCriteriaInput v-model="currentQuery.toughness"></NumericCriteriaInput>
                         </div>
                     </div>
 
-                    <div class="half">
-                        <div class="half">
-                            <label>
-                                <input type="checkbox"></input>
-                                Exclude Unselected
-                            </label>
-                        </div>
-
+                    <div class="half colors">
                         <div class="half">
                             <label>Colors</label>
                             <br />
-                            <ImageCheckBox class="W" :checkedIcon="'W'" v-on:checkChanged="currentQuery.colors['W'] = $event"></ImageCheckBox>
-                            <ImageCheckBox class="U" :checkedIcon="'U'" v-on:checkChanged="currentQuery.colors['U'] = $event"></ImageCheckBox>
-                            <ImageCheckBox class="B" :checkedIcon="'B'" v-on:checkChanged="currentQuery.colors['B'] = $event"></ImageCheckBox>
-                            <ImageCheckBox class="R" :checkedIcon="'R'" v-on:checkChanged="currentQuery.colors['R'] = $event"></ImageCheckBox>
-                            <ImageCheckBox class="G" :checkedIcon="'G'" v-on:checkChanged="currentQuery.colors['G'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="W" :checkedIcon="'W'" v-model="currentQuery.colors['W']" v-on:checkChanged="currentQuery.colors['W'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="U" :checkedIcon="'U'" v-model="currentQuery.colors['U']" v-on:checkChanged="currentQuery.colors['U'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="B" :checkedIcon="'B'" v-model="currentQuery.colors['B']" v-on:checkChanged="currentQuery.colors['B'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="R" :checkedIcon="'R'" v-model="currentQuery.colors['R']" v-on:checkChanged="currentQuery.colors['R'] = $event"></ImageCheckBox>
+                            <ImageCheckBox class="G" :checkedIcon="'G'" v-model="currentQuery.colors['G']" v-on:checkChanged="currentQuery.colors['G'] = $event"></ImageCheckBox>
+                        </div>
+                        <div class="half">
+                            <label>
+                                <input type="checkbox" v-model="currentQuery.excludeUnselectedColors"></input>
+                                Exclude Unselected
+                            </label>
+                            <label>
+                                <input type="checkbox" v-model="currentQuery.onlyMulticolor"></input>
+                                Only Multicolor
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -96,16 +100,19 @@ import {Vue, Component, Lifecycle, Prop, Mixin, Watch, p} from 'av-ts'
 import {Card} from '../deckard/models/Card'
 import {Set} from '../deckard/models/Set'
 import {Deck} from '../deckard/models/Deck'
-import {SearchQuery} from '../deckard/models/SearchQuery'
+import {SearchQuery} from '../deckard/models/search/SearchQuery'
 
 import {CardDatabase} from '../deckard/storage/CardDatabase'
+
 import CardGrid from './CardGrid.vue'
 import ImageCheckBox from './ImageCheckBox.vue'
+import NumericCriteriaInput from './NumericCriteriaInput.vue'
 
 import vSelect from 'vue-select'
 
 @Component({
-    components: {'CardGrid' : CardGrid, 'vSelect': vSelect, 'ImageCheckBox': ImageCheckBox }
+    components: {'CardGrid' : CardGrid, 'vSelect': vSelect,
+                 'ImageCheckBox': ImageCheckBox, 'NumericCriteriaInput': NumericCriteriaInput }
 })
 export default class Search extends Vue
 {
@@ -122,11 +129,7 @@ export default class Search extends Vue
     allFormats: string[] = ["Standard", "Modern", "Commander", "Legacy"];
 
     currentQuery: SearchQuery = new SearchQuery();
-
-    debugThing(stuff)
-    {
-        alert(stuff);
-    }
+    hasLoaded: boolean = false;
 
     get deck()
     {
@@ -163,6 +166,14 @@ export default class Search extends Vue
     // lifecycle hook
     @Lifecycle mounted()
     {
+        if (localStorage["search"] != undefined)
+        {
+            var load = SearchQuery.revive(JSON.parse(localStorage["search"]));
+
+            this.currentQuery = load;
+            this.hasLoaded = true;
+        }
+
         let thisVue:Search = this;
 
         CardDatabase.instance.getAllSubtypes()
@@ -180,7 +191,10 @@ export default class Search extends Vue
 
     @Lifecycle updated()
     {
-        
+        if (this.hasLoaded)
+        {
+            localStorage["search"] = JSON.stringify(this.currentQuery);
+        }
     }
 }
 </script>

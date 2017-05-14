@@ -306,16 +306,9 @@ export default class CardGrid extends Vue
 
                 var textContains = (element.text != undefined ? containsAny(lowercaseFilter, element.text) : false);
                 var nameContains = containsAny(lowercaseFilter, element.name);
-                //var typeContains = containsAny(lowercaseFilter, element.type);
+                var typeContains = containsAny(lowercaseFilter, element.type);
 
-                /*
-                if (element.rarity == "Basic Land")
-                {
-                    return false;
-                }
-                */
-
-                return textContains || nameContains;// || typeContains;
+                return textContains || nameContains || typeContains;
             });
         }
 

@@ -47,6 +47,22 @@ export default class ImageCheckBox extends Vue
         return require("../assets/icons/symbols/" + this.checkedIcon + ".svg");
     }
 
+    @Prop value:any = p(
+    {
+        type: Boolean,
+        required: true,
+        default()
+        {
+            return false;
+        }
+    })
+
+    @Watch('value')
+    valHandler(newVal, oldVal)
+    {
+        this.checked = this.value;
+    }
+
     // lifecycle hook
     @Lifecycle mounted()
     {

@@ -20,7 +20,7 @@ export class Card
     power: number;
     toughness: number;
 
-    colorIdentity: string[];
+    colorIdentity: string[] = [];
     cmc: number;
 
     static artUrl(card: Card): string

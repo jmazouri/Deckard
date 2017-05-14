@@ -19,7 +19,7 @@
             <div class="tabContainer">
                 <span class="tab" v-for="tab in tabs" 
                       v-on:click="currentTab = tab.id"
-                      v-bind:class="{'current': currentTab == tab.id}">{{tab.name}}</span>
+                      v-bind:class="{'current': currentTab == tab.id}" v-bind:id="tab.id">{{tab.name}}</span>
             </div>
 
             <CardBrowser :allSets="allSets" v-show="currentTab == 'browse'"></CardBrowser>
@@ -80,11 +80,11 @@ export default class App extends Vue
         },
         {
             id: "settings",
-            name: "Settings"
+            name: "⚙️"
         }
     ];
 
-    currentTab = "search";
+    currentTab = "browse";
 
     // lifecycle hook
     @Lifecycle mounted()
