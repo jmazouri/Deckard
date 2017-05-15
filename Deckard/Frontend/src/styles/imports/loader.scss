@@ -1,16 +1,18 @@
 .spinner {
   margin: 100px auto;
-  width: 50px;
-  height: 40px;
+  width: 50%;
+  height: 150px;
   text-align: center;
   font-size: 10px;
 }
 
 .spinner > div {
-  background-color: #333;
+  background-color: $control-fg;
   height: 100%;
-  width: 6px;
+  width: 6%;
   display: inline-block;
+
+  margin-right: 1%;
   
   -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
   animation: sk-stretchdelay 1.2s infinite ease-in-out;

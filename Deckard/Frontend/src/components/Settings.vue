@@ -26,6 +26,7 @@
 </style>
 
 <script lang="ts">
+import * as _ from "lodash"
 import {Vue, Component, Lifecycle, Prop, Mixin, Watch, p} from 'av-ts'
 
 let capitalizeFirstLetter = function(input: string)
@@ -73,6 +74,8 @@ export default class Settings extends Vue
                 }
             );
         }
+
+        this.allThemes = _.sortBy(this.allThemes);
     }
 }
 </script>

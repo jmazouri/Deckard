@@ -31,12 +31,24 @@ $main-bg: white;
 $sidebar-text-color: rgb(35, 35, 35);
 $main-text-color: $sidebar-text-color;
 
+$sidebar-shadow-color: lighten(black, 33%);
+
 @mixin main-text-effect()
 {
     
 }
 
 @mixin sidebar-text-effect()
+{
+    
+}
+
+@mixin card-text-effect()
+{
+    
+}
+
+@mixin disabled-control()
 {
     
 }

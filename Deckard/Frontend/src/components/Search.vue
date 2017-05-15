@@ -81,15 +81,9 @@
             </div>
         </div>
 
-        <CardGrid v-show="foundCards.length > 0" :cards="foundCards" v-on:searchAll=""></CardGrid>
+        <CardGrid :cards="foundCards"></CardGrid>
 
-        <div class="spinner" v-show="currentlySearching">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
+        <LoadingSpinner :loading="currentlySearching"></LoadingSpinner>
     </div>
 </template>
 
@@ -107,18 +101,19 @@ import {CardDatabase} from '../deckard/storage/CardDatabase'
 import CardGrid from './CardGrid.vue'
 import ImageCheckBox from './ImageCheckBox.vue'
 import NumericCriteriaInput from './NumericCriteriaInput.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 
 import vSelect from 'vue-select'
 
 @Component({
-    components: {'CardGrid' : CardGrid, 'vSelect': vSelect,
+    components: {'CardGrid' : CardGrid, 'vSelect': vSelect, 'LoadingSpinner': LoadingSpinner,
                  'ImageCheckBox': ImageCheckBox, 'NumericCriteriaInput': NumericCriteriaInput }
 })
 export default class Search extends Vue
 {
     currentlySearching: boolean = false;
 
-    showAdvanced: boolean = true;
+    showAdvanced: boolean = false;
 
     searchQuery: string = "";
     foundCards: Card[] = [];

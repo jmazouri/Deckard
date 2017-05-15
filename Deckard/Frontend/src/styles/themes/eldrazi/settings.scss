@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css?family=Coda');
+$global-font: "Coda", sans-serif;
+$card-list-font: $global-font;
+
+$base-color: gray;
+
+$sidebar-bg: transparent;
+$main-bg: url('./assets/backgrounds/eldrazi.jpg');
+
+$sidebar-text-color: rgb(235, 235, 255);
+$main-text-color: rgb(235, 235, 255);
+
+$control-bg: darken(transparentize($base-color, 0.15), 15%);
+$control-border: 2px solid darken($base-color, 25%);
+$control-fg: white;
+$control-placeholder-fg: darken($control-fg, 20%);
+
+$card-text-color: black;
+$light-text: lighten(desaturate($card-text-color, 100%), 6%);
+
+$sidebar-shadow-color: black;
+
+$transparent-amount: 0.15;
+//Color overrides
+$mtg-blue: transparentize($mtg-blue, $transparent-amount);
+$mtg-black: transparentize($mtg-black, $transparent-amount);
+$mtg-red: transparentize($mtg-red, $transparent-amount);
+$mtg-white: transparentize($mtg-white, $transparent-amount);
+$mtg-green: transparentize($mtg-green, $transparent-amount);
+
+$mtg-artifact: transparentize($mtg-artifact, $transparent-amount);
+$mtg-gold: transparentize($mtg-gold, $transparent-amount);
+
+//Mixin overrides
+@mixin main-text-effect()
+{
+    text-shadow: 0px 0px 3px black, 0px 0px 8px black;
+}
+
+@mixin sidebar-text-effect()
+{
+    @include main-text-effect();
+}
+
+@mixin disabled-control()
+{
+    background-color: transparentize(darken(gray, 33%), 0.25);
+}

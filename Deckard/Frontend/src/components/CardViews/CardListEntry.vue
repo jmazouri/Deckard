@@ -14,15 +14,20 @@
                 </span>
             </div>
             <div class="right">
-                <div class="cmc" v-if="currentCard.cmc != undefined" v-html="manaToHtml(currentCard.manaCost)"
+                <div class="cmc" v-if="currentCard.cmc" v-html="manaToHtml(currentCard.manaCost)"
                              v-bind:title="currentCard.manaCost"></div>
             </div>
         </div>
 
         <div class="body" v-if="showText">
             <div class="text" v-html="currentCardText"></div>
-            <div class="flavor" v-if="showDescriptionText && currentCard.flavor != undefined">{{currentCard.flavor}}</div>
+
+            <div class="pt" v-if="currentCard.power">
+                    {{currentCard.power}}/{{currentCard.toughness}}
+            </div>
         </div>
+
+        <div class="flavor" v-if="showDescriptionText && currentCard.flavor != undefined">{{currentCard.flavor}}</div>
 
     </div>
 </template>

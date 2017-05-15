@@ -134,6 +134,11 @@
 
     .body
     {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+
         font-family: "Hind";
         margin-top: 0.25em;
         font-size: 0.6em;
@@ -144,13 +149,9 @@
             font-weight: bold;
         }
 
-        .flavor
+        .text
         {
-            color: $light-text;
-            margin-top: 0.5em;
-
-            font-size: 0.85em;
-            font-style: italic;
+            flex-grow: 2;
         }
 
         .symbol
@@ -159,5 +160,28 @@
             vertical-align: middle;
             font-size: 0.7em;
         }
+
+       .pt
+        {
+            font-family: $card-list-font;
+            
+            display: inline-block;
+            font-size: 1.2em;
+
+            margin-left: 0.5em;
+
+            align-self: flex-end;
+        }
+    }
+
+    .flavor
+    {
+        font-family: $card-list-font;
+
+        color: $light-text;
+        margin-top: 0.25em;
+
+        font-size: 0.5em;
+        font-style: italic;
     }
 }

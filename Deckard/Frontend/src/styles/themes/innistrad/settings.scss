@@ -15,8 +15,10 @@ $control-border: 2px solid darken($base-color, 25%);
 $control-fg: white;
 $control-placeholder-fg: darken($control-fg, 20%);
 
-$card-text-color: rgb(230, 230, 210);
+$card-text-color: rgb(235, 235, 255);
 $light-text: darken(desaturate($card-text-color, 100%), 6%);
+
+$sidebar-shadow-color: black;
 
 //Color overrides
 @import "../../imports/darkColors.scss";
@@ -31,4 +33,9 @@ $mtg-white: transparentize(darken(desaturate(#fffbd5, 70%), 50%), 0.4);
 @mixin sidebar-text-effect()
 {
     @include main-text-effect();
+}
+
+@mixin disabled-control()
+{
+    background-color: transparentize(darken(gray, 33%), 0.25);
 }

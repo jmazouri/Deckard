@@ -73,6 +73,8 @@ select, input, button
 
     min-height: 18px;
 
+    transition: all 0.3s ease-in-out; 
+
     &::placeholder
     {
         color: $control-placeholder-fg;
@@ -82,6 +84,8 @@ select, input, button
     {
         color: $control-placeholder-fg;
         background-color: desaturate($control-bg, 50%);
+
+        @include disabled-control();
     }
 }
 
@@ -104,6 +108,8 @@ button
 {
     font-family: $global-font;
     background: $control-bg;
+
+    z-index: 0;
 
     .open-indicator:before
     {
@@ -151,6 +157,35 @@ button
             {
                 background-color: darken($control-bg, 5%);
             }
+        }
+    }
+}
+
+.ctx-menu
+{
+    font-family: $global-font;
+    background: $control-bg;
+
+    box-shadow: none;
+    border: $control-border;
+
+    z-index: 99999;
+
+    padding: 0px;
+
+    li.separator
+    {
+        border-bottom: $control-border;
+    }
+    
+    .ctx-item
+    {
+        color: $control-fg;
+        padding: 2px 5px;
+
+        &:hover
+        {
+            background: $sidebar-bg;
         }
     }
 }

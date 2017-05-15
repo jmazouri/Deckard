@@ -6,6 +6,7 @@
 .symbol
 {
     color: black;
+    text-shadow: none;
 }
 </style>
 

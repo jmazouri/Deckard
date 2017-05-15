@@ -1,5 +1,13 @@
 <template>
     <div class="deckEditor">
+
+        <contextMenu ref="deckOpts" @ctx-open="onCtxOpen">
+            <li class="ctx-item" @click="showImportModal = true">Import from Text</li>
+            
+            <li class="separator"></li>
+            <li class="ctx-item" @click="exportDeck()">Export to Text</li>
+            <li class="ctx-item" @click="buyDeck()">Export to TCGPlayer</li>
+        </contextMenu>
     
         <div class="options">
             <select class="deckSelector" v-model="selectedDeck">
@@ -11,9 +19,7 @@
             <div class="buttonRow">
                 <button v-on:click="showNewModal = true">New</button>
                 <button v-on:click="deleteDeck()">Delete</button>
-                <button v-on:click="showImportModal = true">Import</button>
-                <button v-on:click="exportDeck()">Export</button>
-                <button v-on:click="buyDeck()">TCG</button>
+                <button @click="$refs.deckOpts.open($event)">Options</button>
             </div>
         </div>
 
@@ -71,6 +77,10 @@
                 {
                     margin-left: 1px;
                 }
+                &:last-child
+                {
+                    margin-left: 200px;
+                }
             }
         }
     }
@@ -120,7 +130,7 @@ import {CardDatabase} from '../deckard/storage/CardDatabase'
 import CardGrid from './CardGrid.vue'
 
 @Component({
-    components: {'CardGrid' : CardGrid}
+    components: {'CardGrid' : CardGrid, 'contextMenu': require('vue-context-menu')}
 })
 export default class DeckEditor extends Vue
 {
@@ -149,6 +159,11 @@ export default class DeckEditor extends Vue
     {
         this.$store.commit('deck/deleteCurrentDeck');
         this.$store.commit('deck/setCurrentDeck', this.$store.state.allDecks[0]);
+    }
+
+    onCtxOpen(vars)
+    {
+        
     }
 
     //Do some fun form POSTing to TCGPlayer

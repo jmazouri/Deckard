@@ -7,3 +7,8 @@ $mtg-green: transparentize(darken(saturate($mtg-green, 33%), 50%), 0.15);
 $mtg-artifact: transparentize(darken($mtg-artifact, 45%), 0.1);
 
 $mtg-gold: transparentize(darken(saturate($mtg-gold, 33%), 40%), 0.1);
+
+@mixin card-text-effect()
+{
+    text-shadow: 0px 0px 1px black;
+}

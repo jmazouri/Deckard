@@ -6,13 +6,7 @@
 
         <CardGrid :cards="setCards" v-on:searchAll="searchAll"></CardGrid>
 
-        <div class="spinner" v-show="setCards.length <= 0">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
+        <LoadingSpinner :loading="setCards.length <= 0"></LoadingSpinner>
     </div>
 </template>
 
@@ -26,11 +20,12 @@ import {Deck} from '../deckard/models/Deck'
 
 import {CardDatabase} from '../deckard/storage/CardDatabase'
 import CardGrid from './CardGrid.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 
 import vSelect from 'vue-select'
 
 @Component({
-    components: {'CardGrid' : CardGrid, 'vSelect': vSelect }
+    components: {'CardGrid' : CardGrid, 'vSelect': vSelect, 'LoadingSpinner': LoadingSpinner }
 })
 export default class CardBrowser extends Vue
 {

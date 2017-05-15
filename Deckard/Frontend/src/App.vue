@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div class="sideBar" v-show="showSidebar">
+        <div class="sideBar" v-bind:class="{'hidden': !showSidebar}">
             <DeckEditor></DeckEditor>
         </div>
 

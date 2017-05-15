@@ -21,6 +21,8 @@
     {
         text-shadow: none;
         color: $card-text-color;
+
+        @include card-text-effect();
     }
 
     .sorting
@@ -58,6 +60,7 @@
                     background: $control-bg;
 
                     position: relative;
+                    z-index: -1;
 
                     top: 2px;
 
