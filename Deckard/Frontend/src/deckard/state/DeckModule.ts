@@ -28,6 +28,15 @@ const store =
             state.currentDeck.cards.splice(state.currentDeck.cards.indexOf(card), 1);
             localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
         },
+        removeAllFromDeck(state, card)
+        {
+            if (card == undefined) { return; }
+
+            var filtered = state.currentDeck.cards.filter(c => c.multiverseid != card.multiverseid);
+            state.currentDeck.cards = filtered;
+
+            localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
+        },
         loadDeck(state, deck)
         {
             if (deck == undefined) { return; }

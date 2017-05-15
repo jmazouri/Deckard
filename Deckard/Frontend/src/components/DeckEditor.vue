@@ -231,7 +231,7 @@ export default class DeckEditor extends Vue
                 newDeck.name = thisVue.newDeckName;
                 newDeck.cards = cards;
 
-                thisVue.$store.commit('loadDeck', newDeck);
+                thisVue.$store.commit('deck/loadDeck', newDeck);
                 thisVue.newDeckName = "New Deck";
                 thisVue.showImportModal = false;
             });
@@ -243,7 +243,7 @@ export default class DeckEditor extends Vue
         newDeck.name = this.newDeckName;
         newDeck.cards = [];
 
-        this.$store.commit('loadDeck', newDeck);
+        this.$store.commit('deck/loadDeck', newDeck);
 
         this.showNewModal = false;
         this.newDeckName = "New Deck";
@@ -251,12 +251,12 @@ export default class DeckEditor extends Vue
 
     removeFromDeck(card)
     {
-        this.$store.commit('removeFromDeck', card);
+        this.$store.commit('deck/removeFromDeck', card);
     }
 
     addToDeck(card)
     {
-        this.$store.commit('addToDeck', card);
+        this.$store.commit('deck/addToDeck', card);
     }
 
     // lifecycle hook

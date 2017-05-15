@@ -78,6 +78,7 @@
                     </div>
                 </div>
 
+                <div class="searchDetails">{{queryDetails}}</div>
             </div>
         </div>
 
@@ -113,7 +114,7 @@ export default class Search extends Vue
 {
     currentlySearching: boolean = false;
 
-    showAdvanced: boolean = false;
+    showAdvanced: boolean = true;
 
     searchQuery: string = "";
     foundCards: Card[] = [];
@@ -129,6 +130,29 @@ export default class Search extends Vue
     get deck()
     {
         return this.$store.state.deck.currentDeck;
+    }
+
+    get queryDetails()
+    {
+        let ret: string[] = [];
+        let s: SearchQuery = this.currentQuery;
+
+        if (s.name) { ret.push(`Name: ${s.name}`); }
+        if (s.rules) { ret.push(`Rules: ${s.rules}`); }
+        
+        if (s.types.length > 0) { ret.push(s.types.join(', ')); }
+        if (s.subtypes.length > 0) { ret.push(s.subtypes.join(', ')); }
+
+        if (s.cmc.comparison != "N/A") { ret.push(`CMC ${s.cmc.comparison} ${s.cmc.value}`); }
+        if (s.power.comparison != "N/A") { ret.push(`Power ${s.power.comparison} ${s.power.value}`); }
+        if (s.toughness.comparison != "N/A") { ret.push(`Toughness ${s.toughness.comparison} ${s.toughness.value}`); }
+
+        if (s.selectedColors.length > 0) { ret.push(s.selectedColors.join(', ')); }
+
+        if (s.excludeUnselectedColors) { ret.push('Exclude Unselected Colors'); }
+        if (s.onlyMulticolor) { ret.push('Only multicolor'); }
+
+        return ret.join(', ');
     }
 
     performSearch()

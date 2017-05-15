@@ -37,7 +37,13 @@ export class SearchQuery
     {
         let ret = new SearchQuery();
 
-        ret = _.cloneDeep(jsonObject);
+        ret.name = jsonObject.name;
+        ret.rules = jsonObject.rules;
+        ret.types = jsonObject.types;
+        ret.subtypes = jsonObject.subtypes;
+        ret.formats = jsonObject.formats;
+
+        ret.colors = _.clone(jsonObject.colors);
 
         ret.cmc = new NumericCriteria();
         ret.cmc.comparison = jsonObject.cmc.comparison;
@@ -50,6 +56,9 @@ export class SearchQuery
         ret.toughness = new NumericCriteria();
         ret.toughness.comparison = jsonObject.toughness.comparison;
         ret.toughness.value = jsonObject.toughness.value;
+
+        ret.excludeUnselectedColors = jsonObject.excludeUnselectedColors;
+        ret.onlyMulticolor = jsonObject.onlyMulticolor;
 
         return ret;
     }

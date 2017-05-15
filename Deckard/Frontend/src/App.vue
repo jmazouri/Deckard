@@ -84,7 +84,7 @@ export default class App extends Vue
         }
     ];
 
-    currentTab = "browse";
+    currentTab = "search";
 
     // lifecycle hook
     @Lifecycle mounted()

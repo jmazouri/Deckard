@@ -6,6 +6,23 @@
         width: 24px;
     }
 
+    .searchDetails
+    {
+        font-family: monospace;
+        background: $control-bg;
+        color: $control-fg;
+        padding: 0.25em;
+
+        font-size: 1em;
+        margin-top: 0.25em;
+
+        position: relative;
+        left: -0.55em;
+        top: 0.6em;
+
+        width: 105%;
+    }
+
     .options
     {
         background: $sidebar-bg;
