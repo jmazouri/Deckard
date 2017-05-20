@@ -11,15 +11,21 @@ const store =
         {
             state.theme = newTheme;
 
-            if (state.themeRef != null && state.themeRef != undefined)
+            if (state.themeRef)
             {
-                state.themeRef.unuse();
+                var prevTheme = state.themeRef;
                 state.themeRef = null;
             }
-            
+
             state.themeRef = require('../../styles/themes/' + state.theme + '/theme.scss');
             state.themeRef.use();
-
+            
+            if (prevTheme)
+            {
+                prevTheme.unuse();
+            }
+            
+            
             localStorage["theme"] = state.theme;
         }
     }

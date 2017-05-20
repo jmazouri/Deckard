@@ -14,7 +14,7 @@
                 </span>
             </div>
             <div class="right">
-                <div class="cmc" v-if="currentCard.cmc" v-html="manaToHtml(currentCard.manaCost)"
+                <div class="cmc" v-if="currentCard.cmc !== undefined" v-html="manaToHtml(currentCard.manaCost)"
                              v-bind:title="currentCard.manaCost"></div>
             </div>
         </div>

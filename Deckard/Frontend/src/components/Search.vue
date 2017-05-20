@@ -1,7 +1,9 @@
 <template>
     <div class="search">
         <div class="options">
-            <input type="text" v-model="searchQuery" v-bind:disabled="showAdvanced" class="mainSearch" @keyup.enter="performSearch" placeholder="Search for cards or rules text" />
+            <input type="text" v-if="!showAdvanced" v-model="searchQuery" class="mainSearch" @keyup.enter="performSearch" placeholder="Search for cards or rules text" />
+            <input type="text" v-else disabled class="mainSearch" v-bind:value="queryDetails" />
+
             <button v-on:click="performSearch">
                 <span v-html="searchIconPath"></span>
             </button>
@@ -32,6 +34,17 @@
                     <div class="half">
                         <label>Subtype</label>
                         <vSelect multiple v-model="currentQuery.subtypes" placeholder="Only include subtypes" :options="cardSubTypes"></vSelect>
+                    </div>
+                </div>
+
+                <div class="full">
+                    <div class="half">
+                        <label>Set</label>
+                        <vSelect multiple v-model="currentQuery.sets" placeholder="Only include sets" :options="allSets" label="name"></vSelect>
+                    </div>
+                    
+                    <div class="half">
+                        
                     </div>
                 </div>
 
@@ -77,14 +90,17 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="searchDetails">{{queryDetails}}</div>
             </div>
         </div>
 
         <CardGrid :cards="foundCards"></CardGrid>
 
         <LoadingSpinner :loading="currentlySearching"></LoadingSpinner>
+
+        <div class="emptyText" v-if="noCardsFound">
+            No Cards Found
+            <small>Maybe re-check your criteria?</small>
+        </div>
     </div>
 </template>
 
@@ -123,9 +139,11 @@ export default class Search extends Vue
     cardTypes: string[] = [];
     cardSubTypes: string[] = [];
     allFormats: string[] = ["Standard", "Modern", "Commander", "Legacy"];
+    allSets: Set[] = [];
 
     currentQuery: SearchQuery = new SearchQuery();
     hasLoaded: boolean = false;
+    noCardsFound: boolean = false;
 
     get deck()
     {
@@ -142,6 +160,9 @@ export default class Search extends Vue
         
         if (s.types.length > 0) { ret.push(s.types.join(', ')); }
         if (s.subtypes.length > 0) { ret.push(s.subtypes.join(', ')); }
+
+        let setNames = _.map(s.sets, function(set) { return set.name; });
+        if (s.sets.length > 0) { ret.push(setNames.join(', ')); }
 
         if (s.cmc.comparison != "N/A") { ret.push(`CMC ${s.cmc.comparison} ${s.cmc.value}`); }
         if (s.power.comparison != "N/A") { ret.push(`Power ${s.power.comparison} ${s.power.value}`); }
@@ -160,6 +181,7 @@ export default class Search extends Vue
         let thisVue:Search = this;
 
         thisVue.currentlySearching = true;
+        thisVue.noCardsFound = false;
         thisVue.foundCards = [];
 
         if (this.showAdvanced)
@@ -169,6 +191,11 @@ export default class Search extends Vue
                 {
                     thisVue.foundCards = cards;
                     thisVue.currentlySearching = false;
+
+                    if (cards.length == 0)
+                    {
+                        thisVue.noCardsFound = true;
+                    }
                 });
         }
         else
@@ -178,6 +205,11 @@ export default class Search extends Vue
                 {
                     thisVue.foundCards = cards;
                     thisVue.currentlySearching = false;
+
+                    if (cards.length == 0)
+                    {
+                        thisVue.noCardsFound = true;
+                    }
                 });
         }
     }
@@ -190,8 +222,9 @@ export default class Search extends Vue
             var load = SearchQuery.revive(JSON.parse(localStorage["search"]));
 
             this.currentQuery = load;
-            this.hasLoaded = true;
         }
+
+        this.hasLoaded = true;
 
         let thisVue:Search = this;
 
@@ -205,6 +238,12 @@ export default class Search extends Vue
             .then(function(types)
             {
                 thisVue.cardTypes = types;
+            });
+
+        CardDatabase.instance.getAllSets()
+            .then(function(sets: Set[])
+            {
+                thisVue.allSets = sets;
             });
     }
 

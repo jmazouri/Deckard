@@ -31,6 +31,8 @@ class DataImporter
     
     public static async loadCardsFromJson(jsonUrl: string) : Promise<Set[]>
     {
+        this.sendStatusMessage(`Downloading card & set data...`, 0, 0);
+
         var jsonData = await this.loadFromUrl(jsonUrl);
 
         let setsAndCards = JSON.parse(jsonData);

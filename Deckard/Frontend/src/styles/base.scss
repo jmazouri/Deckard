@@ -104,21 +104,31 @@ button
     }
 }
 
+$opaque-bg: opacify($control-bg, 1);
+
 .v-select
 {
     font-family: $global-font;
-    background: $control-bg;
+    background: $opaque-bg;
 
     z-index: 0;
 
-    .open-indicator:before
+    &.open
     {
-        border-color: $control-fg;
+        z-index: 99;
+    }
+
+    .open-indicator
+    {
+        &:before
+        {
+            border-color: $control-fg;
+        }
     }
 
     .selected-tag
     {
-        background: darken($control-bg, 8%);
+        background: darken($opaque-bg, 8%);
         color: $control-fg;
 
         border: 0px;
@@ -139,7 +149,14 @@ button
 
     .dropdown-menu
     {
-        background: $control-bg;
+        position: absolute;
+
+        background: $opaque-bg;
+        
+        & > *
+        {
+            z-index: 99;
+        }
         
         li
         {
@@ -155,8 +172,13 @@ button
 
             &.highlight a
             {
-                background-color: darken($control-bg, 5%);
+                background-color: darken($opaque-bg, 5%);
             }
+        }
+
+        .highlight a
+        {
+            color: $control-fg;
         }
     }
 }
@@ -164,7 +186,7 @@ button
 .ctx-menu
 {
     font-family: $global-font;
-    background: $control-bg;
+    background: $opaque-bg;
 
     box-shadow: none;
     border: $control-border;
@@ -185,7 +207,7 @@ button
 
         &:hover
         {
-            background: $sidebar-bg;
+            background: rgba(red($control-fg), green($control-fg), blue($control-fg), 0.2);
         }
     }
 }

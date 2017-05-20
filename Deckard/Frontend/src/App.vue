@@ -13,7 +13,10 @@
 
         <div class="main" v-bind:class="{'withoutSidebar': !showSidebar}">
             <div class="headerStatus" v-show="backgroundStatus.currentMessage != undefined">
-                {{backgroundStatus.currentMessage}} [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
+                {{backgroundStatus.currentMessage}}
+                <template v-if="backgroundStatus.currentProgress && backgroundStatus.maxProgress">
+                    [{{backgroundStatus.currentProgress}}/{{backgroundStatus.maxProgress}}]
+                </template>
             </div>
 
             <div class="tabContainer">
@@ -109,6 +112,10 @@ export default class App extends Vue
 
             if (event.data.kind == "LoadCards")
             {
+                let newStatus = new BackgroundProcessStatus();
+                newStatus.currentMessage = "Loading Sets...";
+                thisVue.backgroundStatus = newStatus;
+
                 CardDatabase.instance.getAllSets()
                     .then(function(value)
                     {
@@ -116,6 +123,8 @@ export default class App extends Vue
                         {
                             return set.releaseDate;
                         });
+
+                        thisVue.backgroundStatus = new BackgroundProcessStatus();
                     });
                 
                 console.info(`[${event.data.kind}] ${event.data.data}`);

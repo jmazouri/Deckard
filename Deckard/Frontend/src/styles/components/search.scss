@@ -6,21 +6,28 @@
         width: 24px;
     }
 
-    .searchDetails
+    .emptyText
     {
-        font-family: monospace;
         background: $control-bg;
         color: $control-fg;
-        padding: 0.25em;
 
-        font-size: 1em;
-        margin-top: 0.25em;
+        width: 100%;
+        padding: 0.5em;
 
-        position: relative;
-        left: -0.55em;
-        top: 0.6em;
+        text-align: center;
+        font-size: 4em;
+        font-weight: bold;
 
-        width: 105%;
+        small
+        {
+            font-weight: normal;
+            font-style: italic;
+
+            display: block;
+            font-size: 0.33em;
+
+            color: $control-placeholder-fg;
+        }
     }
 
     .options

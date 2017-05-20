@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Hind:400,700');
 
-$lighter-bg: rgba(255, 255, 255, 0.5);
+$lighter-bg: rgba(255, 255, 255, 0.4);
 $card-radius: 0.5em;
 
 .tinyCard
@@ -56,7 +56,7 @@ $card-radius: 0.5em;
 
     .header
     {
-        color: black;
+        color: $card-text-color;
         
         display: flex;
         flex-direction: row;

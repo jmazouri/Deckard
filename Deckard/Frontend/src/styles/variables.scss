@@ -53,7 +53,7 @@ $sidebar-shadow-color: lighten(black, 33%);
     
 }
 
-$control-bg: transparent;
+$control-bg: rgba(255, 255, 255, 0);
 $control-border: 2px solid darken($base-color, 25%);
 $control-fg: black;
 $control-placeholder-fg: lighten($control-fg, 40%);

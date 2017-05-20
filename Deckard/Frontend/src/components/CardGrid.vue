@@ -54,9 +54,10 @@
         <contextMenu ref="ctx" @ctx-open="onCtxOpen">
             <li class="ctx-item" @click="addToDeck()">Add to Deck</li>
             <li class="ctx-item" @click="addToDeck();addToDeck();addToDeck();addToDeck()">Add to Deck (4x)</li>
+
             <li class="separator"></li>
-            <li class="ctx-item" @click="removeFromDeck()" v-if="removeCard">Remove from Deck</li>
-            <li class="ctx-item" @click="removeAllFromDeck()" v-if="removeCard">Remove from Deck (all)</li>
+            <li class="ctx-item" @click="removeFromDeck()">Remove from Deck</li>
+            <li class="ctx-item" @click="removeAllFromDeck()">Remove from Deck (all)</li>
 
             <li class="separator"></li>
             <li class="ctx-item" @click="searchAll()">Find All Versions</li>
@@ -127,16 +128,6 @@ export default class CardGrid extends Vue
         default()
         {
             return new Array<Card>();
-        }
-    })
-
-    @Prop removeCard: any = p(
-    {
-        type: Boolean,
-        required: false,
-        default()
-        {
-            return false;
         }
     })
 

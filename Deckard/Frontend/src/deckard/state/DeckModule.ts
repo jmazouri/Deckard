@@ -25,7 +25,11 @@ const store =
         {
             if (card == undefined) { return; }
 
-            state.currentDeck.cards.splice(state.currentDeck.cards.indexOf(card), 1);
+            let cardIndex = state.currentDeck.cards.indexOf(card);
+            
+            if (cardIndex < 0) { return; }
+
+            state.currentDeck.cards.splice(cardIndex, 1);
             localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
         },
         removeAllFromDeck(state, card)

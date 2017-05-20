@@ -24,7 +24,7 @@
         </div>
 
         <CardGrid class="smaller" :isGrouped="true" :showAllText="false" v-on:addToDeck="addToDeck"
-            :cards="currentCards" :removeCard="true" v-on:removeFromDeck="removeFromDeck"></CardGrid>
+            :cards="currentCards" v-on:removeFromDeck="removeFromDeck"></CardGrid>
 
         <div class="importDeck modal" v-if="showImportModal">
             <button v-on:click="showImportModal = false">X</button>
