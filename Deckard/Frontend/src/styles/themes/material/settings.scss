@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+$global-font: 'Roboto', sans-serif;
+$card-list-font: $global-font;
+
+$control-fg: rgba(0,0,0,0.87);
+
+$control-placeholder-fg: darken($control-fg, 20%);
+
+$control-border: none;

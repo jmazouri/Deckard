@@ -60,3 +60,6 @@ $control-placeholder-fg: lighten($control-fg, 40%);
 
 $card-text-color: black;
 $light-text: darken(desaturate($card-text-color, 100%), 6%);
+
+$scrollbar-color: $control-fg;
+$scrollbar-container: $control-bg;

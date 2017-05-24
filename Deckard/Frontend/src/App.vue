@@ -83,7 +83,7 @@ export default class App extends Vue
         },
         {
             id: "settings",
-            name: "⚙️"
+            name: "⚙ Settings"
         }
     ];
 

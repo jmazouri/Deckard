@@ -15,6 +15,7 @@
     &::-webkit-scrollbar
     {
         width: 10px;
+        background: $scrollbar-container;
     }
 
     &::-webkit-resizer
@@ -86,6 +87,44 @@ select, input, button
         background-color: desaturate($control-bg, 50%);
 
         @include disabled-control();
+    }
+
+    &[type=checkbox]
+    {
+        @include clear-appearance();
+
+        background: $control-bg;
+
+        position: relative;
+        z-index: -1;
+
+        top: 2px;
+
+        width: 16px;
+        height: 16px;
+
+        color: transparent;
+        
+        transition: all 0.3s ease-in-out;
+
+        &:checked
+        {
+            color: $control-fg;
+        }
+
+        &:checked:after
+        {
+            content: '✔';
+            position: relative;
+
+            top: -5px;
+            left: -1px;
+        }
+
+        &:focus
+        {
+            outline: none;
+        }
     }
 }
 
@@ -180,6 +219,11 @@ $opaque-bg: opacify($control-bg, 1);
         {
             color: $control-fg;
         }
+    }
+
+    button
+    {
+        width: 24px;
     }
 }
 

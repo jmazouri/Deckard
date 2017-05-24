@@ -52,35 +52,6 @@
                     font-size: 0.8em;
                     margin-bottom: 0.25em;
                 }
-
-                input[type=checkbox]
-                {
-                    @include clear-appearance();
-
-                    background: $control-bg;
-
-                    position: relative;
-                    z-index: -1;
-
-                    top: 2px;
-
-                    width: 16px;
-                    height: 16px;
-
-                    &:checked:after
-                    {
-                        content: '✔';
-                        position: relative;
-
-                        top: -5px;
-                        left: -1px;
-                    }
-
-                    &:focus
-                    {
-                        outline: none;
-                    }
-                }
             }
 
             input[type=text]

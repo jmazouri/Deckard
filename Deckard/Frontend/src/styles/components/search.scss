@@ -3,7 +3,12 @@
     button
     {
         text-align: center;
-        width: 24px;
+        width: 84px;
+        
+        span, svg
+        {
+            max-height: 20px;
+        }
     }
 
     .emptyText
@@ -41,7 +46,7 @@
 
         .mainSearch
         {
-            width: calc(100% - 66px);
+            width: calc(100% - 192px);
         }
 
         .advancedSearch

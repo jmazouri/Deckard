@@ -18,11 +18,17 @@
                         Sort
                     </div>
                     <select v-model="sorting">
-                        <option>Name</option>
-                        <option>CMC</option>
-                        <option>Color</option>
-                        <option>Type</option>
-                        <option>Rarity</option>
+                        <optgroup label="Info">
+                            <option>Name</option>
+                            <option>Type</option>
+                            <option>Rarity</option>
+                        </optgroup>
+                        <optgroup label="Data">
+                            <option>CMC</option>
+                            <option>Color</option>
+                            <option>Power</option>
+                            <option>Toughness</option>
+                        </optgroup>
                     </select>
                 </label>
 
@@ -327,6 +333,10 @@ export default class CardGrid extends Vue
                     return element.type;
                 case "Rarity":
                     return rarityOrder.indexOf(element.rarity);
+                case "Power":
+                    return element.power;
+                case "Toughness":
+                    return element.toughness;
                 default:
                     return "";
             }

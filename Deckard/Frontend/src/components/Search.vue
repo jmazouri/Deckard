@@ -8,7 +8,7 @@
                 <span v-html="searchIconPath"></span>
             </button>
             <button v-on:click="showAdvanced = !showAdvanced">
-                V
+                <span v-html="moreIconPath"></span>
             </button>
 
             <div class="advancedSearch" v-show="showAdvanced">
@@ -135,6 +135,8 @@ export default class Search extends Vue
     searchQuery: string = "";
     foundCards: Card[] = [];
     searchIconPath = require('!svg-inline-loader!../assets/icons/ui/search.svg');
+    moreIconPath = require('!svg-inline-loader!../assets/icons/ui/more.svg');
+
 
     cardTypes: string[] = [];
     cardSubTypes: string[] = [];
