@@ -63,7 +63,6 @@ export class SearchQuery
         let toughnessValid = this.toughness && this.toughness.meetsCriteria(card.toughness);
 
         let setsMatch = (this.setCodes.length > 0 ? _.some(this.setCodes, setCode => card.set == setCode) : true);
-
         return nameMatches && rulesMatch && typesMatch &&
                 subTypesMatch && colorsMatch && cmcValid &&
                 powerValid && toughnessValid && setsMatch;

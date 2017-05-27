@@ -8,23 +8,34 @@ $mtg-colors: $mtg-blue, $mtg-black, $mtg-red, $mtg-white, $mtg-green;
 $mtg-guilds:
 (
     WU: ($mtg-white, $mtg-blue),
+    UW: ($mtg-white, $mtg-blue),
+
     WB: ($mtg-white, $mtg-black),
+    BW: ($mtg-white, $mtg-black),
 
     UB: ($mtg-blue, $mtg-black),
+    BU: ($mtg-blue, $mtg-black),
+
     UR: ($mtg-blue, $mtg-red),
+    RU: ($mtg-blue, $mtg-red),
 
     BR: ($mtg-black, $mtg-red),
+    RB: ($mtg-black, $mtg-red),
+
     BG: ($mtg-black, $mtg-green),
+    GB: ($mtg-black, $mtg-green),
 
     RG: ($mtg-red, $mtg-green),
     GR: ($mtg-red, $mtg-green),
 
     RW: ($mtg-red, $mtg-white),
+    WR: ($mtg-red, $mtg-white),
 
     WG: ($mtg-green, $mtg-white),
     GW: ($mtg-green, $mtg-white),
 
-    GU: ($mtg-green, $mtg-blue)
+    GU: ($mtg-green, $mtg-blue),
+    UG: ($mtg-green, $mtg-blue)
 );
 
 $border-vars: 0.3rem solid;

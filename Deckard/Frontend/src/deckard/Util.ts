@@ -4,10 +4,10 @@ export default class Util
 {
     static filterArrayField(input: string[], matchAgainst: string[]): boolean
     {
+        if (matchAgainst == undefined || matchAgainst.length == 0) { return true; }
         if (input == undefined) { return false; }
-        if (matchAgainst == undefined) { return true; }
 
-        return (matchAgainst.length > 0 ? _.intersection(input, matchAgainst).length > 0 : true);
+        return _.intersection(input, matchAgainst).length > 0;
     }
 
     static filterTextField(input: any, matchAgainst: string): boolean

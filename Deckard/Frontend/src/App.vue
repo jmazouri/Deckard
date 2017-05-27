@@ -25,9 +25,11 @@
                       v-bind:class="{'current': currentTab == tab.id}" v-bind:id="tab.id">{{tab.name}}</span>
             </div>
 
-            <CardBrowser :allSets="allSets" v-show="currentTab == 'browse'"></CardBrowser>
-            <Settings v-show="currentTab == 'settings'"></Settings>
-            <Search v-show="currentTab == 'search'"></Search>
+            <div v-show="!(backgroundStatus.currentMessage != undefined)">
+                <CardBrowser :allSets="allSets" v-show="currentTab == 'browse'"></CardBrowser>
+                <Settings v-show="currentTab == 'settings'"></Settings>
+                <Search v-show="currentTab == 'search'"></Search>
+            </div>
 
         </div>
     </div>

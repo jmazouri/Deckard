@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import Vuex from 'vuex';
 import {Deck} from '../models/Deck'
 
@@ -12,13 +14,13 @@ const store =
         {
             if (!card) { return; }
 
-            if (!state.currentDeck)
+            state.currentDeck.cards.push(card);
+
+            if (!_.some(state.allDecks, thatDeck => thatDeck == state.currentDeck))
             {
-                state.currentDeck = new Deck();
                 state.allDecks.push(state.currentDeck);
             }
 
-            state.currentDeck.cards.push(card);
             localStorage["currentDeck"] = JSON.stringify(state.currentDeck);
         },
         removeFromDeck(state, card)
