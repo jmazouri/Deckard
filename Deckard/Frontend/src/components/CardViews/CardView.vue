@@ -151,25 +151,26 @@ export default class CardView extends Vue
         return cardHtml;
     }
 
+    keywords = ["Deathtouch", "Defender", "Double Strike", "Enchant", "Equip", "Flashback", "Flying",
+                "Haste", "Hexproof", "Indestructible", "Intimidate", "Lifelink", "Protection", "Flanking",
+                "Reach", "Shroud", "Trample", "Vigilance", "Banding", "Rampage", "Cumulative Upkeep", 
+                "Phasing", "Buyback", "Shadow", "Cycling", "Echo", "Horsemanship", "Fading", "Kicker",
+                "Flash", "Madness", "Fear", "Megamorph", "Morph", "Amplify", "Provoke", "Storm", "Affinity", "Entwine",
+                "Modular", "Sunburst", "Bushido", "Soulshift", "Splice", "Offering", "Ninjutsu", "Epic",
+                "Convoke", "Dredge", "Transmute", "Bloodthirst", "Haunt", "Replicate", "Forecast", "Graft",
+                "Recover", "Ripple", "Split Second", "Suspend", "Vanishing", "Absorb", "Swap", "Delve", "Fortify",
+                "Frenzy", "Gravestorm", "Poisonous", "Transfigure", "Champion an", "Champion a", "Changeling", "Evoke", "Hideaway",
+                "Prowl", "Reinforce", "Conspire", "Persist", "Wither", "Retrace", "Devour", "Exalted", "Unearth",
+                "Cascade", "Annihilator", "Level Up", "Rebound", "Armor", "Infect", "Battle Cry", "Weapon", "Undying", "Miracle",
+                "Soulbond", "Overload", "Scavenge", "Unleash", "Cipher", "Evolve", "Extort", "Fuse", "Bestow",
+                "Tribute", "Dethrone", "Agenda", "Outlast", "Prowess", "Dash", "Exploit", "Menace", "Renown",
+                "Awaken", "Devoid", "Ingest", "Myriad", "Surge", "Skulk", "Emerge", "Escalate", "Melee", "Crew",
+                "Fabricate", "Partner", "Undaunted", "Improvise", "First strike", "Islandwalk", "Mountainwalk",
+                "Swampwalk", "Plainswalk", "Forestwalk", "Exert", "Landwalk"];
+
     get currentCardText()
     {
         var thisVue = this;
-        let keywords = ["Deathtouch", "Defender", "Double Strike", "Enchant", "Equip", "Flashback", "Flying",
-                        "Haste", "Hexproof", "Indestructible", "Intimidate", "Lifelink", "Protection", "Flanking",
-                        "Reach", "Shroud", "Trample", "Vigilance", "Banding", "Rampage", "Cumulative Upkeep", 
-                        "Phasing", "Buyback", "Shadow", "Cycling", "Echo", "Horsemanship", "Fading", "Kicker",
-                        "Flash", "Madness", "Fear", "Megamorph", "Morph", "Amplify", "Provoke", "Storm", "Affinity", "Entwine",
-                        "Modular", "Sunburst", "Bushido", "Soulshift", "Splice", "Offering", "Ninjutsu", "Epic",
-                        "Convoke", "Dredge", "Transmute", "Bloodthirst", "Haunt", "Replicate", "Forecast", "Graft",
-                        "Recover", "Ripple", "Split Second", "Suspend", "Vanishing", "Absorb", "Swap", "Delve", "Fortify",
-                        "Frenzy", "Gravestorm", "Poisonous", "Transfigure", "Champion an", "Champion a", "Changeling", "Evoke", "Hideaway",
-                        "Prowl", "Reinforce", "Conspire", "Persist", "Wither", "Retrace", "Devour", "Exalted", "Unearth",
-                        "Cascade", "Annihilator", "Level Up", "Rebound", "Armor", "Infect", "Battle Cry", "Weapon", "Undying", "Miracle",
-                        "Soulbond", "Overload", "Scavenge", "Unleash", "Cipher", "Evolve", "Extort", "Fuse", "Bestow",
-                        "Tribute", "Dethrone", "Agenda", "Outlast", "Prowess", "Dash", "Exploit", "Menace", "Renown",
-                        "Awaken", "Devoid", "Ingest", "Myriad", "Surge", "Skulk", "Emerge", "Escalate", "Melee", "Crew",
-                        "Fabricate", "Partner", "Undaunted", "Improvise", "First strike", "Islandwalk", "Mountainwalk",
-                        "Swampwalk", "Plainswalk", "Forestwalk", "Exert", "Landwalk"];
 
         if (this.currentCard == null || this.currentCard.text == undefined)
         {
@@ -200,7 +201,7 @@ export default class CardView extends Vue
 
         cardHtml = this.manaToHtml(cardHtml);
 
-        for (let word of keywords)
+        for (let word of this.keywords)
         {
             cardHtml = cardHtml.replace(new RegExp(`${word}(\\s|,|\\z)`, 'gmi'), function(match, group)
             {

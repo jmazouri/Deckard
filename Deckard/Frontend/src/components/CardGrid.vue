@@ -9,6 +9,7 @@
                     <select v-model="viewMode">
                         <option value="cards">Cards</option>
                         <option value="list">List</option>
+                        <option value="table">Table</option>
                         <option value="cardArt">Art</option>
                     </select>
                 </label>
@@ -29,6 +30,10 @@
                             <option>Power</option>
                             <option>Toughness</option>
                         </optgroup>
+                    </select>
+                    <select v-model="sortAsc">
+                        <option :value="true">Ascending</option>
+                        <option :value="false">Descending</option>
                     </select>
                 </label>
 
@@ -86,6 +91,46 @@
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
         </CardListEntry>
 
+        <template v-if="viewMode == 'table' && sortedCards.length > 0">
+
+            <table class="cardTable">
+                <thead>
+                    <th v-on:click="sorting = 'Name'">
+                        Name
+                    </th>
+                    <th v-on:click="sorting = 'Type'">
+                        Type
+                    </th>
+                    <th v-on:click="sorting = 'CMC'">
+                        Cost
+                    </th>
+                    <th v-on:click="sorting = 'Power'">
+                        P
+                    </th>
+                    <th v-on:click="sorting = 'Toughness'">
+                        T
+                    </th>
+                    <th v-on:click="sorting = 'Color'">
+                        Color
+                    </th>
+                </thead>
+                <tbody>
+                    <CardGridRow class="card" v-for="(card, index) in sortedCards" :key="index"
+                            @click.native="showFullText(card.multiverseid)"
+                            @click.ctrl.native="addToDeck(card)"
+
+                            :showText="shouldShowText(card.multiverseid)"
+                            :showDescriptionText="showAllFullText" 
+                            :card="card"
+                            :quantity="getCardQuantity(card.multiverseid)"
+                            
+                            @contextmenu.prevent.native="$refs.ctx.open($event, card)">
+                    </CardGridRow>
+                    </tbody>
+            </table>
+
+        </template>
+
         <TinyCard class="card" v-if="viewMode == 'cards'" v-for="(card, index) in sortedCards" :key="index" 
 
                 @click.native="showFullText(card.multiverseid)"
@@ -100,7 +145,8 @@
         </TinyCard>
 
         <CardArt class="card" v-if="viewMode == 'cardArt'" v-for="(card, index) in sortedCards" :key="index"
-                       
+                
+                @click.ctrl.native="addToDeck(card)"
                 :card="card"
                 
                 @contextmenu.prevent.native="$refs.ctx.open($event, card)">
@@ -117,12 +163,13 @@ import FullCard from './CardViews/FullCard.vue'
 import TinyCard from './CardViews/TinyCard.vue'
 import CardListEntry from './CardViews/CardListEntry.vue'
 import CardArt from './CardViews/CardArt.vue'
+import CardGridRow from './CardViews/CardGridRow.vue'
 
 import {Card} from '../deckard/models/Card'
 
 @Component({
     components: {'TinyCard' : TinyCard, 'CardListEntry': CardListEntry,
-                 'CardArt': CardArt,
+                 'CardArt': CardArt, 'CardGridRow': CardGridRow,
                  'contextMenu': require('vue-context-menu') }
 })
 export default class CardGrid extends Vue
@@ -158,15 +205,32 @@ export default class CardGrid extends Vue
         }
     })
 
-    viewMode: string = "list";
+    viewMode: string = "table";
     textFilter: string = "";
-    sorting: string = "Name";
     showAllFullText: boolean = false;
 
     showText: any = {};
     cardQty: any = {};
 
     rightClickedCard: any = {};
+
+    cardSortField: string = "Name";
+    sortAsc: boolean = true;
+
+    get sorting()
+    {
+        return this.cardSortField;
+    }
+
+    set sorting(value)
+    {
+        if (value == this.cardSortField)
+        {
+            this.sortAsc = !this.sortAsc;
+        }
+
+        this.cardSortField = value;
+    }
 
     get shouldGroup()
     {
@@ -342,6 +406,11 @@ export default class CardGrid extends Vue
             }
             
         });
+
+        if (!this.sortAsc)
+        {
+            _.reverse(filteredCards);
+        }
 
         if (this.shouldGroup)
         {

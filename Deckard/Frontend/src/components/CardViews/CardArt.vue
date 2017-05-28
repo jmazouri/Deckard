@@ -1,9 +1,7 @@
 <template>
     <div class="cardImg">
-        <img v-if="currentCard.mciNumber != undefined" 
-            v-bind:src="currentCardArt">
-        </img>
-        <div class="noArt" v-else>   
+        <img v-bind:src="currentCardArt"></img>
+        <div class="noArt" v-if="false">   
             {{currentCard.name}}
             <small>No Art</small>
         </div>
@@ -20,7 +18,7 @@ export default class CardArt extends CardView
 {
     get currentCardArt()
     {
-        return Card.artUrl((<any>this).currentCard);
+        return Card.artUrl(this.currentCard);
     }
 
     // lifecycle hook

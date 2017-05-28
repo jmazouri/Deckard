@@ -1,7 +1,7 @@
 <template>
     <div class="deckEditor">
 
-        <contextMenu ref="deckOpts" @ctx-open="onCtxOpen">
+        <contextMenu ref="deckOpts">
             <li class="ctx-item" @click="showImportModal = true">Import from Text</li>
             
             <li class="separator"></li>
@@ -164,11 +164,6 @@ export default class DeckEditor extends Vue
     {
         this.$store.commit('deck/deleteCurrentDeck');
         this.$store.commit('deck/setCurrentDeck', this.$store.state.allDecks[0]);
-    }
-
-    onCtxOpen(vars)
-    {
-        
     }
 
     //Do some fun form POSTing to TCGPlayer

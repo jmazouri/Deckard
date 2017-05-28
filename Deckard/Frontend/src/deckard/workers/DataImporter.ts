@@ -8,8 +8,6 @@ import {CardDatabase} from '../storage/CardDatabase'
 
 let theWorker = this;
 
-//let legalSets:string[] = ["BFZ", "OGW", "SOI", "EMN", "KLD", "AER"];
-
 //the default type definitions for webworker are broken/outdated,
 //so let's just insert a tiny 
 function postMessage(msg)

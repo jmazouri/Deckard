@@ -84,6 +84,28 @@
         }
 
     }
+
+    .cardTable
+    {
+        width: 100%;
+
+        th
+        {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.15em;
+            
+            padding: 0.5em;
+
+            &:not(:last-child)
+            {
+                border-right: $control-border;
+            }
+
+            background: $control-bg;
+            color: $control-fg;
+        }
+    }
 }
 
 li.separator

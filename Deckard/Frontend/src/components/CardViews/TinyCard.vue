@@ -16,7 +16,7 @@
         </div>
         
         <div class="footer">
-            <div class="rarity" v-bind:class="cardRarity">{{currentCard.rarity[0]}}</div>
+            <div class="rarity" v-bind:title="'Rarity: ' + currentCard.rarity" v-bind:class="cardRarity">{{currentCard.rarity[0]}}</div>
             <div class="pt" v-if="currentCard.power != undefined">{{currentCard.power}}/{{currentCard.toughness}}</div>
         </div>
     </div>
